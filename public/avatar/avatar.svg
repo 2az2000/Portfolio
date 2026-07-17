@@ -1,0 +1,209 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 560" width="400" height="560">
+  <!--
+    Amirali Zand — base avatar asset (v2, matched against reference photo)
+    Changes from v1: curly/windblown hair replaces the man-bun silhouette,
+    the beard is fuller/rounder, and the torso now reads as an open
+    cardigan over a lighter shirt instead of a solid hoodie.
+    Still fully layered, one <g id="..."> per movable part, no raster,
+    no script, no animation.
+  -->
+  <defs>
+    <style>
+      :root {
+        --avatar-skin: #C68E6B;
+        --avatar-skin-shadow: #A9744F;
+        --avatar-hair: #14100D;
+        --avatar-hair-shadow: #070605;
+        --avatar-beard: #17130F;
+        --avatar-eye-white: #ECE3D6;
+        --avatar-eye-dark: #241A14;
+        --avatar-eye-highlight: #F5EFE6;
+        --avatar-eyebrow: #14100D;
+        --avatar-lips: #9C5B45;
+        --avatar-jacket: #17181C;
+        --avatar-jacket-shadow: #0D0E11;
+        --avatar-shirt: #D9D4C8;
+        --avatar-shirt-shadow: #C1BBAC;
+        --avatar-shadow: #000000;
+      }
+      .skin        { fill: var(--avatar-skin); }
+      .skin-shadow { fill: var(--avatar-skin-shadow); }
+      .hair        { fill: var(--avatar-hair); }
+      .hair-shadow { fill: var(--avatar-hair-shadow); }
+      .hair-line   { fill: none; stroke: var(--avatar-hair-shadow); stroke-width: 3; stroke-linecap: round; }
+      .beard       { fill: var(--avatar-beard); }
+      .eye-white   { fill: var(--avatar-eye-white); }
+      .eye-dark    { fill: var(--avatar-eye-dark); }
+      .eye-highlight { fill: var(--avatar-eye-highlight); }
+      .eyebrow     { fill: var(--avatar-eyebrow); }
+      .lips        { fill: var(--avatar-lips); }
+      .jacket        { fill: var(--avatar-jacket); }
+      .jacket-shadow { fill: var(--avatar-jacket-shadow); }
+      .shirt         { fill: var(--avatar-shirt); }
+      .shirt-shadow  { fill: var(--avatar-shirt-shadow); }
+      .shadow      { fill: var(--avatar-shadow); opacity: 0.22; }
+    </style>
+  </defs>
+
+  <!-- ================= SHADOW ================= -->
+  <g id="Shadow">
+    <ellipse class="shadow" cx="200" cy="478" rx="152" ry="86" />
+  </g>
+
+  <!-- ================= BODY ================= -->
+  <g id="Body">
+    <g id="Hoodie">
+      <!-- shirt sits underneath, full torso width -->
+      <path class="shirt" d="M120,560 C118,478 130,408 168,368 C178,358 222,358 232,368 C270,408 282,478 280,560 Z" />
+      <path class="shirt-shadow" d="M186,368 C190,430 188,500 190,560 L210,560 C212,500 210,430 214,368 Z" />
+
+      <!-- dark open cardigan panels, left/right, leaving the shirt strip visible down the center -->
+      <path class="jacket" d="M120,560 C118,478 130,408 168,368 C176,364 180,364 184,366 C176,430 174,500 178,560 Z" />
+      <path class="jacket" d="M280,560 C282,478 270,408 232,368 C224,364 220,364 216,366 C224,430 226,500 222,560 Z" />
+
+      <!-- small lapel folds where the cardigan opens at the collar -->
+      <path class="jacket-shadow" d="M168,368 L184,366 L176,390 Z" />
+      <path class="jacket-shadow" d="M232,368 L216,366 L224,390 Z" />
+    </g>
+
+    <g id="LeftShoulder">
+      <path class="jacket" d="M120,412 C117,390 138,368 168,368 C168,388 150,404 132,413 C126,416 122,414 120,412 Z" />
+    </g>
+    <g id="RightShoulder">
+      <path class="jacket" d="M280,412 C283,390 262,368 232,368 C232,388 250,404 268,413 C274,416 278,414 280,412 Z" />
+    </g>
+
+    <g id="LeftArm">
+      <path class="jacket" d="M118,411 C107,452 107,502 118,546 C128,553 148,553 156,546 C160,502 158,452 150,413 C140,406 128,406 118,411 Z" />
+    </g>
+    <g id="RightArm">
+      <path class="jacket" d="M282,411 C293,452 293,502 282,546 C272,553 252,553 244,546 C240,502 242,452 250,413 C260,406 272,406 282,411 Z" />
+    </g>
+
+    <g id="LeftHand">
+      <path class="skin" d="M120,540 C117,552 122,563 132,565 C143,567 153,560 153,548 C153,540 146,535 138,535 C130,535 122,536 120,540 Z" />
+      <path class="skin-shadow" d="M122,556 C127,562 141,563 148,557 C142,561 128,561 122,556 Z" />
+    </g>
+    <g id="RightHand">
+      <path class="skin" d="M280,540 C283,552 278,563 268,565 C257,567 247,560 247,548 C247,540 254,535 262,535 C270,535 278,536 280,540 Z" />
+      <path class="skin-shadow" d="M278,556 C273,562 259,563 252,557 C258,561 272,561 278,556 Z" />
+    </g>
+  </g>
+
+  <!-- ================= NECK ================= -->
+  <g id="Neck">
+    <path class="skin" d="M177,300 C177,316 177,336 179,352 C180,360 220,360 221,352 C223,336 223,316 223,300 Z" />
+    <path class="skin-shadow" d="M179,344 C179,352 221,352 221,344 C221,354 179,354 179,344 Z" />
+  </g>
+
+  <!-- ================= HEAD ================= -->
+  <g id="Head">
+
+    <!-- Long, wavy hair mass behind the head — bumpy outline + a few
+         overlapping curl blobs so the silhouette reads as curly, not bald-round -->
+    <g id="HairBack">
+      <path class="hair" d="M130,155 C110,195 108,260 122,320 C130,345 148,360 170,366 C160,330 156,295 158,258 C160,215 168,180 182,155 C168,145 146,145 130,155 Z" />
+      <path class="hair" d="M270,155 C290,195 292,260 278,320 C270,345 252,360 230,366 C240,330 244,295 242,258 C240,215 232,180 218,155 C232,145 254,145 270,155 Z" />
+      <circle class="hair" cx="113" cy="176" r="19" />
+      <circle class="hair" cx="105" cy="216" r="18" />
+      <circle class="hair" cx="111" cy="263" r="19" />
+      <circle class="hair" cx="125" cy="303" r="15" />
+      <circle class="hair" cx="287" cy="176" r="19" />
+      <circle class="hair" cx="295" cy="216" r="18" />
+      <circle class="hair" cx="289" cy="263" r="19" />
+      <circle class="hair" cx="275" cy="303" r="15" />
+    </g>
+
+    <g id="LeftEar">
+      <path class="skin" d="M132,196 C120,196 112,208 114,224 C116,238 126,246 136,240 C142,234 142,218 136,204 C135,200 134,197 132,196 Z" />
+      <path class="skin-shadow" d="M122,216 C123,224 128,232 134,233 C129,230 124,224 122,216 Z" />
+    </g>
+    <g id="RightEar">
+      <path class="skin" d="M268,196 C280,196 288,208 286,224 C284,238 274,246 264,240 C258,234 258,218 264,204 C265,200 266,197 268,196 Z" />
+      <path class="skin-shadow" d="M278,216 C277,224 272,232 266,233 C271,230 276,224 278,216 Z" />
+    </g>
+
+    <!-- Base skin shape of the head — slightly wider / less elongated than v1 -->
+    <g id="Face">
+      <path class="skin" d="M200,130 C165,130 136,146 128,182 C121,210 124,244 136,272 C148,298 168,314 184,320 C190,322 210,322 216,320 C232,314 252,298 264,272 C276,244 279,210 272,182 C264,146 235,130 200,130 Z" />
+      <path class="skin-shadow" d="M136,272 C142,286 152,298 163,306 C153,296 145,284 141,270 Z" />
+      <path class="skin-shadow" d="M264,272 C258,286 248,298 237,306 C247,296 255,284 259,270 Z" />
+    </g>
+
+    <g id="Eyebrows">
+      <path class="eyebrow" d="M138,194 C148,182 176,180 187,190 C176,186 155,186 145,194 C143,196 140,196 138,194 Z" />
+      <path class="eyebrow" d="M262,194 C252,182 224,180 213,190 C224,186 245,186 255,194 C257,196 260,196 262,194 Z" />
+    </g>
+
+    <g id="LeftEye">
+      <path class="eye-white" d="M145,210 C149,200 176,200 180,210 C176,220 149,220 145,210 Z" />
+      <g id="LeftPupil">
+        <circle class="eye-dark" cx="162" cy="210" r="8" />
+        <circle class="eye-highlight" cx="165" cy="207" r="2" />
+      </g>
+    </g>
+    <g id="RightEye">
+      <path class="eye-white" d="M255,210 C251,200 224,200 220,210 C224,220 251,220 255,210 Z" />
+      <g id="RightPupil">
+        <circle class="eye-dark" cx="238" cy="210" r="8" />
+        <circle class="eye-highlight" cx="235" cy="207" r="2" />
+      </g>
+    </g>
+
+    <g id="UpperLid">
+      <path class="skin-shadow" d="M146,207 C151,202 174,202 179,207 C174,204 151,204 146,207 Z" />
+      <path class="skin-shadow" d="M254,207 C249,202 226,202 221,207 C226,204 249,204 254,207 Z" />
+    </g>
+    <g id="LowerLid">
+      <path class="skin-shadow" d="M147,216 C152,221 173,221 178,216 C173,219 152,219 147,216 Z" />
+      <path class="skin-shadow" d="M253,216 C248,221 227,221 222,216 C227,219 248,219 253,216 Z" />
+    </g>
+
+    <g id="Nose">
+      <path class="skin" d="M196,208 C194,223 190,238 188,249 C188,255 196,259 200,259 C204,259 212,255 212,249 C210,238 206,223 204,208 Z" />
+      <path class="skin-shadow" d="M190,251 C192,256 198,258 200,258 C202,258 208,256 210,251 C206,254 194,254 190,251 Z" />
+    </g>
+
+    <!-- Beard paints first (base layer), mustache on top of it, mouth on top of
+         both — so the lips stay visible in the small gap between mustache and
+         chin instead of being hidden under a later-painted beard fill. -->
+    <g id="Beard">
+      <path class="beard" d="M132,232 C124,266 138,300 164,316 C180,324 220,324 236,316 C262,300 276,266 268,232 C255,250 232,262 200,264 C168,262 145,250 132,232 Z" />
+      <path class="hair-shadow" d="M178,298 C188,304 212,304 222,298 C212,302 188,302 178,298 Z" />
+    </g>
+
+    <g id="Mustache">
+      <path class="hair" d="M164,258 C172,248 228,248 236,258 C234,270 222,266 210,268 C206,270 194,270 190,268 C178,266 166,270 164,258 Z" />
+    </g>
+
+    <g id="Mouth">
+      <path class="lips" d="M186,277 C192,281 208,281 214,277 C208,283 192,283 186,277 Z" />
+    </g>
+
+    <!-- Curly fringe framing the forehead, with a bumpy hairline instead of a smooth arc -->
+    <g id="HairFront">
+      <path class="hair" d="M138,154 C148,120 252,120 262,154 C246,136 214,126 200,126 C186,126 154,136 138,154 Z" />
+      <circle class="hair" cx="150" cy="136" r="14" />
+      <circle class="hair" cx="173" cy="123" r="13" />
+      <circle class="hair" cx="200" cy="119" r="14" />
+      <circle class="hair" cx="227" cy="123" r="13" />
+      <circle class="hair" cx="250" cy="136" r="14" />
+    </g>
+
+    <!-- Extra crown volume — curly hair sits higher than a flat scalp,
+         repurposed from the original "bun" slot for a windswept top -->
+    <g id="HairBun">
+      <circle class="hair" cx="182" cy="110" r="17" />
+      <circle class="hair" cx="200" cy="101" r="19" />
+      <circle class="hair" cx="218" cy="110" r="17" />
+    </g>
+
+    <!-- A few loose strands blowing to one side -->
+    <g id="HairStrands">
+      <path class="hair-line" d="M140,152 C132,138 130,122 140,110" />
+      <path class="hair-line" d="M260,152 C268,138 272,124 264,112" />
+      <path class="hair-line" d="M206,100 C215,88 227,82 237,78" />
+    </g>
+
+  </g>
+</svg>

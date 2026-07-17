@@ -1,0 +1,224 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   THEME VARIABLES
+   Light mode is the CSS :root default; dark mode overrides via .dark class.
+   Brand hex palette from AGENTS.md — do not hand-edit; recompute from hex
+   and update BOTH this file and the AGENTS.md table if the palette changes.
+
+   void #0A0A0F -> background   |  ink #F5F5F7 -> foreground
+   surface #12121A -> card/popover | violet #7C5CFC -> primary
+   mint #33E6B8 -> (brand accent, kept OUT of --accent on purpose)
+   mist #9A9AB0 -> muted-foreground | amber #FFB86B -> (brand accent only)
+   ========================================================================== */
+@layer base {
+  :root {
+    /* ---- shadcn semantic tokens (light mode) ---- */
+    --background: 230 10% 97%;
+    --foreground: 235 25% 14%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 235 25% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 235 25% 14%;
+
+    --primary: 252 96% 67%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 230 10% 93%;
+    --secondary-foreground: 235 25% 14%;
+
+    --muted: 230 10% 93%;
+    --muted-foreground: 230 8% 46%;
+
+    --accent: 230 10% 93%;
+    --accent-foreground: 235 25% 14%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 230 10% 88%;
+    --input: 230 10% 88%;
+    --ring: 252 96% 67%;
+
+    --radius: 1.25rem;
+
+    /* ---- brand tokens (light mode) ---- */
+    --void: 248 248 250;
+    --surface: 255 255 255;
+    --ink: 26 26 46;
+    --mist: 96 96 115;
+    --violet: 124 92 252;
+    --violet-soft: 164 147 255;
+    --mint: 51 230 184;
+    --mint-soft: 143 245 217;
+    --amber: 255 184 107;
+    --line: rgba(0, 0, 0, 0.08);
+  }
+
+  .dark {
+    /* ---- shadcn semantic tokens (dark mode) ---- */
+    --background: 240 20% 5%;
+    --foreground: 240 10% 97%;
+
+    --card: 240 18% 9%;
+    --card-foreground: 240 10% 97%;
+
+    --popover: 240 18% 9%;
+    --popover-foreground: 240 10% 97%;
+
+    --primary: 252 96% 67%;
+    --primary-foreground: 240 10% 97%;
+
+    --secondary: 240 16% 14%;
+    --secondary-foreground: 240 10% 97%;
+
+    --muted: 240 16% 14%;
+    --muted-foreground: 240 12% 65%;
+
+    --accent: 240 15% 16%;
+    --accent-foreground: 240 10% 97%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 240 10% 97%;
+
+    --border: 240 15% 16%;
+    --input: 240 15% 16%;
+    --ring: 252 96% 67%;
+
+    /* ---- brand tokens (dark mode) ---- */
+    --void: 10 10 15;
+    --surface: 18 18 26;
+    --ink: 245 245 247;
+    --mist: 154 154 176;
+    --violet: 124 92 252;
+    --violet-soft: 164 147 255;
+    --mint: 51 230 184;
+    --mint-soft: 143 245 217;
+    --amber: 255 184 107;
+    --line: rgba(255, 255, 255, 0.08);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    background-attachment: fixed;
+  }
+  .dark body {
+    background-image: theme("backgroundImage.grid-glow");
+  }
+  html[lang="fa"] body {
+    @apply font-fa;
+  }
+}
+
+/* ==========================================================================
+   BRAND UTILITIES
+   Shared visual language used across sections. Components should reach for
+   these instead of re-declaring the same blur/border/gradient combination.
+   ========================================================================== */
+@layer utilities {
+  .glass {
+    @apply backdrop-blur-xl border;
+    background-color: rgb(255 255 255 / 0.6);
+    border-color: var(--line);
+  }
+  .dark .glass {
+    background-color: rgb(255 255 255 / 0.04);
+  }
+
+  .glass-strong {
+    @apply backdrop-blur-2xl border;
+    background-color: rgb(255 255 255 / 0.7);
+    border-color: rgb(0 0 0 / 0.06);
+  }
+  .dark .glass-strong {
+    background-color: rgb(255 255 255 / 0.06);
+    border-color: rgb(255 255 255 / 0.12);
+  }
+
+  .aurora-text {
+    @apply bg-aurora bg-clip-text text-transparent;
+    background-size: 200% auto;
+  }
+
+  /* Named "caption" (not "text-caption") on purpose — Tailwind already
+     generates a `text-caption` utility from the fontSize token, so reusing
+     that name here would create a circular @apply. */
+  .caption {
+    @apply font-mono text-caption uppercase tracking-widest text-mist;
+  }
+
+  .focus-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-violet focus-visible:ring-offset-2;
+    --tw-ring-offset-color: rgb(var(--void));
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* ==========================================================================
+   SKILLS GRAPH — floating keyframes (each node gets a unique drift path)
+   Uses the CSS `translate` property so it composes with Framer Motion's
+   `transform` (used for magnetic + hover) without conflict.
+   ========================================================================== */
+@keyframes skillFloat0 {
+  0%, 100% { translate: 0 0; }
+  25% { translate: 3px -7px; }
+  50% { translate: -2px -11px; }
+  75% { translate: 4px -5px; }
+}
+@keyframes skillFloat1 {
+  0%, 100% { translate: 0 0; }
+  25% { translate: -4px -9px; }
+  50% { translate: 5px -6px; }
+  75% { translate: -2px -12px; }
+}
+@keyframes skillFloat2 {
+  0%, 100% { translate: 0 0; }
+  25% { translate: 5px -5px; }
+  50% { translate: -3px -10px; }
+  75% { translate: 2px -8px; }
+}
+@keyframes skillFloat3 {
+  0%, 100% { translate: 0 0; }
+  25% { translate: -2px -10px; }
+  50% { translate: 4px -7px; }
+  75% { translate: -5px -9px; }
+}
+@keyframes skillFloat4 {
+  0%, 100% { translate: 0 0; }
+  25% { translate: 4px -8px; }
+  50% { translate: -5px -5px; }
+  75% { translate: 3px -12px; }
+}
+
+/* Respect reduced-motion globally: any element opting into motion should
+   check this media query in JS (GSAP/Framer) too — this covers pure-CSS
+   animations like `animate-float`. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
