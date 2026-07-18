@@ -19,27 +19,10 @@ export function Hero() {
   const ArrowIcon = dir === "rtl" ? ArrowDownRight : ArrowUpRight;
 
   return (
-    <section
-      id="hero"
-      ref={containerRef}
-      className="section-py relative isolate mt-16 min-h-[85vh] overflow-hidden md:mt-24 md:min-h-[90vh]"
-    >
-      {/* ---- Spline scene: full-bleed hero background, tracks the cursor
-             anywhere on screen (see SplineScene.tsx), not just its own box.
-             The scene itself always centers its subject in its own canvas,
-             so the canvas is rendered oversized and anchored to the
-             logical "start" edge — pushing the subject toward the "end"
-             side (opposite the text column) instead of dead-center.
-             start/end (not left/right) so this flips automatically with
-             the page's dir, same as the old grid's `order` trick did. ---- */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute inset-y-0 start-0 w-[150%] md:w-[130%]">
-          <SplineScene scene={SPLINE_SCENE_URL} className="h-full w-full" />
-        </div>
-      </div>
-
-      <div className="container">
-        <div className="max-w-xl">
+    <section id="hero" ref={containerRef} className="section-py container mt-16 md:mt-24">
+      <div className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
+        {/* ---- text column ---- */}
+        <div className="order-2 md:order-1">
           <p data-reveal className="mb-5 font-mono text-sm text-mint">
             {t.hero.eyebrow}
           </p>
@@ -72,10 +55,19 @@ export function Hero() {
           </div>
         </div>
 
-        {/* ---- proof-piece cluster: real, clickable mini components (AGENTS.md §3.1) ---- */}
-        <div data-reveal className="mt-16">
-          <HeroCluster />
+        {/* ---- visual column: Spline scene, boxed. Tracks the cursor anywhere
+               on the page (see SplineScene.tsx), not just while hovering
+               this box. ---- */}
+        <div data-reveal className="order-1 md:order-2">
+          <div className="relative aspect-square w-full overflow-hidden rounded-lg">
+            <SplineScene scene={SPLINE_SCENE_URL} className="h-full w-full" />
+          </div>
         </div>
+      </div>
+
+      {/* ---- proof-piece cluster: real, clickable mini components (AGENTS.md §3.1) ---- */}
+      <div data-reveal className="mt-4">
+        <HeroCluster />
       </div>
     </section>
   );

@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { useTheme } from "next-themes";
 import { DURATION, EASE_BRAND_CSS, prefersReducedMotion } from "@/lib/theme";
 
 /**
@@ -54,21 +53,15 @@ export function HeroCluster() {
 
   return (
     <div ref={containerRef} className="relative mx-auto h-[360px] w-full max-w-md md:h-[420px]">
-      <div data-piece className="absolute left-[6%] top-[8%]">
+      <div data-piece className="absolute left-[4%] top-[4%] w-[72%]">
+        <CodeTypingProof />
+      </div>
+      <div data-piece className="absolute right-[2%] top-[8%]">
         <BadgeProof />
       </div>
-      <div data-piece className="absolute right-[4%] top-[4%]">
-        <ProgressRingProof />
+      <div data-piece className="absolute bottom-[10%] left-[8%] w-[82%]">
+        <CommitLogProof />
       </div>
-      <div data-piece className="absolute left-[2%] top-[46%]">
-        <ToggleProof />
-      </div>
-      <div data-piece className="absolute right-[8%] top-[42%] w-[55%]">
-        <SliderProof />
-      </div>
-      {/* <div data-piece className="absolute bottom-[6%] left-[16%]">
-        <BadgeProof label="TypeScript" tone="amber" />
-      </div> */}
     </div>
   );
 }
@@ -94,87 +87,75 @@ function BadgeProof({
   );
 }
 
-function ToggleProof() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  // Before mount, `theme` hasn't resolved from storage yet — fall back to
-  // the site's deterministic default (dark) so SSR and the first client
-  // render agree instead of triggering a hydration mismatch (which was
-  // forcing React to throw away and re-render the whole tree).
-  const isDark = mounted ? theme === "dark" : true;
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={isDark}
-      onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="focus-ring glass flex items-center gap-3 rounded-pill px-4 py-2.5"
-    >
-      <span
-        className={`relative h-5 w-9 rounded-pill transition-colors duration-fast ease-brand ${
-          isDark ? "bg-violet" : "bg-white/10"
-        }`}
-      >
-        <span
-          className={`absolute top-0.5 h-4 w-4 rounded-full bg-ink transition-transform duration-fast ease-brand ${
-            isDark ? "translate-x-[18px]" : "translate-x-0.5"
-          }`}
-        />
-      </span>
-      <span className="font-mono text-sm text-ink">
-        {isDark ? "dark mode" : "light mode"}
-      </span>
-    </button>
-  );
-}
+const SNIPPET = "const proof = () => {\n  return skill;\n};";
 
-function SliderProof() {
-  const [value, setValue] = useState(72);
+function CodeTypingProof() {
+  const [typed, setTyped] = useState(SNIPPET);
+  const [showCaret, setShowCaret] = useState(true);
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+
+    let i = 0;
+    let deleting = false;
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const tick = () => {
+      if (!deleting) {
+        i++;
+        setTyped(SNIPPET.slice(0, i));
+        if (i >= SNIPPET.length) {
+          deleting = true;
+          timeoutId = setTimeout(tick, 2200);
+          return;
+        }
+        timeoutId = setTimeout(tick, 45);
+      } else {
+        i--;
+        setTyped(SNIPPET.slice(0, i));
+        if (i <= 0) {
+          deleting = false;
+          timeoutId = setTimeout(tick, 600);
+          return;
+        }
+        timeoutId = setTimeout(tick, 20);
+      }
+    };
+
+    timeoutId = setTimeout(tick, 800);
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+  // Caret blinks independently of the typing cadence, like a real editor.
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+    const id = setInterval(() => setShowCaret((v) => !v), 500);
+    return () => clearInterval(id);
+  }, []);
+
   return (
-    <div className="glass w-full rounded-lg px-4 py-3">
-      <div className="mb-2 flex items-center justify-between font-mono text-xs text-mist">
-        <span>performance</span>
-        <span className="text-mint">{value}%</span>
+    <div className="glass w-full overflow-hidden rounded-lg">
+      <div className="flex items-center gap-1.5 border-b border-line px-4 py-2.5">
+        <span className="h-2 w-2 rounded-full bg-mist/40" />
+        <span className="h-2 w-2 rounded-full bg-mist/40" />
+        <span className="h-2 w-2 rounded-full bg-mist/40" />
+        <span className="ml-2 font-mono text-xs text-mist">hero.tsx</span>
       </div>
-      <input
-        type="range"
-        min={0}
-        max={100}
-        value={value}
-        onChange={(e) => setValue(Number(e.target.value))}
-        className="h-1 w-full cursor-pointer appearance-none rounded-pill bg-white/10 accent-violet"
-      />
+      <pre className="min-h-[84px] whitespace-pre-wrap px-4 py-3 font-mono text-xs leading-relaxed text-ink">
+        {typed}
+        <span className={showCaret ? "text-violet" : "text-transparent"}>▌</span>
+      </pre>
     </div>
   );
 }
 
-function ProgressRingProof() {
-  const value = 86;
-  const radius = 26;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (value / 100) * circumference;
-
+function CommitLogProof() {
   return (
-    <div className="glass flex items-center gap-3 rounded-lg px-4 py-3">
-      <svg width="60" height="60" viewBox="0 0 60 60" className="-rotate-90">
-        <circle cx="30" cy="30" r={radius} stroke="rgba(255,255,255,0.1)" strokeWidth="5" fill="none" />
-        <circle
-          cx="30"
-          cy="30"
-          r={radius}
-          stroke="#7C5CFC"
-          strokeWidth="5"
-          fill="none"
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-        />
-      </svg>
-      <div className="font-mono text-xs text-mist">
-        <div className="text-base text-ink">{value}</div>
-        Lighthouse
-      </div>
+    <div className="glass flex items-center gap-3 overflow-hidden rounded-lg px-4 py-3 font-mono text-xs text-mist">
+      <span className="shrink-0 rounded-pill border border-mint/40 bg-mint/10 px-2 py-1 text-mint-soft">
+        a3f9c2d
+      </span>
+      <span className="truncate text-ink">feat: ship proof cluster</span>
     </div>
   );
 }
