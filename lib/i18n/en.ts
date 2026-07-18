@@ -11,7 +11,7 @@ export type Dictionary = {
     about: string;
     skills: string;
     projects: string;
-    playground: string;
+    caseStudies: string;
     experience: string;
     contact: string;
   };
@@ -41,9 +41,23 @@ export type Dictionary = {
       featured?: boolean;
     }[];
   };
-  playground: {
+  caseStudies: {
     heading: string;
     subheading: string;
+    problemLabel: string;
+    approachLabel: string;
+    resultLabel: string;
+    viewLive: string;
+    items: {
+      title: string;
+      tagline: string;
+      role: string;
+      problem: string;
+      approach: string;
+      result: string;
+      stack: string[];
+      href: string;
+    }[];
   };
   experience: {
     heading: string;
@@ -75,7 +89,7 @@ export const en: Dictionary = {
     about: "About",
     skills: "Skills",
     projects: "Projects",
-    playground: "Playground",
+    caseStudies: "Case Studies",
     experience: "Experience",
     contact: "Contact",
   },
@@ -99,29 +113,86 @@ export const en: Dictionary = {
     subheading: "A few things I've shipped.",
     items: [
       {
-        title: "TODO: Project One",
-        description: "TODO: replace with a real description.",
-        stack: ["React", "TypeScript"],
-        href: "#",
+        title: "Sib Irani",
+        description:
+          "An Iranian alternative app store distributing lightweight, WebView-based iOS & Android apps without an Apple ID — plus a developer portal for local publishers.",
+        stack: ["React", "TypeScript", "PWA"],
+        href: "https://sibirani.com",
         featured: true,
       },
       {
-        title: "TODO: Project Two",
-        description: "TODO: replace with a real description.",
-        stack: ["Next.js", "Node.js"],
-        href: "#",
+        title: "Sib Bazar",
+        description:
+          "A sister iOS app-store platform for Iranian users, with its own proprietary Adhoc distribution pipeline and a separate developer dashboard.",
+        stack: ["React", "PWA"],
+        href: "https://sibbazar.com/",
       },
       {
-        title: "TODO: Project Three",
-        description: "TODO: replace with a real description.",
-        stack: ["TypeScript"],
-        href: "#",
+        title: "Brookli",
+        description:
+          "A calorie-tracking progressive web app for logging meals and following daily nutrition goals.",
+        stack: ["React", "PWA"],
+        href: "https://app.brookliapp.com/",
+      },
+      {
+        title: "fabioCoffee",
+        description:
+          "A full-stack café management system — a Next.js ordering menu and admin panel backed by an Express/Prisma/PostgreSQL API with JWT authentication.",
+        stack: ["Next.js", "Express", "Prisma"],
+        href: "https://fabio-coffee-frontend.vercel.app",
+      },
+      {
+        title: "smartShop",
+        description:
+          "A Next.js e-commerce storefront with Clerk authentication, a Prisma-backed product catalog, and a shadcn/ui component layer.",
+        stack: ["Next.js", "Clerk", "Prisma"],
+        href: "https://github.com/2az2000/smartShop",
+      },
+      {
+        title: "saghfino",
+        description:
+          "A map-based real-estate rental platform for browsing listings by location, built with React, Vite, and Leaflet.",
+        stack: ["React", "Vite", "Leaflet"],
+        href: "https://github.com/2az2000/saghfino",
       },
     ],
   },
-  playground: {
-    heading: "Playground",
-    subheading: "A shelf of components you can actually use.",
+  caseStudies: {
+    heading: "Case Studies",
+    subheading: "Two projects, from the problem to what shipped.",
+    problemLabel: "Problem",
+    approachLabel: "Approach",
+    resultLabel: "Result",
+    viewLive: "View live",
+    items: [
+      {
+        title: "Sib Irani",
+        tagline:
+          "Rebuilding an Iranian iOS/Android app store's Next.js frontend from the ground up.",
+        role: "Frontend Developer — rebuilt the Next.js version from scratch",
+        problem:
+          "The existing Sib Irani frontend needed a full rebuild to support new PWA capabilities and a growing developer portal for local publishers, so the Next.js implementation was rewritten from zero.",
+        approach:
+          "Rebuilt the Next.js frontend from scratch, implemented full PWA support (installable, offline-capable), shipped several AI-powered features, and worked closely with backend, design, and product teams to ship a stable developer portal — all while continuously profiling and restructuring the codebase for performance.",
+        result:
+          "A faster, more maintainable Next.js codebase now powering one of Iran's alternative iOS/Android app stores — hosting dozens of popular local apps (Snapp, Digikala, Divar, and more) alongside an active developer portal.",
+        stack: ["Next.js", "TypeScript", "PWA"],
+        href: "https://sibirani.com",
+      },
+      {
+        title: "Brookli",
+        tagline: "A calorie-tracking PWA you can install straight from the browser.",
+        role: "Frontend Developer",
+        problem:
+          "Brookli needed a lightweight, installable nutrition-tracking experience that worked reliably as a PWA across devices, without the overhead of a native app.",
+        approach:
+          "Implemented the PWA foundations (install prompts, offline caching, service worker), shipped AI-powered features, coordinated with the product/design team on the meal-logging flow, and optimized rendering performance across the app.",
+        result:
+          "A stable, installable PWA that lets users log meals and track calories entirely from the browser — no app-store download required.",
+        stack: ["React", "PWA"],
+        href: "https://app.brookliapp.com/",
+      },
+    ],
   },
 experience: {
   heading: "Experience",
@@ -193,7 +264,7 @@ experience: {
     fieldMessage: "--message",
     submit: "run send.sh",
     email: "TODO@example.com",
-    github: "https://github.com/TODO",
+    github: "https://github.com/2az2000",
     linkedin: "https://linkedin.com/in/TODO",
   },
 };

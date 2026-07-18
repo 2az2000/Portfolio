@@ -39,7 +39,7 @@ export function SpotlightCard({
       onPointerMove={handlePointerMove}
       data-cursor="magnetic"
       className={cn(
-        "group relative overflow-hidden rounded-lg border border-line bg-white/[0.04] p-6 backdrop-blur-xl transition-colors duration-fast ease-brand hover:border-violet/30 dark:hover:border-white/20",
+        "group relative overflow-hidden rounded-lg border border-line bg-white/[0.04] p-6 backdrop-blur-md transition-colors duration-fast ease-brand hover:border-violet/30 dark:hover:border-white/20",
         className
       )}
       style={

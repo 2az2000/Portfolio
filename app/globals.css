@@ -112,10 +112,18 @@
   }
   body {
     @apply bg-background text-foreground font-body antialiased;
-    background-attachment: fixed;
   }
-  .dark body {
+  /* Fixed-position pseudo-element instead of `background-attachment: fixed`
+     on body: a still, GPU-composited layer that never repaints on scroll,
+     unlike a fixed body background sitting under scrolling `backdrop-blur`
+     content (a major source of scroll jank on this page). */
+  .dark body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
     background-image: theme("backgroundImage.grid-glow");
+    pointer-events: none;
   }
   html[lang="fa"] body {
     @apply font-fa;
@@ -128,8 +136,18 @@
    these instead of re-declaring the same blur/border/gradient combination.
    ========================================================================== */
 @layer utilities {
+  /* Shared vertical rhythm for every section (About, Skills, Projects,
+     CaseStudies, Experience, Contact, Hero). This class was referenced
+     everywhere but never actually defined anywhere in the project — every
+     section rendered with zero vertical padding as a result. Defining it
+     once here, instead of hardcoding py-* per section, is what keeps the
+     spacing identical and centrally adjustable across the whole site. */
+  .section-py {
+    @apply py-20 md:py-28;
+  }
+
   .glass {
-    @apply backdrop-blur-xl border;
+    @apply backdrop-blur-md border;
     background-color: rgb(255 255 255 / 0.6);
     border-color: var(--line);
   }
@@ -138,7 +156,7 @@
   }
 
   .glass-strong {
-    @apply backdrop-blur-2xl border;
+    @apply backdrop-blur-lg border;
     background-color: rgb(255 255 255 / 0.7);
     border-color: rgb(0 0 0 / 0.06);
   }

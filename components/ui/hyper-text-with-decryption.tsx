@@ -23,6 +23,15 @@ interface WordProps {
   onHoverEnd: () => void;
 }
 
+/**
+ * Dimming/scale/color react to hover via plain CSS transitions (cheap,
+ * GPU-composited) instead of Framer Motion `animate` — with one paragraph
+ * hover toggling `isDimmed` on every word, driving all of them through JS
+ * springs (plus an animated `filter: blur()`, one of the most expensive
+ * CSS properties) tanked frame rate. Framer Motion is kept only for the
+ * hovered word's own decorations below, which mount/unmount for a single
+ * word at a time and are cheap.
+ */
 const Word = ({
   children,
   isDimmed,
@@ -86,22 +95,19 @@ const Word = ({
   };
 
   return (
-    <motion.span
+    <span
       className={cn(
-        "relative inline-block font-mono font-medium whitespace-nowrap",
+        "relative inline-block font-mono font-medium whitespace-nowrap transition-[opacity,transform,color] duration-200 ease-out",
         isHighlightable ? "cursor-pointer" : "cursor-default"
       )}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      animate={{
-        scale: isHovered ? 1.1 : 1,
-        y: isHovered ? -4 : 0,
+      style={{
+        transform: isHovered ? "scale(1.1) translateY(-4px)" : "scale(1) translateY(0)",
         opacity: isDimmed && !isHovered ? 0.3 : 1,
-        filter: isDimmed && !isHovered ? "blur(2px)" : "blur(0px)",
         color: isHovered ? "#FFFFFF" : isHighlightable ? "#8B5CF6" : "#64748B",
         zIndex: isHovered ? 20 : 1,
       }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
       <AnimatePresence>
         {isHovered && (
@@ -139,7 +145,7 @@ const Word = ({
           </>
         )}
       </AnimatePresence>
-    </motion.span>
+    </span>
   );
 };
 
@@ -162,10 +168,6 @@ export default function HyperTextParagraph({
       .trim();
   };
 
-  // Log for debugging - remove in production
-  console.log("Highlight Words:", highlightWords);
-  console.log("Text Words:", words.map(w => clean(w)));
-
   return (
     <div className={cn("leading-relaxed tracking-wide", className)}>
       {words.map((word, i) => {
@@ -173,11 +175,6 @@ export default function HyperTextParagraph({
         const isHighlightable = highlightWords.some(
           (hw) => clean(hw) === cleanedWord
         );
-
-        // Log for debugging
-        if (isHighlightable) {
-          console.log(`✅ Highlighted: "${word}" -> "${cleanedWord}"`);
-        }
 
         return (
           <React.Fragment key={i}>

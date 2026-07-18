@@ -96,7 +96,13 @@ function BadgeProof({
 
 function ToggleProof() {
   const { theme, setTheme } = useTheme();
-  const isDark = theme === "dark";
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  // Before mount, `theme` hasn't resolved from storage yet — fall back to
+  // the site's deterministic default (dark) so SSR and the first client
+  // render agree instead of triggering a hydration mismatch (which was
+  // forcing React to throw away and re-render the whole tree).
+  const isDark = mounted ? theme === "dark" : true;
   return (
     <button
       type="button"

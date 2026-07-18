@@ -148,7 +148,7 @@ export function SkillNode({
         onFocus={() => onHover(id)}
         onBlur={() => onHover(null)}
         data-skills-node
-        className="focus-ring relative flex cursor-pointer items-center gap-2.5 whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium backdrop-blur-xl"
+        className="focus-ring pointer-events-auto relative flex cursor-pointer items-center gap-2.5 whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium backdrop-blur-md"
         style={{
           x: springX,
           y: springY,

@@ -5,10 +5,11 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import { dictionaries, type Dictionary, type Locale } from "@/lib/i18n";
 import { DURATION, EASE_BRAND } from "@/lib/theme";
 
@@ -26,20 +27,40 @@ const STORAGE_KEY = "portfolio-locale";
 const dirOf = (locale: Locale): "rtl" | "ltr" => (locale === "fa" ? "rtl" : "ltr");
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  // Defaults to Persian; swaps instantly on mount if the browser/storage says otherwise.
-  const [locale, setLocaleState] = useState<Locale>("fa");
-  const [isHydrated, setIsHydrated] = useState(false);
+  // Defaults to English; swaps instantly on mount if storage says otherwise.
+  const [locale, setLocaleState] = useState<Locale>("en");
+  const isFirstLocaleChange = useRef(true);
+  const controls = useAnimation();
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY) as Locale | null;
     if (stored === "en" || stored === "fa") setLocaleState(stored);
-    setIsHydrated(true);
   }, []);
 
   useEffect(() => {
     document.documentElement.lang = locale;
     document.documentElement.dir = dirOf(locale);
   }, [locale]);
+
+  // Cross-fade the content in place on every locale change after the
+  // initial mount. This intentionally does NOT remount the tree (no
+  // `key={locale}` on a wrapping AnimatePresence, unlike before) — keying
+  // the whole app by locale tore down and rebuilt every GSAP ScrollTrigger,
+  // the Spline WebGL context, and every IntersectionObserver on each
+  // toggle, and that teardown/rebuild race is what left the page blank
+  // until a hard refresh. Text already updates immediately via context;
+  // this animation just softens the swap.
+  useEffect(() => {
+    if (isFirstLocaleChange.current) {
+      isFirstLocaleChange.current = false;
+      return;
+    }
+    controls.set({ opacity: 0.4 });
+    controls.start({
+      opacity: 1,
+      transition: { duration: DURATION.fast, ease: EASE_BRAND },
+    });
+  }, [locale, controls]);
 
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);
@@ -60,20 +81,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   return (
     <LanguageContext.Provider value={value}>
-      {/* Cross-fade the whole tree on locale change instead of an abrupt
-          text/direction jump — this transition IS one of the signature
-          details called out in AGENTS.md §3.7. */}
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={locale}
-          initial={{ opacity: isHydrated ? 0 : 1 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: DURATION.fast, ease: EASE_BRAND }}
-        >
-          {children}
-        </motion.div>
-      </AnimatePresence>
+      {/* Cross-fade on locale change instead of an abrupt text/direction
+          jump — this transition IS one of the signature details called out
+          in AGENTS.md §3.7. Not keyed by locale: the tree stays mounted so
+          GSAP/Spline/observers survive the toggle (see effect above). */}
+      <motion.div animate={controls}>{children}</motion.div>
     </LanguageContext.Provider>
   );
 }

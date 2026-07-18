@@ -5,7 +5,7 @@ export const fa: Dictionary = {
     about: "درباره من",
     skills: "مهارت‌ها",
     projects: "پروژه‌ها",
-    playground: "پلی‌گراند",
+    caseStudies: "کیس‌استادی",
     experience: "سوابق",
     contact: "تماس",
   },
@@ -29,29 +29,85 @@ export const fa: Dictionary = {
     subheading: "چند نمونه از کارهایی که ساخته‌ام.",
     items: [
       {
-        title: "TODO: پروژه یک",
-        description: "TODO: توضیح واقعی پروژه رو اینجا بذارید.",
-        stack: ["React", "TypeScript"],
-        href: "#",
+        title: "سیب ایرانی",
+        description:
+          "اپ‌استور جایگزین ایرانی که اپلیکیشن‌های سبک و وب‌ویو-محور رو برای iOS و اندروید، بدون نیاز به Apple ID توزیع می‌کنه — همراه با پنل توسعه‌دهنده برای ناشران ایرانی.",
+        stack: ["React", "TypeScript", "PWA"],
+        href: "https://sibirani.com",
         featured: true,
       },
       {
-        title: "TODO: پروژه دو",
-        description: "TODO: توضیح واقعی پروژه رو اینجا بذارید.",
-        stack: ["Next.js", "Node.js"],
-        href: "#",
+        title: "سیب بازار",
+        description:
+          "پلتفرم اپ‌استور خواهرِ سیب ایرانی برای کاربران آیفون، با پایپ‌لاین توزیع اختصاصی Adhoc و داشبورد توسعه‌دهنده‌ی مجزا.",
+        stack: ["React", "PWA"],
+        href: "https://sibbazar.com/",
       },
       {
-        title: "TODO: پروژه سه",
-        description: "TODO: توضیح واقعی پروژه رو اینجا بذارید.",
-        stack: ["TypeScript"],
-        href: "#",
+        title: "بروکلی",
+        description:
+          "پروگرسیو وب‌اپ برای ثبت وعده‌های غذایی و پیگیری اهداف روزانه‌ی تغذیه.",
+        stack: ["React", "PWA"],
+        href: "https://app.brookliapp.com/",
+      },
+      {
+        title: "fabioCoffee",
+        description:
+          "یک سیستم مدیریت کافه‌ی full-stack — منوی سفارش‌گیری و پنل ادمین با Next.js، متصل به یک API مبتنی بر Express/Prisma/PostgreSQL با احراز هویت JWT.",
+        stack: ["Next.js", "Express", "Prisma"],
+        href: "https://fabio-coffee-frontend.vercel.app",
+      },
+      {
+        title: "smartShop",
+        description:
+          "یک فروشگاه آنلاین Next.js با احراز هویت Clerk، کاتالوگ محصولات مبتنی بر Prisma، و لایه‌ی کامپوننت shadcn/ui.",
+        stack: ["Next.js", "Clerk", "Prisma"],
+        href: "https://github.com/2az2000/smartShop",
+      },
+      {
+        title: "saghfino",
+        description:
+          "پلتفرم اجاره و خرید ملک مبتنی بر نقشه برای مرور آگهی‌ها بر اساس موقعیت مکانی، ساخته‌شده با React، Vite و Leaflet.",
+        stack: ["React", "Vite", "Leaflet"],
+        href: "https://github.com/2az2000/saghfino",
       },
     ],
   },
-  playground: {
-    heading: "پلی‌گراند",
-    subheading: "قفسه‌ای از کامپوننت‌های واقعاً قابل‌استفاده.",
+  caseStudies: {
+    heading: "کیس‌استادی",
+    subheading: "دو پروژه، از مسئله تا چیزی که نهایتاً شیپ شد.",
+    problemLabel: "مسئله",
+    approachLabel: "رویکرد",
+    resultLabel: "نتیجه",
+    viewLive: "مشاهده‌ی نسخه‌ی زنده",
+    items: [
+      {
+        title: "سیب ایرانی",
+        tagline: "بازنویسی کامل نسخه‌ی Next.js یک اپ‌استور جایگزین ایرانی، از صفر.",
+        role: "Frontend Developer — بازنویسی کامل نسخه‌ی Next.js از صفر",
+        problem:
+          "فرانت‌اند قبلی سیب ایرانی نیاز به بازسازی کامل داشت تا از قابلیت‌های جدید PWA و رشد پنل توسعه‌دهندگان پشتیبانی کنه؛ برای همین نسخه‌ی Next.js از صفر بازنویسی شد.",
+        approach:
+          "فرانت‌اند Next.js رو از صفر بازنویسی کردم، قابلیت‌های کامل PWA (نصب‌پذیری، کش آفلاین) رو پیاده‌سازی کردم، چند فیچر مبتنی بر هوش مصنوعی شیپ کردم، و برای انتشار پایدار پنل توسعه‌دهندگان با تیم‌های بک‌اند، طراحی و محصول هماهنگ بودم — همراه با بهینه‌سازی مداوم پرفورمنس و ساختار کد.",
+        result:
+          "یک کدبیس Next.js سریع‌تر و قابل‌نگه‌داری‌تر که الان یکی از اپ‌استورهای جایگزین ایرانی رو اداره می‌کنه — با ده‌ها اپ محبوب ایرانی (اسنپ، دیجی‌کالا، دیوار و بیشتر) و یک پنل توسعه‌دهندگان فعال.",
+        stack: ["Next.js", "TypeScript", "PWA"],
+        href: "https://sibirani.com",
+      },
+      {
+        title: "بروکلی",
+        tagline: "یک پروگرسیو وب‌اپ ثبت کالری که مستقیم از مرورگر نصب می‌شه.",
+        role: "Frontend Developer",
+        problem:
+          "بروکلی نیاز به یک تجربه‌ی سبک و نصب‌پذیر برای پیگیری کالری داشت که روی همه‌ی دستگاه‌ها به‌صورت PWA قابل‌اعتماد کار کنه، بدون سربار یک اپ نیتیو.",
+        approach:
+          "زیرساخت PWA (نصب، کش آفلاین، service worker) رو پیاده‌سازی کردم، فیچرهای مبتنی بر هوش مصنوعی شیپ کردم، با تیم محصول/طراحی روی فلوی ثبت وعده‌های غذایی هماهنگ بودم، و پرفورمنس رندر رو در سراسر اپ بهینه کردم.",
+        result:
+          "یک PWA پایدار و نصب‌پذیر که کاربران می‌تونن وعده‌های غذایی و کالری‌شون رو مستقیم از مرورگر پیگیری کنن — بدون نیاز به دانلود از اپ‌استور.",
+        stack: ["React", "PWA"],
+        href: "https://app.brookliapp.com/",
+      },
+    ],
   },
 experience: {
   heading: "سوابق کاری",
@@ -123,7 +179,7 @@ experience: {
     fieldMessage: "--message",
     submit: "run send.sh",
     email: "TODO@example.com",
-    github: "https://github.com/TODO",
+    github: "https://github.com/2az2000",
     linkedin: "https://linkedin.com/in/TODO",
   },
 };

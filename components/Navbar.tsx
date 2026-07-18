@@ -11,7 +11,7 @@ const navSections = [
   { id: "about", key: "about" as const },
   { id: "skills", key: "skills" as const },
   { id: "projects", key: "projects" as const },
-  { id: "playground", key: "playground" as const },
+  { id: "case-studies", key: "caseStudies" as const },
   { id: "experience", key: "experience" as const },
   { id: "contact", key: "contact" as const },
 ];

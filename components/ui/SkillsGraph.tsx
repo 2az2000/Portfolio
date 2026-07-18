@@ -84,10 +84,17 @@ export function SkillsGraph({
   /* ---- reduced motion ---- */
   const reducedMotion = useMemo(() => prefersReducedMotion(), []);
 
-  /* ---- in-view (entrance trigger) ---- */
+  /* ---- in-view (entrance trigger, fires once) ---- */
   const isInView = useInView(containerRef, {
     once: true,
     margin: "-12% 0px -12% 0px",
+  });
+
+  /* ---- in-view (ongoing) — gates the infinite decorative loops below so
+     they don't keep animating (and eating frame budget) once the user has
+     scrolled this section out of view ---- */
+  const isCurrentlyVisible = useInView(containerRef, {
+    margin: "200px 0px 200px 0px",
   });
 
   /* ---- memoised lookups ---- */
@@ -118,7 +125,7 @@ export function SkillsGraph({
 
   /* ---- random energy pulse ---- */
   useEffect(() => {
-    if (reducedMotion) return;
+    if (reducedMotion || !isCurrentlyVisible) return;
     const id = setInterval(
       () => {
         const edge = edges[Math.floor(Math.random() * edges.length)];
@@ -128,7 +135,7 @@ export function SkillsGraph({
       4500 + Math.random() * 3000,
     );
     return () => clearInterval(id);
-  }, [edges, reducedMotion]);
+  }, [edges, reducedMotion, isCurrentlyVisible]);
 
   /* ---- hover handler (stable ref) ---- */
   const handleNodeHover = useCallback((id: string | null) => {
@@ -240,6 +247,7 @@ export function SkillsGraph({
 
         {/* floating particles */}
         {!reducedMotion &&
+          isCurrentlyVisible &&
           particles.map((p) => (
             <motion.div
               key={p.id}
@@ -274,7 +282,7 @@ export function SkillsGraph({
           ))}
 
         {/* ambient glow orbs */}
-        {!reducedMotion && (
+        {!reducedMotion && isCurrentlyVisible && (
           <>
             <motion.div
               className="absolute rounded-full blur-[80px]"
@@ -551,7 +559,7 @@ export function SkillsGraph({
                 className="absolute h-full rounded-full"
                 style={{ backgroundColor: cfg.color }}
               />
-              {!reducedMotion && (
+              {!reducedMotion && isCurrentlyVisible && (
                 <motion.span
                   className="absolute h-full rounded-full"
                   animate={{
