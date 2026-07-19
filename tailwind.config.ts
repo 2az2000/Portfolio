@@ -110,8 +110,15 @@ const config: Config = {
           "50%": { transform: "translateY(-12px)" },
         },
         marquee: {
-          "0%": { transform: "translateX(0%)" },
-          "100%": { transform: "translateX(-50%)" },
+          // `--marquee-distance` is set in px by TechMarquee once it
+          // measures the real rendered width of one item set — a plain
+          // `-50%` looked equivalent but is resolved against the
+          // container's own (sometimes fractional) computed width, and
+          // that sub-pixel rounding is what caused the visible jump/snap
+          // at the loop point. The 50% fallback only covers the instant
+          // before that first measurement runs.
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(calc(-1 * var(--marquee-distance, 50%)))" },
         },
         "accordion-down": {
           from: { height: "0" },

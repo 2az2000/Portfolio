@@ -113,18 +113,6 @@
   body {
     @apply bg-background text-foreground font-body antialiased;
   }
-  /* Fixed-position pseudo-element instead of `background-attachment: fixed`
-     on body: a still, GPU-composited layer that never repaints on scroll,
-     unlike a fixed body background sitting under scrolling `backdrop-blur`
-     content (a major source of scroll jank on this page). */
-  .dark body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    background-image: theme("backgroundImage.grid-glow");
-    pointer-events: none;
-  }
   html[lang="fa"] body {
     @apply font-fa;
   }
@@ -225,6 +213,27 @@
   25% { translate: 4px -8px; }
   50% { translate: -5px -5px; }
   75% { translate: 3px -12px; }
+}
+
+/* ==========================================================================
+   AMBIENT BACKGROUND — slow-drifting brand-colour blobs behind the whole
+   page (see components/AmbientBackground.tsx). `translate` only, never
+   `scale` — animating a blurred element's scale forces the browser to
+   re-rasterize the blur every frame; a pure position drift stays
+   compositor-only and effectively free, which matters here since this
+   runs behind every section for the entire session, not just one.
+   ========================================================================== */
+@keyframes ambientDrift1 {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 6vw 4vh; }
+}
+@keyframes ambientDrift2 {
+  0%, 100% { translate: 0 0; }
+  50% { translate: -5vw 5vh; }
+}
+@keyframes ambientDrift3 {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 4vw -6vh; }
 }
 
 /* Respect reduced-motion globally: any element opting into motion should

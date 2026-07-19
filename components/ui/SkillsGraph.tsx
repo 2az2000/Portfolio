@@ -79,7 +79,14 @@ export function SkillsGraph({
 
   /* ---- theme ---- */
   const { theme } = useTheme();
-  const isDark = theme === "dark";
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  // Before mount, `theme` hasn't resolved from storage yet — fall back to
+  // the site's deterministic default (dark) so SSR and the first client
+  // render agree instead of a hydration mismatch (same fix as
+  // HeroCluster's ToggleProof: reading useTheme() unguarded forces React
+  // to throw away and re-render this whole subtree on first paint).
+  const isDark = mounted ? theme === "dark" : true;
 
   /* ---- reduced motion ---- */
   const reducedMotion = useMemo(() => prefersReducedMotion(), []);

@@ -3,6 +3,7 @@ import { Vazirmatn, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { CustomCursor } from "@/components/CustomCursor";
+import { AmbientBackground } from "@/components/AmbientBackground";
 
 // Persian text (headings + body) — see AGENTS.md typography table.
 const vazirmatn = Vazirmatn({
@@ -43,6 +44,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         `}</style>
       </head>
       <body className={`${vazirmatn.variable} ${jetbrainsMono.variable}`}>
+        {/* Outside Providers on purpose: this is a persistent backdrop, so
+            it shouldn't fade/flicker along with LanguageProvider's
+            locale-switch cross-fade wrapper. */}
+        <AmbientBackground />
         <Providers>
           <CustomCursor />
           {children}

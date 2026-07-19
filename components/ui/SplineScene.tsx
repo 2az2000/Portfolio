@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, lazy, useEffect, useRef, useState } from "react";
+import type { Application } from "@splinetool/runtime";
 import { cn } from "@/lib/utils";
 
 // Spline needs WebGL + browser APIs, so it's lazy-loaded on the client only.
@@ -23,6 +24,7 @@ export function SplineScene({ scene, className }: SplineSceneProps) {
   // scratch on every scroll-down-then-up. The scene must render once.
   const [hasLoaded, setHasLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const appRef = useRef<Application | null>(null);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -34,6 +36,30 @@ export function SplineScene({ scene, className }: SplineSceneProps) {
           setHasLoaded(true);
           observer.disconnect();
         }
+      },
+      { rootMargin: "50% 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasLoaded]);
+
+  // The scene renders once and is never unmounted (see the latch above),
+  // but a live WebGL render loop left running forever — including while
+  // scrolled deep into Contact, far from the hero — was still burning a
+  // frame budget for the entire session. `stop()`/`play()` pause and
+  // resume the Application's render loop in place (unlike unmounting, this
+  // keeps its scene state intact, so resuming never replays the intro).
+  useEffect(() => {
+    if (!hasLoaded) return;
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const app = appRef.current;
+        if (!app) return;
+        if (entry.isIntersecting) app.play();
+        else app.stop();
       },
       { rootMargin: "50% 0px" }
     );
@@ -101,6 +127,9 @@ export function SplineScene({ scene, className }: SplineSceneProps) {
           <Spline
             scene={scene}
             className={className}
+            onLoad={(app) => {
+              appRef.current = app;
+            }}
             onError={() => setHasError(true)}
           />
         </Suspense>
