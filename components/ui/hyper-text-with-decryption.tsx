@@ -49,6 +49,15 @@ const Word = ({
     };
   }, []);
 
+  // `children` (the word text) changes in place when the locale switches —
+  // the Fragment above is keyed by index, not content, so this component
+  // instance survives the swap and its local `displayText` state would
+  // otherwise stay frozen on the old language until the next hover.
+  useEffect(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    setDisplayText(children);
+  }, [children]);
+
   const scramble = useCallback(() => {
     let pos = 0;
     if (intervalRef.current) clearInterval(intervalRef.current);

@@ -11,7 +11,7 @@ import {
 } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { dictionaries, type Dictionary, type Locale } from "@/lib/i18n";
-import { DURATION, EASE_BRAND } from "@/lib/theme";
+import { DURATION, EASE_BRAND, prefersReducedMotion } from "@/lib/theme";
 
 type LanguageContextValue = {
   locale: Locale;
@@ -37,29 +37,52 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     if (stored === "en" || stored === "fa") setLocaleState(stored);
   }, []);
 
-  useEffect(() => {
-    document.documentElement.lang = locale;
-    document.documentElement.dir = dirOf(locale);
-  }, [locale]);
-
   // Cross-fade the content in place on every locale change after the
   // initial mount. This intentionally does NOT remount the tree (no
   // `key={locale}` on a wrapping AnimatePresence, unlike before) — keying
   // the whole app by locale tore down and rebuilt every GSAP ScrollTrigger,
   // the Spline WebGL context, and every IntersectionObserver on each
   // toggle, and that teardown/rebuild race is what left the page blank
-  // until a hard refresh. Text already updates immediately via context;
-  // this animation just softens the swap.
+  // until a hard refresh.
+  //
+  // The `dir`/`lang` attribute flip (and the RTL font swap in globals.css)
+  // triggers an instant, untransitioned reflow, so it's sequenced to land
+  // while the content is fully invisible (opacity 0, not a partial dip) —
+  // otherwise the direction/font snap is still visible mid-fade and reads
+  // as a jarring jump.
   useEffect(() => {
     if (isFirstLocaleChange.current) {
       isFirstLocaleChange.current = false;
+      document.documentElement.lang = locale;
+      document.documentElement.dir = dirOf(locale);
       return;
     }
-    controls.set({ opacity: 0.4 });
-    controls.start({
-      opacity: 1,
-      transition: { duration: DURATION.fast, ease: EASE_BRAND },
-    });
+
+    if (prefersReducedMotion()) {
+      document.documentElement.lang = locale;
+      document.documentElement.dir = dirOf(locale);
+      controls.set({ opacity: 1 });
+      return;
+    }
+
+    let cancelled = false;
+    (async () => {
+      await controls.start({
+        opacity: 0,
+        transition: { duration: DURATION.fast, ease: EASE_BRAND },
+      });
+      if (cancelled) return;
+      document.documentElement.lang = locale;
+      document.documentElement.dir = dirOf(locale);
+      await controls.start({
+        opacity: 1,
+        transition: { duration: DURATION.base, ease: EASE_BRAND },
+      });
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [locale, controls]);
 
   const setLocale = useCallback((next: Locale) => {

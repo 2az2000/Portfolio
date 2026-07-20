@@ -180,6 +180,27 @@
 }
 
 /* ==========================================================================
+   EXPERIENCE TIMELINE — commit nodes light up as the scroll-synced progress
+   beam reaches them (toggled by GSAP ScrollTrigger, see Experience.tsx).
+   `--exp-node-color` is set per-card (alternating violet/mint) so each node
+   ignites in the same tint as its card's spotlight.
+   ========================================================================== */
+[data-exp-node] {
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s
+      cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s
+      cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-exp-node].is-active {
+  background-color: rgb(var(--exp-node-color, var(--violet)));
+  border-color: transparent;
+  color: rgb(var(--void));
+  box-shadow:
+    0 0 0 4px rgba(var(--exp-node-color, var(--violet)), 0.18),
+    0 0 22px rgba(var(--exp-node-color, var(--violet)), 0.55);
+  transform: scale(1.12);
+}
+
+/* ==========================================================================
    SKILLS GRAPH — floating keyframes (each node gets a unique drift path)
    Uses the CSS `translate` property so it composes with Framer Motion's
    `transform` (used for magnetic + hover) without conflict.
