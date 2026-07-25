@@ -33,13 +33,17 @@ export function CustomCursor() {
 
     const handleMove = (e: PointerEvent) => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      // The `closest()` walk used to run synchronously on every raw
+      // pointermove (which can fire at 120Hz+ on some devices/browsers) —
+      // moved inside the same rAF batch as the position update below so it
+      // runs at most once per painted frame, same as x/y already did.
+      const target = e.target as HTMLElement;
       rafRef.current = requestAnimationFrame(() => {
         x.set(e.clientX);
         y.set(e.clientY);
         setIsVisible(true);
+        setIsHoveringInteractive(Boolean(target.closest(INTERACTIVE_SELECTOR)));
       });
-      const target = e.target as HTMLElement;
-      setIsHoveringInteractive(Boolean(target.closest(INTERACTIVE_SELECTOR)));
     };
 
     const handleLeave = () => setIsVisible(false);

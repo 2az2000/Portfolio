@@ -52,7 +52,7 @@ export function MagneticButton({
       onPointerLeave={handlePointerLeave}
       style={{ x: springX, y: springY }}
       className={cn(
-        "focus-ring inline-flex items-center justify-center gap-2 rounded-pill px-6 py-3 text-sm font-medium transition-colors duration-fast ease-brand",
+        "focus-ring inline-flex items-center justify-center gap-2 rounded-pill px-6 py-3 text-sm font-medium transition-colors duration-fast ease-brand disabled:pointer-events-none disabled:opacity-50",
         variant === "primary"
           ? "bg-violet text-ink hover:bg-violet-soft"
           : "border border-line bg-transparent text-ink hover:border-violet/50 dark:hover:border-white/30",

@@ -5,6 +5,9 @@ import { Github, Linkedin, Mail, Terminal } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useGsapReveal } from "@/lib/useGsapReveal";
 import { MagneticButton } from "@/components/ui/MagneticButton";
+import { cn } from "@/lib/utils";
+
+type SubmitStatus = "idle" | "sending" | "success" | "error";
 
 export function Contact() {
   const { t } = useLanguage();
@@ -16,16 +19,33 @@ export function Contact() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<SubmitStatus>("idle");
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    // No backend yet — hand off to the visitor's own mail client with the
-    // message pre-filled, so the form is genuinely functional today rather
-    // than a fake "sent!" state. Swap this for a real POST once an API
-    // route exists.
-    const subject = encodeURIComponent(`Portfolio contact from ${name || "—"}`);
-    const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
-    window.location.href = `mailto:${t.contact.email}?subject=${subject}&body=${body}`;
+    setStatus("sending");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message }),
+      });
+
+      if (!res.ok) throw new Error("request failed");
+
+      setStatus("success");
+      setName("");
+      setEmail("");
+      setMessage("");
+    } catch (err) {
+      // The specific server-side reason (missing API key, Resend outage,
+      // etc.) is logged there, not surfaced here — showing a raw English
+      // error string on top of a Persian UI would read as broken in its
+      // own right, so visitors always get the translated generic message.
+      console.error("Contact form submission failed:", err);
+      setStatus("error");
+    }
   }
 
   return (
@@ -65,9 +85,25 @@ export function Contact() {
             />
 
             <div className="pt-2">
-              <MagneticButton type="submit">
+              <MagneticButton type="submit" disabled={status === "sending"}>
                 <span className="text-mint">$</span> {t.contact.submit}
               </MagneticButton>
+
+              {status !== "idle" && (
+                <p
+                  role="status"
+                  className={cn(
+                    "mt-3 font-mono text-xs",
+                    status === "success" && "text-mint",
+                    status === "error" && "text-destructive",
+                    status === "sending" && "text-mist"
+                  )}
+                >
+                  {status === "sending" && `# ${t.contact.sending}`}
+                  {status === "success" && `# ${t.contact.success}`}
+                  {status === "error" && `# ${t.contact.errorGeneric}`}
+                </p>
+              )}
             </div>
           </form>
         </div>

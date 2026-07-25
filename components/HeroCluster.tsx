@@ -90,11 +90,30 @@ function BadgeProof({
 const SNIPPET = "const proof = () => {\n  return skill;\n};";
 
 function CodeTypingProof() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  // The type/delete loop and caret blink below used to run unconditionally
+  // for the entire session — including deep into Contact, far past the
+  // hero — burning a setTimeout/setInterval tick every 20-45ms forever.
+  // Gate both on visibility the same way SplineScene gates its WebGL
+  // render loop: pause off-screen, resume (restarting the loop, which
+  // reads fine for a decorative typing animation) back in view.
+  const [isVisible, setIsVisible] = useState(false);
   const [typed, setTyped] = useState(SNIPPET);
   const [showCaret, setShowCaret] = useState(true);
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { rootMargin: "200px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (prefersReducedMotion() || !isVisible) return;
 
     let i = 0;
     let deleting = false;
@@ -124,17 +143,17 @@ function CodeTypingProof() {
 
     timeoutId = setTimeout(tick, 800);
     return () => clearTimeout(timeoutId);
-  }, []);
+  }, [isVisible]);
 
   // Caret blinks independently of the typing cadence, like a real editor.
   useEffect(() => {
-    if (prefersReducedMotion()) return;
+    if (prefersReducedMotion() || !isVisible) return;
     const id = setInterval(() => setShowCaret((v) => !v), 500);
     return () => clearInterval(id);
-  }, []);
+  }, [isVisible]);
 
   return (
-    <div className="glass w-full overflow-hidden rounded-lg">
+    <div ref={containerRef} className="glass w-full overflow-hidden rounded-lg">
       <div className="flex items-center gap-1.5 border-b border-line px-4 py-2.5">
         <span className="h-2 w-2 rounded-full bg-mist/40" />
         <span className="h-2 w-2 rounded-full bg-mist/40" />

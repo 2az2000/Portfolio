@@ -21,6 +21,16 @@ export type Dictionary = {
     subtitle: string;
     ctaPrimary: string;
     ctaSecondary: string;
+    // Labels only — the numeric values are computed from real data
+    // (experience/projects/caseStudies arrays below) inside Hero.tsx,
+    // never hardcoded, so they can't drift out of sync with the rest
+    // of the site.
+    stats: {
+      years: string;
+      projects: string;
+      caseStudies: string;
+    };
+    scrollCue: string;
   };
   about: {
     heading: string;
@@ -77,6 +87,9 @@ export type Dictionary = {
     fieldEmail: string;
     fieldMessage: string;
     submit: string;
+    sending: string;
+    success: string;
+    errorGeneric: string;
     // TODO: replace with real links
     email: string;
     github: string;
@@ -99,6 +112,12 @@ export const en: Dictionary = {
     subtitle: "Frontend Developer — React, Next.js, TypeScript & the Node.js ecosystem.",
     ctaPrimary: "View projects",
     ctaSecondary: "Get in touch",
+    stats: {
+      years: "Years of experience",
+      projects: "Projects shipped",
+      caseStudies: "Case studies",
+    },
+    scrollCue: "Scroll",
   },
   about: {
     heading: "About",
@@ -263,7 +282,10 @@ experience: {
     fieldEmail: "--email",
     fieldMessage: "--message",
     submit: "run send.sh",
-    email: "TODO@example.com",
+    sending: "sending...",
+    success: "message sent — I'll get back to you soon.",
+    errorGeneric: "something went wrong — please email me directly.",
+    email: "amirali.zand79@gmail.com",
     github: "https://github.com/2az2000",
     linkedin: "https://linkedin.com/in/TODO",
   },
