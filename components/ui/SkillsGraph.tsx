@@ -202,7 +202,14 @@ export function SkillsGraph({
       ref={containerRef}
       className={cn(
         "relative overflow-hidden rounded-2xl border border-line",
-        "min-h-[340px] aspect-[4/3]",
+        // min-h paired with aspect-ratio on a block box: if the ratio's
+        // height (derived from full container width) comes in under
+        // min-h, the box satisfies min-h by growing WIDTH instead — which
+        // pushed this wider than the viewport on narrow phones (aspect-ratio
+        // spec behavior, not a Tailwind bug). Each breakpoint's min-h stays
+        // at or below what its own aspect-ratio already yields at realistic
+        // widths, so min-h only ever raises height, never triggers that.
+        "min-h-[190px] aspect-[4/3]",
         "sm:aspect-[16/10]",
         "md:aspect-[21/9] md:min-h-[420px]",
         className,

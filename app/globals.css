@@ -109,9 +109,19 @@
   }
   html {
     scroll-behavior: smooth;
+    /* Several sections slide content in from off-screen with a GSAP
+       `translateX` (Experience's cards sit at x:±48 pre-scroll, HeroCluster's
+       pieces at x:±60 on load). A CSS transform's post-transform bounds
+       count toward the scrollable overflow of the nearest ancestor even
+       though the element never renders there, so those (invisible,
+       intentional) offsets were adding real horizontal scroll room to the
+       whole page on every load. Nothing here needs horizontal scroll, so
+       clip it at the root instead of chasing every animated component. */
+    overflow-x: clip;
   }
   body {
     @apply bg-background text-foreground font-body antialiased;
+    overflow-x: clip;
   }
   html[lang="fa"] body {
     @apply font-fa;

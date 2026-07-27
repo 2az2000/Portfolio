@@ -52,14 +52,30 @@ export function HeroCluster() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative mx-auto h-[360px] w-full max-w-md md:h-[420px]">
-      <div data-piece className="absolute left-[4%] top-[4%] w-[72%]">
+    // Below md this is a plain stacked flow (the absolute bento layout below
+    // was authored for a wide box — on a phone-width column it had nowhere
+    // to put the badge but on top of the code card, plus a fixed 360px
+    // height that left a dead gap once everything was forced to overlap
+    // near the top instead of filling it).
+    <div
+      ref={containerRef}
+      className="relative mx-auto flex w-full max-w-md flex-col items-start gap-3 md:block md:h-[420px]"
+    >
+      <div data-piece className="relative w-full md:absolute md:left-[4%] md:top-[4%] md:w-[72%]">
         <CodeTypingProof />
+        {/* On mobile the badge rides the corner of the code card as a
+            tilted ribbon instead of sitting in its own full-width row —
+            stacked in normal flow, a second "living dot" pill right under
+            the hero's status pill above just repeated the same idea. The
+            desktop bento below has room to give it its own spot instead. */}
+        <div className="absolute -top-3 end-4 rotate-2 md:hidden">
+          <BadgeProof />
+        </div>
       </div>
-      <div data-piece className="absolute right-[2%] top-[8%]">
+      <div data-piece className="hidden md:absolute md:right-[2%] md:top-[8%] md:block">
         <BadgeProof />
       </div>
-      <div data-piece className="absolute bottom-[10%] left-[8%] w-[82%]">
+      <div data-piece className="w-full md:absolute md:bottom-[10%] md:left-[8%] md:w-[82%]">
         <CommitLogProof />
       </div>
     </div>

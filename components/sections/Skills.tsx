@@ -9,6 +9,7 @@ import {
   type SkillEdgeData,
   type ClusterConfig,
 } from "@/components/ui/SkillsGraph";
+import { SkillsMobile } from "@/components/ui/SkillsMobile";
 
 /* ------------------------------------------------------------------ */
 /*  Graph data (project-specific — lives in the section, not in /ui)   */
@@ -82,7 +83,14 @@ export function Skills() {
         <p className="mt-3 text-body text-mist">{t.skills.subheading}</p>
       </div>
 
-      <div data-reveal>
+      {/* The node-graph's x/y layout is authored for a wide canvas and has
+          no legible translation to a narrow phone screen — mobile gets its
+          own vertical-list reading of the same data instead of a shrunk
+          copy of the desktop graph (see SkillsMobile.tsx). */}
+      <div className="md:hidden">
+        <SkillsMobile nodes={NODES} clusters={CLUSTERS} />
+      </div>
+      <div data-reveal className="hidden md:block">
         <SkillsGraph nodes={NODES} edges={EDGES} clusters={CLUSTERS} />
       </div>
     </section>
