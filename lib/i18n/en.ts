@@ -107,7 +107,7 @@ export const en: Dictionary = {
     contact: "Contact",
   },
   hero: {
-    eyebrow: "// building interfaces that actually respond --------------------------------",
+    eyebrow: "// building interfaces that actually respond",
     title: "Amirali Zand",
     subtitle: "Frontend Developer — React, Next.js, TypeScript & the Node.js ecosystem.",
     ctaPrimary: "View projects",
