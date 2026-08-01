@@ -5,6 +5,7 @@ import { Github, Linkedin, Mail, Terminal } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useGsapReveal } from "@/lib/useGsapReveal";
 import { MagneticButton } from "@/components/ui/MagneticButton";
+import { DocumentPreview } from "@/components/ui/DocumentPreview";
 import { cn } from "@/lib/utils";
 
 type SubmitStatus = "idle" | "sending" | "success" | "error";
@@ -109,6 +110,12 @@ export function Contact() {
         </div>
 
         <div data-reveal className="flex flex-col gap-3">
+          <DocumentPreview
+            documentSrc={t.contact.resume.documentUrl}
+            pdfSrc={t.contact.resume.pdfUrl}
+            pdfFileName={t.contact.resume.pdfFileName}
+            labels={t.contact.resume}
+          />
           <SocialLink href={`mailto:${t.contact.email}`} icon={Mail} label={t.contact.email} />
           <SocialLink href={t.contact.github} icon={Github} label="GitHub" />
           <SocialLink href={t.contact.linkedin} icon={Linkedin} label="LinkedIn" />

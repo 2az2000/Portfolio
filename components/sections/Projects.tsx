@@ -62,12 +62,19 @@ export function Projects() {
         ref={gridRef}
         className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
       >
-        {t.projects.items.map((project) => (
-          <a
+        {t.projects.items.map((project) => {
+          // Not everything shipped has a public URL (internal products, work
+          // still under NDA). Those render as a plain card rather than a link
+          // that goes nowhere — and drop the "opens elsewhere" arrow with it.
+          const linked = project.href !== "#";
+          const Card = linked ? "a" : "div";
+
+          return (
+          <Card
             key={project.title}
-            href={project.href}
-            target={project.href === "#" ? undefined : "_blank"}
-            rel={project.href === "#" ? undefined : "noreferrer"}
+            {...(linked
+              ? { href: project.href, target: "_blank", rel: "noreferrer" }
+              : {})}
             data-project-card
             className={
               project.featured
@@ -78,11 +85,29 @@ export function Projects() {
             <SpotlightCard className="group h-full min-h-[220px]">
               <div className="flex h-full flex-col justify-between">
                 <div className="flex items-start justify-between gap-3">
-                  <h3 className="font-display text-lg text-ink">{project.title}</h3>
-                  <ArrowUpRight
-                    size={18}
-                    className="shrink-0 text-mist transition-transform duration-fast ease-brand group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-mint"
-                  />
+                  <div className="flex min-w-0 items-center gap-3">
+                    {project.logo && (
+                      // A plain <img>: these are 96px product marks a few KB
+                      // each, so routing them through the image optimizer
+                      // would cost a round trip to save nothing.
+                      <img
+                        src={project.logo}
+                        alt=""
+                        width={36}
+                        height={36}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-9 w-9 shrink-0 rounded-md border border-line bg-white/90 object-contain p-1"
+                      />
+                    )}
+                    <h3 className="font-display text-lg text-ink">{project.title}</h3>
+                  </div>
+                  {linked && (
+                    <ArrowUpRight
+                      size={18}
+                      className="shrink-0 text-mist transition-transform duration-fast ease-brand group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-mint"
+                    />
+                  )}
                 </div>
 
                 <p className="mt-3 text-sm text-mist">{project.description}</p>
@@ -99,8 +124,9 @@ export function Projects() {
                 </div>
               </div>
             </SpotlightCard>
-          </a>
-        ))}
+          </Card>
+          );
+        })}
       </div>
     </section>
   );

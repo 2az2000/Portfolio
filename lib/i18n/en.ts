@@ -49,6 +49,12 @@ export type Dictionary = {
       stack: string[];
       href: string; // TODO: replace with live/github link
       featured?: boolean;
+      /**
+       * Path to the product's own logo in /public. Optional — cards without
+       * one simply lead with their title, so a missing logo never leaves a
+       * placeholder box behind.
+       */
+      logo?: string;
     }[];
   };
   caseStudies: {
@@ -94,6 +100,26 @@ export type Dictionary = {
     email: string;
     github: string;
     linkedin: string;
+    /**
+     * Résumé preview card + dialog. `documentUrl` is the embeddable/standalone
+     * HTML in /public (the single source of truth for the document) and
+     * `pdfUrl` its printed rendition; both live in the dictionary rather than
+     * in the component so a locale can later point at its own résumé.
+     */
+    resume: {
+      eyebrow: string;
+      title: string;
+      meta: string;
+      action: string;
+      dialogTitle: string;
+      dialogDescription: string;
+      openInNewTab: string;
+      download: string;
+      close: string;
+      documentUrl: string;
+      pdfUrl: string;
+      pdfFileName: string;
+    };
   };
 };
 
@@ -138,6 +164,7 @@ export const en: Dictionary = {
         stack: ["React", "TypeScript", "PWA"],
         href: "https://sibirani.com",
         featured: true,
+        logo: "/images/sibirani-96.png",
       },
       {
         title: "Sib Bazar",
@@ -152,6 +179,16 @@ export const en: Dictionary = {
           "A calorie-tracking progressive web app for logging meals and following daily nutrition goals.",
         stack: ["React", "PWA"],
         href: "https://app.brookliapp.com/",
+        logo: "/images/brookli-96.png",
+      },
+      {
+        title: "Face Age",
+        description:
+          "An AI facial-analysis product that estimates apparent age and skin condition from a webcam capture, built on MediaPipe face landmarks.",
+        stack: ["React", "MediaPipe", "AI"],
+        // TODO: replace with the public Face Age URL once there is one.
+        href: "#",
+        logo: "/images/faceage-96.png",
       },
       {
         title: "fabioCoffee",
@@ -288,5 +325,19 @@ experience: {
     email: "amirali.zand79@gmail.com",
     github: "https://github.com/2az2000",
     linkedin: "https://linkedin.com/in/TODO",
+    resume: {
+      eyebrow: "Resume",
+      title: "Amirali Zand",
+      meta: "PDF · A4",
+      action: "Preview resume",
+      dialogTitle: "Resume",
+      dialogDescription: "Amirali Zand — Frontend Developer · updated 2026",
+      openInNewTab: "Open in new tab",
+      download: "Download PDF",
+      close: "Close",
+      documentUrl: "/resume/amirali-zand-resume.html",
+      pdfUrl: "/resume/Amirali-Zand-Resume.pdf",
+      pdfFileName: "Amirali-Zand-Resume.pdf",
+    },
   },
 };

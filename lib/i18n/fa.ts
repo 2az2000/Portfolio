@@ -41,6 +41,7 @@ export const fa: Dictionary = {
         stack: ["React", "TypeScript", "PWA"],
         href: "https://sibirani.com",
         featured: true,
+        logo: "/images/sibirani-96.png",
       },
       {
         title: "سیب بازار",
@@ -55,6 +56,16 @@ export const fa: Dictionary = {
           "پروگرسیو وب‌اپ برای ثبت وعده‌های غذایی و پیگیری اهداف روزانه‌ی تغذیه.",
         stack: ["React", "PWA"],
         href: "https://app.brookliapp.com/",
+        logo: "/images/brookli-96.png",
+      },
+      {
+        title: "Face Age",
+        description:
+          "محصول تحلیل چهره با هوش مصنوعی که سن ظاهری و وضعیت پوست رو از روی تصویر وبکم تخمین می‌زنه، بر پایه‌ی لندمارک‌های چهره‌ی MediaPipe.",
+        stack: ["React", "MediaPipe", "AI"],
+        // TODO: replace with the public Face Age URL once there is one.
+        href: "#",
+        logo: "/images/faceage-96.png",
       },
       {
         title: "fabioCoffee",
@@ -190,5 +201,19 @@ experience: {
     email: "amirali.zand79@gmail.com",
     github: "https://github.com/2az2000",
     linkedin: "https://linkedin.com/in/TODO",
+    resume: {
+      eyebrow: "رزومه",
+      title: "امیرعلی زند",
+      meta: "PDF · A4",
+      action: "مشاهده رزومه",
+      dialogTitle: "رزومه",
+      dialogDescription: "امیرعلی زند — Frontend Developer · بروزرسانی ۱۴۰۵",
+      openInNewTab: "باز کردن در صفحه جدید",
+      download: "دانلود PDF",
+      close: "بستن",
+      documentUrl: "/resume/amirali-zand-resume.html",
+      pdfUrl: "/resume/Amirali-Zand-Resume.pdf",
+      pdfFileName: "Amirali-Zand-Resume.pdf",
+    },
   },
 };
