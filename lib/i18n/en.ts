@@ -45,10 +45,22 @@ export type Dictionary = {
     subheading: string;
     items: {
       title: string;
-      description: string; // TODO: replace
+      description: string;
       stack: string[];
-      href: string; // TODO: replace with live/github link
+      href: string;
       featured?: boolean;
+      /**
+       * Short label separating products that shipped to real users from
+       * things built in the open. Translated per locale, so it lives here
+       * rather than as a union of English keys in the component.
+       */
+      context: string;
+      /**
+       * Extra detail for the featured card only. It gets four times the area
+       * of a regular card, so a single sentence leaves it looking empty —
+       * these fill it with the specifics the description has no room for.
+       */
+      highlights?: string[];
       /**
        * Path to the product's own logo in /public. Optional — cards without
        * one simply lead with their title, so a missing logo never leaves a
@@ -155,67 +167,81 @@ export const en: Dictionary = {
   },
   projects: {
     heading: "Projects",
-    subheading: "A few things I've shipped.",
+    subheading: "Products in front of real users, and the code I write in the open.",
     items: [
       {
         title: "Sib Irani",
         description:
-          "An Iranian alternative app store distributing lightweight, WebView-based iOS & Android apps without an Apple ID — plus a developer portal for local publishers.",
-        stack: ["React", "TypeScript", "PWA"],
+          "Iran's alternative app store for iOS & Android, distributing lightweight WebView apps without an Apple ID. I inherited a class-based React codebase and rebuilt the entire frontend from zero in Next.js and TypeScript.",
+        highlights: [
+          "Class components and lifecycle methods traded for the App Router, hooks and typed data fetching",
+          "Installable PWA — service worker, offline caching, install prompts",
+          "Developer portal where local publishers submit apps and track releases",
+          "AI-powered features shipped on top of the store itself",
+          "Hosts dozens of Iran's most-used apps: Snapp, Digikala, Divar",
+        ],
+        stack: ["Next.js", "TypeScript", "PWA"],
         href: "https://sibirani.com",
         featured: true,
+        context: "Product",
         logo: "/images/sibirani-96.png",
       },
       {
         title: "Sib Bazar",
         description:
-          "A sister iOS app-store platform for Iranian users, with its own proprietary Adhoc distribution pipeline and a separate developer dashboard.",
-        stack: ["React", "PWA"],
+          "The sister iOS store, running on an in-house Adhoc signing pipeline so apps install without an Apple ID — with its own dashboard where publishers watch a build move from upload to signed release.",
+        stack: ["React", "TypeScript", "PWA"],
         href: "https://sibbazar.com/",
+        context: "Product",
       },
       {
         title: "Brookli",
         description:
-          "A calorie-tracking progressive web app for logging meals and following daily nutrition goals.",
-        stack: ["React", "PWA"],
+          "A calorie tracker that installs straight from the browser — log meals, follow daily nutrition goals, and keep using it offline, with no app-store download in the way.",
+        stack: ["React", "PWA", "AI"],
         href: "https://app.brookliapp.com/",
+        context: "Product",
         logo: "/images/brookli-96.png",
       },
       {
         title: "Face Age",
         description:
-          "An AI facial-analysis product that estimates apparent age and skin condition from a webcam capture, built on MediaPipe face landmarks.",
+          "Estimates apparent age and skin condition from a single webcam frame. MediaPipe landmark inference runs entirely in the browser, so nobody's face ever leaves their device.",
         stack: ["React", "MediaPipe", "AI"],
         // TODO: replace with the public Face Age URL once there is one.
         href: "#",
+        context: "Product",
         logo: "/images/faceage-96.png",
+      },
+      {
+        title: "Weather",
+        description:
+          "A React Native app built in clean architecture — each feature split into data, domain and presentation layers behind a DI container. Forecasts, air quality and severe-weather alerts stay readable offline through queries persisted in MMKV and SQLite.",
+        stack: ["React Native", "Expo", "TanStack Query"],
+        href: "https://github.com/2az2000/Weather-app-native",
+        context: "Open source",
+      },
+      {
+        title: "Door Lock Shop",
+        description:
+          "A Persian RTL storefront for locks and door hardware on Next.js 16 and Payload CMS 3. A typed service layer sits between them, so the UI never queries the CMS directly and the whole stack comes up with one Docker command.",
+        stack: ["Next.js", "Payload CMS", "PostgreSQL"],
+        href: "https://github.com/2az2000/door-lock-shop",
+        context: "Open source",
       },
       {
         title: "fabioCoffee",
         description:
-          "A full-stack café management system — a Next.js ordering menu and admin panel backed by an Express/Prisma/PostgreSQL API with JWT authentication.",
+          "A full-stack café system — a Next.js ordering menu and admin panel over an Express, Prisma and PostgreSQL API with JWT authentication.",
         stack: ["Next.js", "Express", "Prisma"],
         href: "https://fabio-coffee-frontend.vercel.app",
-      },
-      {
-        title: "smartShop",
-        description:
-          "A Next.js e-commerce storefront with Clerk authentication, a Prisma-backed product catalog, and a shadcn/ui component layer.",
-        stack: ["Next.js", "Clerk", "Prisma"],
-        href: "https://github.com/2az2000/smartShop",
-      },
-      {
-        title: "saghfino",
-        description:
-          "A map-based real-estate rental platform for browsing listings by location, built with React, Vite, and Leaflet.",
-        stack: ["React", "Vite", "Leaflet"],
-        href: "https://github.com/2az2000/saghfino",
+        context: "Open source",
       },
     ],
   },
   caseStudies: {
     heading: "Case Studies",
-    subheading: "Two projects, from the problem to what shipped.",
+    subheading: "From the problem to what actually shipped.",
     problemLabel: "Problem",
     approachLabel: "Approach",
     resultLabel: "Result",
@@ -247,6 +273,72 @@ export const en: Dictionary = {
           "A stable, installable PWA that lets users log meals and track calories entirely from the browser — no app-store download required.",
         stack: ["React", "PWA"],
         href: "https://app.brookliapp.com/",
+      },
+      {
+        title: "Sib Bazar",
+        tagline: "An iOS store that installs apps without an Apple ID.",
+        role: "Frontend Developer",
+        problem:
+          "Iranian iPhone users can't reach the App Store, and local publishers had no dependable way to get a signed build onto their devices.",
+        approach:
+          "Built the storefront and the publisher dashboard on top of an in-house Adhoc signing pipeline, surfacing each build's path from upload through signing to public release, and reused the PWA and component foundations already proven on Sib Irani.",
+        result:
+          "A working iOS distribution channel where users install straight from the browser and publishers follow a release end to end without leaving the dashboard.",
+        stack: ["React", "TypeScript", "PWA"],
+        href: "https://sibbazar.com/",
+      },
+      {
+        title: "Face Age",
+        tagline: "Facial analysis that never uploads your face.",
+        role: "Frontend Developer — Sib Irani",
+        problem:
+          "Estimating apparent age and skin condition means processing someone's face — the data users are least willing to hand to a server, and the slowest thing to round-trip over a weak connection.",
+        approach:
+          "Ran MediaPipe face-landmark inference directly against the webcam stream in the browser, so frames are analysed on the device and never leave it, and tuned model loading so the first estimate lands without a visible wait.",
+        result:
+          "An in-browser facial-analysis product shipped inside the Sib Irani ecosystem, with no image of a user's face ever leaving their device.",
+        stack: ["React", "MediaPipe", "AI"],
+        // TODO: replace with the public Face Age URL once there is one.
+        href: "#",
+      },
+      {
+        title: "Weather",
+        tagline: "A React Native app built to survive a bad connection.",
+        role: "Solo — architecture and implementation",
+        problem:
+          "A weather app is least useful exactly when the network is worst, and a React Native codebase that grows feature by feature flattens into an undifferentiated pile of screens and hooks.",
+        approach:
+          "Split every feature into data, domain and presentation layers resolved through a DI container, over one shared core for networking, caching, storage, logging and i18n — then persisted the TanStack Query cache into MMKV and SQLite so reads survive going offline.",
+        result:
+          "Seven feature slices — weather, air quality, alerts, locations, maps, recommendations and settings — sharing a single core, fully bilingual in Persian and English, with forecasts still readable on no connection.",
+        stack: ["React Native", "Expo", "TanStack Query"],
+        href: "https://github.com/2az2000/Weather-app-native",
+      },
+      {
+        title: "Door Lock Shop",
+        tagline: "A Persian RTL catalogue non-technical staff can actually run.",
+        role: "Solo — architecture and implementation",
+        problem:
+          "A hardware catalogue has to be editable by people who don't write code, but wiring a CMS straight into page components means every schema change ripples out through the UI — and a Persian storefront has to be right-to-left everywhere, not just translated.",
+        approach:
+          "Put Next.js 16 over Payload CMS 3 on Postgres, with a typed service layer as the single data-access path so no component ever queries the CMS directly, and packaged the whole stack — database included — behind one Docker Compose command with a seeding script.",
+        result:
+          "An RTL storefront where staff manage categories, brands and products from the admin panel, with sitemap, robots and metadata generated, and a fresh clone running locally in a single command.",
+        stack: ["Next.js", "Payload CMS", "PostgreSQL"],
+        href: "https://github.com/2az2000/door-lock-shop",
+      },
+      {
+        title: "fabioCoffee",
+        tagline: "One café system serving both the customer and the counter.",
+        role: "Solo — full stack",
+        problem:
+          "A café menu and the panel staff use to maintain it are usually built as two disconnected things, which is how a product ends up live on the site after it has already been taken off the menu.",
+        approach:
+          "Built both against one schema: a Next.js frontend carrying the ordering menu and the admin panel, over an Express API with Prisma on PostgreSQL, with JWT auth drawing the line between customer and staff access.",
+        result:
+          "A single full-stack system where an edit made behind the counter is the same record the ordering menu reads, rather than a second copy that has to be kept in sync.",
+        stack: ["Next.js", "Express", "Prisma"],
+        href: "https://fabio-coffee-frontend.vercel.app",
       },
     ],
   },

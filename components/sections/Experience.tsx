@@ -190,11 +190,14 @@ export function Experience() {
         <span
           data-exp-line
           aria-hidden
-          className="absolute bottom-2 left-6 top-2 hidden w-px origin-top bg-gradient-to-b from-violet via-mint to-mint/30 md:block"
+          className="absolute bottom-2 start-6 top-2 hidden w-px origin-top bg-gradient-to-b from-violet via-mint to-mint/30 md:block"
         />
         <span
           aria-hidden
-          className="pointer-events-none absolute left-6 hidden h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-mint shadow-[0_0_14px_4px_rgba(51,230,184,0.65)] md:block"
+          // start-6 puts the beam on the same rail as the line above in both
+          // directions; the centering nudge has to flip with it, since there
+          // is no logical equivalent of translate-x.
+          className="pointer-events-none absolute start-6 hidden h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-mint shadow-[0_0_14px_4px_rgba(51,230,184,0.65)] rtl:translate-x-1/2 md:block"
           style={{ top: "calc(0.5rem + var(--exp-progress, 0) * (100% - 1rem))" }}
         />
 

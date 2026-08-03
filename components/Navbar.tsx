@@ -71,7 +71,7 @@ export function Navbar() {
           {/* Logo */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="font-display text-xl text-ink transition-colors duration-fast hover:text-violet focus-ring rounded-lg px-2 py-1 -ml-2"
+            className="font-display text-xl text-ink transition-colors duration-fast hover:text-violet focus-ring rounded-lg px-2 py-1 -ms-2"
             aria-label="Scroll to top"
           >
             AZ
@@ -189,7 +189,9 @@ export function Navbar() {
               {navSections.map((section, i) => (
                 <motion.li
                   key={section.id}
-                  initial={{ opacity: 0, x: -12 }}
+                  // Slides in from the inline-start edge, so the direction
+                  // has to follow the locale rather than always being left.
+                  initial={{ opacity: 0, x: locale === "fa" ? 12 : -12 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{
                     duration: DURATION.base,
@@ -199,13 +201,13 @@ export function Navbar() {
                 >
                   <button
                     onClick={() => scrollTo(section.id)}
-                    className={`w-full rounded-xl px-5 py-3.5 text-left font-mono text-caption uppercase transition-colors duration-fast focus-ring ${
+                    className={`w-full rounded-xl px-5 py-3.5 text-start font-mono text-caption uppercase transition-colors duration-fast focus-ring ${
                       active === section.id
                         ? "glass-strong text-ink"
                         : "text-mist hover:bg-white/[0.04] hover:text-ink"
                     }`}
                   >
-                    <span className="text-violet mr-2 opacity-60">
+                    <span className="text-violet me-2 opacity-60">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     {t.nav[section.key]}

@@ -61,7 +61,7 @@ export function HeroCluster() {
       ref={containerRef}
       className="relative mx-auto flex w-full max-w-md flex-col items-start gap-3 md:block md:h-[420px]"
     >
-      <div data-piece className="relative w-full md:absolute md:left-[4%] md:top-[4%] md:w-[72%]">
+      <div data-piece className="relative w-full md:absolute md:start-[4%] md:top-[4%] md:w-[72%]">
         <CodeTypingProof />
         {/* On mobile the badge rides the corner of the code card as a
             tilted ribbon instead of sitting in its own full-width row —
@@ -72,10 +72,10 @@ export function HeroCluster() {
           <BadgeProof />
         </div>
       </div>
-      <div data-piece className="hidden md:absolute md:right-[2%] md:top-[8%] md:block">
+      <div data-piece className="hidden md:absolute md:end-[2%] md:top-[8%] md:block">
         <BadgeProof />
       </div>
-      <div data-piece className="w-full md:absolute md:bottom-[10%] md:left-[8%] md:w-[82%]">
+      <div data-piece className="w-full md:absolute md:bottom-[10%] md:start-[8%] md:w-[82%]">
         <CommitLogProof />
       </div>
     </div>
@@ -174,7 +174,7 @@ function CodeTypingProof() {
         <span className="h-2 w-2 rounded-full bg-mist/40" />
         <span className="h-2 w-2 rounded-full bg-mist/40" />
         <span className="h-2 w-2 rounded-full bg-mist/40" />
-        <span className="ml-2 font-mono text-xs text-mist">hero.tsx</span>
+        <span className="ms-2 font-mono text-xs text-mist">hero.tsx</span>
       </div>
       <pre className="min-h-[84px] whitespace-pre-wrap px-4 py-3 font-mono text-xs leading-relaxed text-ink">
         {typed}

@@ -99,6 +99,12 @@ export function TechMarquee() {
 
   return (
     <div
+      // Pinned LTR on purpose. The loop translates the track along physical
+      // X and wraps against a measured width; under RTL the flex row starts
+      // at the right edge, so the same negative translate scrolls the strip
+      // away from its duplicate and tears the seam open. The labels are all
+      // Latin tech names, so there is nothing here RTL would help.
+      dir="ltr"
       className="relative w-full overflow-hidden border-y border-line py-6"
       style={{
         maskImage:

@@ -554,7 +554,7 @@ export function SkillsGraph({
           ================================================================ */}
       <motion.div
         data-skills-legend
-        className="absolute bottom-3 left-3 flex flex-wrap gap-2 sm:bottom-5 sm:left-5"
+        className="absolute bottom-3 start-3 flex flex-wrap gap-2 sm:bottom-5 sm:start-5"
         style={{ zIndex: 3 }}
         variants={legendVariants}
         initial="hidden"

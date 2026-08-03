@@ -143,13 +143,13 @@ const Word = ({
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
-              className="absolute -top-1 -right-1 w-2 h-2 bg-violet-500 rounded-full z-20"
+              className="absolute -top-1 -end-1 w-2 h-2 bg-violet-500 rounded-full z-20"
             />
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
-              className="absolute -bottom-1 -left-1 w-2 h-2 bg-emerald-400 rounded-full z-20"
+              className="absolute -bottom-1 -start-1 w-2 h-2 bg-emerald-400 rounded-full z-20"
             />
           </>
         )}
