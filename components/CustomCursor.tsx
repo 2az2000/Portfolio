@@ -91,36 +91,12 @@ export function CustomCursor() {
   useEffect(() => {
     if (!enabled) return;
 
-    // What resolve() settled on last frame — `null` included, meaning "plain
-    // page". Comparing against it lets the common case (the pointer moving
-    // *within* one element, which is most frames) skip the layout and style
-    // reads below. closest() itself is only a parent walk with no layout
-    // behind it, so it stays on every frame to produce this key.
-    let lastEl: HTMLElement | null = null;
-    let lastWasSnap = false;
-
     const resolve = (target: HTMLElement) => {
       const snap = target.closest<HTMLElement>(SNAP_SELECTOR);
-      const blobEl = target.closest<HTMLElement>(BLOB_SELECTOR);
-      const el = snap ?? blobEl;
-
-      if (el === lastEl) {
-        // A snapped ring is pinned to its element's box and kept in sync by
-        // the scroll handler, so it needs nothing here. Everything else just
-        // trails the pointer — motion-value writes, no measuring.
-        if (!lastWasSnap) {
-          rx.set(pointerRef.current.x);
-          ry.set(pointerRef.current.y);
-        }
-        return;
-      }
-      lastEl = el;
-
       if (snap) {
         const rect = snap.getBoundingClientRect();
         if (rect.width <= MAX_SNAP && rect.height <= MAX_SNAP) {
           snapElRef.current = snap;
-          lastWasSnap = true;
           setMode("snap");
           lockTo(snap);
           return;
@@ -128,8 +104,7 @@ export function CustomCursor() {
       }
 
       snapElRef.current = null;
-      lastWasSnap = false;
-      const blob = Boolean(blobEl);
+      const blob = Boolean(target.closest(BLOB_SELECTOR));
       setMode(blob ? "blob" : "idle");
 
       const size = blob ? RING_BLOB : RING_IDLE;
