@@ -116,6 +116,13 @@ export function CustomCursor() {
     };
 
     const handleMove = (e: PointerEvent) => {
+      // A pointermove dispatched straight at window (rather than at an
+      // element) would put a non-Element in e.target and throw on the
+      // closest() walk below, killing the listener for the rest of the page's
+      // life. The Spline scene forwards cursor position by re-dispatching
+      // pointermove, so this path is reachable, not theoretical.
+      if (!(e.target instanceof Element)) return;
+
       pointerRef.current = { x: e.clientX, y: e.clientY };
       const target = e.target as HTMLElement;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);

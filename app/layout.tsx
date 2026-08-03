@@ -48,10 +48,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             it shouldn't fade/flicker along with LanguageProvider's
             locale-switch cross-fade wrapper. */}
         <AmbientBackground />
-        <Providers>
-          <CustomCursor />
-          {children}
-        </Providers>
+        {/* Outside Providers for the same reason as the backdrop above: the
+            cursor is chrome, not content, and inside LanguageProvider's
+            cross-fade wrapper it faded to nothing on every locale toggle —
+            leaving the page with no visible cursor at all, since we hide the
+            native one. It consumes no context. */}
+        <CustomCursor />
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

@@ -85,7 +85,13 @@ export function SplineScene({ scene, className }: SplineSceneProps) {
         new PointerEvent("pointermove", {
           clientX: e.clientX,
           clientY: e.clientY,
-          bubbles: true,
+          // Deliberately non-bubbling. Spline's listener is on the canvas
+          // itself, so it still receives this in the target phase — but a
+          // bubbling copy would travel back up to window, where it re-enters
+          // this very handler (feeding itself) and reaches CustomCursor
+          // carrying target=<canvas>, which made the cursor resolve every
+          // real hover back to "nothing interactive here".
+          bubbles: false,
           cancelable: true,
           pointerId: e.pointerId,
           pointerType: e.pointerType,
