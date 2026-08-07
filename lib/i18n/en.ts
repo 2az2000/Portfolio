@@ -31,6 +31,22 @@ export type Dictionary = {
       caseStudies: string;
     };
     scrollCue: string;
+    /**
+     * Labels for the fact rail that closes the hero (components/HeroCluster).
+     * Labels only, again — the role/company, the newest shipped product and
+     * the links themselves are read from `experience`, `projects` and
+     * `contact` below, and the clock is computed live, so nothing in the rail
+     * can contradict the sections further down the page.
+     */
+    rail: {
+      now: string;
+      localTime: string;
+      city: string;
+      latest: string;
+      links: string;
+      github: string;
+      email: string;
+    };
   };
   about: {
     heading: string;
@@ -156,6 +172,15 @@ export const en: Dictionary = {
       caseStudies: "Case studies",
     },
     scrollCue: "Scroll",
+    rail: {
+      now: "Currently",
+      localTime: "Local time",
+      city: "Tehran",
+      latest: "Latest release",
+      links: "Quick links",
+      github: "GitHub",
+      email: "Email",
+    },
   },
   about: {
     heading: "About",

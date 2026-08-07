@@ -1,21 +1,11 @@
 "use client";
 
-import {
-  useState,
-  useCallback,
-  useEffect,
-  useRef,
-  useMemo,
-} from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
+import { motion, useInView } from "framer-motion";
 import { useTheme } from "next-themes";
 import { SkillNode } from "./SkillNode";
 import { cn } from "@/lib/utils";
-import {
-  COLORS,
-  EASE_BRAND,
-  prefersReducedMotion,
-} from "@/lib/theme";
+import { COLORS, EASE_BRAND, prefersReducedMotion } from "@/lib/theme";
 
 /* ------------------------------------------------------------------ */
 /*  Public types                                                       */
@@ -45,8 +35,24 @@ type SkillsGraphProps = {
 };
 
 /* ------------------------------------------------------------------ */
-/*  Helpers                                                            */
+/*  Decoration                                                         */
 /* ------------------------------------------------------------------ */
+
+/**
+ * Grain, as one small tile repeated by the compositor instead of a
+ * viewport-sized <feTurbulence> rect. Same filter, same look — but the
+ * browser runs the (expensive, CPU-side) noise generation once over 140×140
+ * pixels rather than over the whole ~1100×420 canvas, and the result is a
+ * plain background image that costs nothing to repaint afterwards.
+ */
+const NOISE_TILE =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
+
+/** The drift keyframes defined in globals.css, reused here so the particles
+ *  are pure CSS (compositor-only) rather than 20 JS-driven animations. */
+const FLOAT_KEYFRAMES = ["skillFloat0", "skillFloat1", "skillFloat2", "skillFloat3", "skillFloat4"];
+
+const PARTICLE_COUNT = 12;
 
 function generateParticles(count: number) {
   return Array.from({ length: count }, (_, i) => ({
@@ -55,6 +61,7 @@ function generateParticles(count: number) {
     y: Math.random() * 100,
     size: 1.5 + Math.random() * 2.5,
     opacity: 0.12 + Math.random() * 0.18,
+    keyframes: FLOAT_KEYFRAMES[i % FLOAT_KEYFRAMES.length],
     duration: 10 + Math.random() * 16,
     delay: Math.random() * 6,
   }));
@@ -64,12 +71,7 @@ function generateParticles(count: number) {
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
-export function SkillsGraph({
-  nodes,
-  edges,
-  clusters,
-  className,
-}: SkillsGraphProps) {
+export function SkillsGraph({ nodes, edges, clusters, className }: SkillsGraphProps) {
   /* ---- state ---- */
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [activePulse, setActivePulse] = useState<SkillEdgeData | null>(null);
@@ -83,9 +85,9 @@ export function SkillsGraph({
   useEffect(() => setMounted(true), []);
   // Before mount, `theme` hasn't resolved from storage yet — fall back to
   // the site's deterministic default (dark) so SSR and the first client
-  // render agree instead of a hydration mismatch (same fix as
-  // HeroCluster's ToggleProof: reading useTheme() unguarded forces React
-  // to throw away and re-render this whole subtree on first paint).
+  // render agree instead of a hydration mismatch (reading useTheme()
+  // unguarded forces React to throw away and re-render this whole subtree
+  // on first paint).
   const isDark = mounted ? theme === "dark" : true;
 
   /* ---- reduced motion ---- */
@@ -97,57 +99,86 @@ export function SkillsGraph({
     margin: "-12% 0px -12% 0px",
   });
 
-  /* ---- in-view (ongoing) — gates the infinite decorative loops below so
-     they don't keep animating (and eating frame budget) once the user has
-     scrolled this section out of view ---- */
+  /* ---- in-view (ongoing) — gates the decorative loops below so they don't
+     keep animating (and eating frame budget) once the user has scrolled this
+     section out of view ---- */
   const isCurrentlyVisible = useInView(containerRef, {
     margin: "200px 0px 200px 0px",
   });
 
-  /* ---- memoised lookups ---- */
-  const particles = useMemo(() => generateParticles(20), []);
+  const decorate = !reducedMotion && isCurrentlyVisible;
 
-  const nodeById = useMemo(
-    () => Object.fromEntries(nodes.map((n) => [n.id, n])),
-    [nodes],
-  );
+  /* ---- memoised lookups ---- */
+  const particles = useMemo(() => generateParticles(PARTICLE_COUNT), []);
+
+  const nodeById = useMemo(() => Object.fromEntries(nodes.map((n) => [n.id, n])), [nodes]);
 
   const connectedNodeIds = useMemo(() => {
     if (!hoveredId) return new Set<string>();
     return new Set(
-      edges
-        .filter(([a, b]) => a === hoveredId || b === hoveredId)
-        .flatMap(([a, b]) => [a, b]),
+      edges.filter(([a, b]) => a === hoveredId || b === hoveredId).flatMap(([a, b]) => [a, b])
     );
   }, [hoveredId, edges]);
 
   const activeEdgeKeys = useMemo(() => {
     if (!hoveredId) return new Set<string>();
     return new Set(
-      edges
-        .filter(([a, b]) => a === hoveredId || b === hoveredId)
-        .map(([a, b]) => `${a}-${b}`),
+      edges.filter(([a, b]) => a === hoveredId || b === hoveredId).map(([a, b]) => `${a}-${b}`)
     );
   }, [hoveredId, edges]);
 
   /* ---- random energy pulse ---- */
   useEffect(() => {
-    if (reducedMotion || !isCurrentlyVisible) return;
+    if (!decorate) return;
     const id = setInterval(
       () => {
         const edge = edges[Math.floor(Math.random() * edges.length)];
         setActivePulse(edge);
         setTimeout(() => setActivePulse(null), 2200);
       },
-      4500 + Math.random() * 3000,
+      4500 + Math.random() * 3000
     );
     return () => clearInterval(id);
-  }, [edges, reducedMotion, isCurrentlyVisible]);
+  }, [edges, decorate]);
 
   /* ---- hover handler (stable ref) ---- */
   const handleNodeHover = useCallback((id: string | null) => {
     setHoveredId(id);
   }, []);
+
+  /* ---- edge gradients: one <defs> per edge list, not per hover ----
+     Hovering a node re-renders this component (that's how the dim/highlight
+     works), and without this memo React would rebuild and diff all 15
+     gradient definitions on every pointer move between nodes even though
+     nothing about them can change. */
+  const edgeDefs = useMemo(
+    () => (
+      <defs>
+        {edges.map(([a, b]) => {
+          const nA = nodeById[a];
+          const nB = nodeById[b];
+          if (!nA || !nB) return null;
+          const cA = clusters[nA.cluster]?.color ?? COLORS.mist;
+          const cB = clusters[nB.cluster]?.color ?? COLORS.mist;
+          return (
+            <linearGradient
+              key={`eg-${a}-${b}`}
+              id={`edge-grad-${a}-${b}`}
+              x1={nA.x}
+              y1={nA.y}
+              x2={nB.x}
+              y2={nB.y}
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop offset="0%" stopColor={cA} stopOpacity="0.55" />
+              <stop offset="100%" stopColor={cB} stopOpacity="0.55" />
+            </linearGradient>
+          );
+        })}
+      </defs>
+    ),
+    [edges, nodeById, clusters]
+  );
 
   /* ---- entrance variants ---- */
   const bgVariants = {
@@ -212,11 +243,20 @@ export function SkillsGraph({
         "min-h-[190px] aspect-[4/3]",
         "sm:aspect-[16/10]",
         "md:aspect-[21/9] md:min-h-[420px]",
-        className,
+        className
       )}
     >
       {/* ================================================================
           BACKGROUND
+
+          Everything in here is static paint or a CSS keyframe. The earlier
+          version animated 20 particles and 3 blurred orbs through Framer
+          Motion, and the orbs animated `scale` — scaling an 80px-blurred
+          layer forces the browser to re-rasterize that blur every single
+          frame, for the whole time the section is on screen. That, plus a
+          full-canvas <feTurbulence> and a backdrop-blur on each of the ten
+          nodes, is what made this section expensive; none of it was
+          load-bearing for the design.
           ================================================================ */}
       <motion.div
         data-skills-bg
@@ -247,23 +287,44 @@ export function SkillsGraph({
         />
 
         {/* noise texture */}
-        <svg className="absolute inset-0 h-full w-full opacity-[0.035]">
-          <filter id="skills-noise">
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.65"
-              numOctaves="3"
-              stitchTiles="stitch"
+        <div
+          className="absolute inset-0 opacity-[0.035]"
+          style={{ backgroundImage: NOISE_TILE, backgroundSize: "140px 140px" }}
+        />
+
+        {/* ambient glow orbs — translate only, never scale (see above) */}
+        {decorate && (
+          <>
+            <div
+              className="absolute rounded-full blur-[80px]"
+              style={{
+                width: 260,
+                height: 260,
+                left: "12%",
+                top: "18%",
+                background: `radial-gradient(circle,${COLORS.violet}1a,transparent)`,
+                animation: "ambientDrift1 24s ease-in-out infinite",
+              }}
             />
-          </filter>
-          <rect width="100%" height="100%" filter="url(#skills-noise)" />
-        </svg>
+            <div
+              className="absolute rounded-full blur-[70px]"
+              style={{
+                width: 220,
+                height: 220,
+                right: "8%",
+                bottom: "12%",
+                background: `radial-gradient(circle,${COLORS.mint}16,transparent)`,
+                animation: "ambientDrift2 20s ease-in-out infinite",
+                animationDelay: "-3s",
+              }}
+            />
+          </>
+        )}
 
         {/* floating particles */}
-        {!reducedMotion &&
-          isCurrentlyVisible &&
+        {decorate &&
           particles.map((p) => (
-            <motion.div
+            <span
               key={p.id}
               className="absolute rounded-full"
               style={{
@@ -274,94 +335,10 @@ export function SkillsGraph({
                 backgroundColor: isDark
                   ? `rgba(255,255,255,${p.opacity})`
                   : `rgba(0,0,0,${p.opacity * 0.5})`,
-              }}
-              animate={{
-                y: [0, -18, 10, -14, 0],
-                x: [0, 7, -5, 10, 0],
-                opacity: [
-                  p.opacity,
-                  p.opacity * 1.6,
-                  p.opacity * 0.4,
-                  p.opacity * 1.3,
-                  p.opacity,
-                ],
-              }}
-              transition={{
-                duration: p.duration,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: p.delay,
+                animation: `${p.keyframes} ${p.duration}s ease-in-out ${p.delay}s infinite`,
               }}
             />
           ))}
-
-        {/* ambient glow orbs */}
-        {!reducedMotion && isCurrentlyVisible && (
-          <>
-            <motion.div
-              className="absolute rounded-full blur-[80px]"
-              style={{
-                width: 260,
-                height: 260,
-                left: "12%",
-                top: "18%",
-                background: `radial-gradient(circle,${COLORS.violet}1a,transparent)`,
-              }}
-              animate={{
-                x: [0, 35, -20, 0],
-                y: [0, -28, 18, 0],
-                scale: [1, 1.12, 0.92, 1],
-              }}
-              transition={{
-                duration: 24,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-            <motion.div
-              className="absolute rounded-full blur-[70px]"
-              style={{
-                width: 220,
-                height: 220,
-                right: "8%",
-                bottom: "12%",
-                background: `radial-gradient(circle,${COLORS.mint}16,transparent)`,
-              }}
-              animate={{
-                x: [0, -28, 22, 0],
-                y: [0, 20, -22, 0],
-                scale: [1, 0.92, 1.08, 1],
-              }}
-              transition={{
-                duration: 20,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 3,
-              }}
-            />
-            <motion.div
-              className="absolute rounded-full blur-[60px]"
-              style={{
-                width: 170,
-                height: 170,
-                left: "52%",
-                top: "8%",
-                background: `radial-gradient(circle,${COLORS.amber}10,transparent)`,
-              }}
-              animate={{
-                x: [0, 18, -14, 0],
-                y: [0, -14, 22, 0],
-                scale: [1, 1.08, 0.95, 1],
-              }}
-              transition={{
-                duration: 22,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 5,
-              }}
-            />
-          </>
-        )}
       </motion.div>
 
       {/* ================================================================
@@ -376,39 +353,7 @@ export function SkillsGraph({
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
       >
-        <defs>
-          {/* per-edge gradients */}
-          {edges.map(([a, b]) => {
-            const nA = nodeById[a];
-            const nB = nodeById[b];
-            if (!nA || !nB) return null;
-            const cA = clusters[nA.cluster]?.color ?? COLORS.mist;
-            const cB = clusters[nB.cluster]?.color ?? COLORS.mist;
-            return (
-              <linearGradient
-                key={`eg-${a}-${b}`}
-                id={`edge-grad-${a}-${b}`}
-                x1={nA.x}
-                y1={nA.y}
-                x2={nB.x}
-                y2={nB.y}
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop offset="0%" stopColor={cA} stopOpacity="0.55" />
-                <stop offset="100%" stopColor={cB} stopOpacity="0.55" />
-              </linearGradient>
-            );
-          })}
-
-          {/* glow filter */}
-          <filter id="edge-glow" x="-25%" y="-25%" width="150%" height="150%">
-            <feGaussianBlur stdDeviation="0.7" result="b" />
-            <feMerge>
-              <feMergeNode in="b" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
+        {edgeDefs}
 
         {edges.map(([a, b]) => {
           const nA = nodeById[a];
@@ -417,8 +362,7 @@ export function SkillsGraph({
 
           const key = `${a}-${b}`;
           const isActive = activeEdgeKeys.has(key);
-          const isPulse =
-            activePulse?.[0] === a && activePulse?.[1] === b;
+          const isPulse = activePulse?.[0] === a && activePulse?.[1] === b;
           const cA = clusters[nA.cluster]?.color ?? COLORS.mist;
 
           return (
@@ -438,7 +382,12 @@ export function SkillsGraph({
                 }}
               />
 
-              {/* flowing dashes (hover) */}
+              {/* Flowing dashes along the hovered node's edges. One CSS
+                  keyframe on stroke-dashoffset replaces what used to be a
+                  SMIL <animate> plus three <animateMotion> dots per edge —
+                  each of those rendered through a feGaussianBlur filter, so
+                  hovering a well-connected node meant re-running a blur over
+                  a dozen moving elements every frame. */}
               {isActive && (
                 <line
                   x1={nA.x}
@@ -446,39 +395,14 @@ export function SkillsGraph({
                   x2={nB.x}
                   y2={nB.y}
                   stroke={cA}
-                  strokeWidth={0.18}
+                  strokeWidth={0.22}
                   strokeDasharray="1.2 2.8"
-                  filter="url(#edge-glow)"
-                  style={{ opacity: 0.85 }}
-                >
-                  <animate
-                    attributeName="stroke-dashoffset"
-                    from="0"
-                    to="-8"
-                    dur="1.4s"
-                    repeatCount="indefinite"
-                  />
-                </line>
+                  style={{
+                    opacity: 0.9,
+                    animation: reducedMotion ? "none" : "skillEdgeFlow 1.4s linear infinite",
+                  }}
+                />
               )}
-
-              {/* energy dots travelling along edge (hover) */}
-              {isActive &&
-                [0, 1, 2].map((di) => (
-                  <circle
-                    key={di}
-                    r="0.45"
-                    fill={cA}
-                    opacity="0.85"
-                    filter="url(#edge-glow)"
-                  >
-                    <animateMotion
-                      dur="2.2s"
-                      repeatCount="indefinite"
-                      begin={`${di * 0.7}s`}
-                      path={`M ${nA.x} ${nA.y} L ${nB.x} ${nB.y}`}
-                    />
-                  </circle>
-                ))}
 
               {/* random pulse glow */}
               {isPulse && (
@@ -489,15 +413,10 @@ export function SkillsGraph({
                   y2={nB.y}
                   stroke={COLORS.violetSoft}
                   strokeWidth={0.45}
-                  filter="url(#edge-glow)"
-                >
-                  <animate
-                    attributeName="opacity"
-                    values="0;0.55;0"
-                    dur="2.2s"
-                    fill="freeze"
-                  />
-                </line>
+                  // opacity starts at 0 so the line can't flash at full
+                  // strength for the one frame before the animation applies.
+                  style={{ opacity: 0, animation: "skillEdgePulse 2.2s ease-in-out forwards" }}
+                />
               )}
             </motion.g>
           );
@@ -517,8 +436,7 @@ export function SkillsGraph({
         {nodes.map((node, i) => {
           const isNodeHovered = hoveredId === node.id;
           const isNodeConnected = connectedNodeIds.has(node.id);
-          const isDimmed =
-            hoveredId !== null && !isNodeHovered && !isNodeConnected;
+          const isDimmed = hoveredId !== null && !isNodeHovered && !isNodeConnected;
 
           return (
             <motion.div
@@ -563,7 +481,7 @@ export function SkillsGraph({
         {Object.entries(clusters).map(([key, cfg]) => (
           <motion.div
             key={key}
-            className="glass flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-mono select-none"
+            className="glass flex select-none items-center gap-2 rounded-full px-3 py-1.5 font-mono text-xs"
             whileHover={{ scale: 1.06 }}
             whileTap={{ scale: 0.97 }}
             transition={{ type: "spring", stiffness: 400, damping: 22 }}
@@ -573,18 +491,12 @@ export function SkillsGraph({
                 className="absolute h-full rounded-full"
                 style={{ backgroundColor: cfg.color }}
               />
-              {!reducedMotion && isCurrentlyVisible && (
-                <motion.span
-                  className="absolute h-full rounded-full"
-                  animate={{
-                    scale: [1, 1.8, 1],
-                    opacity: [0.5, 0, 0.5],
-                  }}
-                  transition={{
-                    duration: 2.2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
+              {/* Tailwind's CSS `animate-ping` instead of a Framer keyframe
+                  loop: three infinite JS animations for three 8px dots is
+                  frame budget spent on nothing. */}
+              {decorate && (
+                <span
+                  className="absolute h-full animate-ping rounded-full opacity-60"
                   style={{ backgroundColor: cfg.color }}
                 />
               )}

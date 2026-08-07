@@ -108,10 +108,16 @@
     @apply border-border;
   }
   html {
-    scroll-behavior: smooth;
+    /* Deliberately NO `scroll-behavior: smooth` here. Lenis animates the
+       scroll position by calling window.scrollTo every frame, and that call
+       obeys this property — so a global `smooth` makes the browser ease
+       toward each of Lenis' per-frame targets, smoothing an already-smoothed
+       scroll into something rubbery. Every in-page jump on this site goes
+       through lib/smoothScroll.ts, which passes an explicit `behavior`
+       instead of relying on the CSS. */
     /* Several sections slide content in from off-screen with a GSAP
-       `translateX` (Experience's cards sit at x:±48 pre-scroll, HeroCluster's
-       pieces at x:±60 on load). A CSS transform's post-transform bounds
+       `translateX` (Experience's cards sit at x:±48 pre-scroll). A CSS
+       transform's post-transform bounds
        count toward the scrollable overflow of the nearest ancestor even
        though the element never renders there, so those (invisible,
        intentional) offsets were adding real horizontal scroll room to the
@@ -126,6 +132,33 @@
   html[lang="fa"] body {
     @apply font-fa;
   }
+
+  /* --- Lenis (see components/SmoothScroll.tsx) ---------------------------
+     The library's own stylesheet, inlined rather than imported from
+     node_modules so the whole page still ships one CSS file. These classes
+     are added/removed by Lenis itself on <html>; without them the browser's
+     native smooth scroll runs against Lenis' animation, and any element
+     marked `data-lenis-prevent` (a modal's scrollable body, for instance)
+     would scroll the page behind it once it hit its own end. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+  /* Lenis' stylesheet also kills pointer events on every iframe (so a
+     cross-origin frame can't swallow the wheel). Deliberately not copied:
+     the only iframes here are the same-origin résumé renditions, one of
+     which is the interactive content of the preview dialog. That dialog
+     carries `data-lenis-prevent` instead, which solves the same problem
+     without making the document unusable. */
 }
 
 /* ==========================================================================
@@ -260,6 +293,17 @@
   50% { translate: 4px -7px; }
   75% { translate: -5px -9px; }
 }
+/* Hover state of an edge: the dashes travel from one node to the other.
+   CSS rather than SMIL — see the comment at the usage in SkillsGraph.tsx. */
+@keyframes skillEdgeFlow {
+  to { stroke-dashoffset: -8; }
+}
+/* One-shot glow when the random "energy pulse" picks an edge. */
+@keyframes skillEdgePulse {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0.55; }
+}
+
 @keyframes skillFloat4 {
   0%, 100% { translate: 0 0; }
   25% { translate: 4px -8px; }

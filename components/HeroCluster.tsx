@@ -1,16 +1,36 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ArrowUpRight, FileText, Github, Mail, type LucideIcon } from "lucide-react";
 import { gsap } from "gsap";
-import { DURATION, EASE_BRAND_CSS, prefersReducedMotion } from "@/lib/theme";
+import { useLanguage } from "@/components/LanguageProvider";
+import { DURATION, EASE_BRAND_CSS, STAGGER_BASE, prefersReducedMotion } from "@/lib/theme";
 
 /**
- * The hero's "Proof, not Promise" cluster (AGENTS.md §3.1): a handful of
- * real, working mini components that fly in and snap into an irregular
- * bento arrangement on load, instead of a static illustration.
+ * The strip that closes the hero: a single compact rail of facts a visitor
+ * actually wants in the first screen — what I'm doing now, what time it is
+ * where I am, the newest thing that shipped, and the three links they'd
+ * otherwise scroll to Contact for.
+ *
+ * It replaces the earlier "proof cluster" (a fake typing editor, a fake
+ * commit hash, and a second availability badge duplicating the hero's own
+ * status pill). That version was 420px of mock UI that said nothing real —
+ * AGENTS.md §3.1 asks for *real, working* pieces, and a code card typing a
+ * made-up snippet is exactly the promise-instead-of-proof it warns against.
+ * Every value below is read from the same dictionary data that drives
+ * Experience/Projects/Contact, so the rail cannot drift out of sync, and
+ * the clock is a genuinely live component rather than a prop.
  */
+
+/** Where I actually am — the clock and its GMT offset are both derived from
+ *  this, never hand-typed (Iran has no DST, but the offset is still read
+ *  from Intl rather than written as a literal). */
+const TIMEZONE = "Asia/Tehran";
+
 export function HeroCluster() {
+  const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
+  const { time, offset } = useLocalTime();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -20,30 +40,26 @@ export function HeroCluster() {
     if (!pieces.length) return;
 
     if (prefersReducedMotion()) {
-      gsap.set(pieces, { opacity: 1, x: 0, y: 0, rotate: 0, scale: 1 });
+      gsap.set(pieces, { opacity: 1, y: 0 });
       return;
     }
 
+    // Cells rise into place one after another (AGENTS.md §3.1's assembly
+    // effect, kept). Deliberately no `x` offset: an off-canvas horizontal
+    // start position counts toward the page's scrollable overflow (see the
+    // note on `html` in globals.css), and a rail this wide has no room for
+    // one anyway.
     const ctx = gsap.context(() => {
       gsap.fromTo(
         pieces,
-        {
-          opacity: 0,
-          scale: 0.6,
-          x: (i) => (i % 2 === 0 ? -60 : 60),
-          y: (i) => (i % 3 === 0 ? -40 : 40),
-          rotate: (i) => (i % 2 === 0 ? -18 : 18),
-        },
+        { opacity: 0, y: 18 },
         {
           opacity: 1,
-          scale: 1,
-          x: 0,
           y: 0,
-          rotate: 0,
-          duration: DURATION.slow,
+          duration: DURATION.base,
           ease: EASE_BRAND_CSS,
-          stagger: 0.12,
-          delay: 0.2,
+          stagger: STAGGER_BASE,
+          delay: 0.15,
         }
       );
     }, container);
@@ -51,146 +67,189 @@ export function HeroCluster() {
     return () => ctx.revert();
   }, []);
 
+  // Newest first in the dictionary, so entry 0 is the current role.
+  const current = t.experience.items[0];
+  // The flagship project, the same one Projects renders in its 2x2 cell.
+  const latest = t.projects.items.find((item) => item.featured) ?? t.projects.items[0];
+  const latestHost = hostOf(latest.href);
+
   return (
-    // Below md this is a plain stacked flow (the absolute bento layout below
-    // was authored for a wide box — on a phone-width column it had nowhere
-    // to put the badge but on top of the code card, plus a fixed 360px
-    // height that left a dead gap once everything was forced to overlap
-    // near the top instead of filling it).
     <div
       ref={containerRef}
-      className="relative mx-auto flex w-full max-w-md flex-col items-start gap-3 md:block md:h-[420px]"
+      className="glass grid grid-cols-2 overflow-hidden rounded-lg lg:grid-cols-4"
     >
-      <div data-piece className="relative w-full md:absolute md:start-[4%] md:top-[4%] md:w-[72%]">
-        <CodeTypingProof />
-        {/* On mobile the badge rides the corner of the code card as a
-            tilted ribbon instead of sitting in its own full-width row —
-            stacked in normal flow, a second "living dot" pill right under
-            the hero's status pill above just repeated the same idea. The
-            desktop bento below has room to give it its own spot instead. */}
-        <div className="absolute -top-3 end-4 rotate-2 md:hidden">
-          <BadgeProof />
+      {/* Two columns until lg, where all four cells fit one row without the
+          role wrapping. The two text-heaviest cells take a full row of their
+          own on narrow screens, so nothing here is ever a three-line stack in
+          a 150px column.
+
+          Dividers are drawn per cell rather than with `divide-*`: the grid
+          reflows, so which edge needs a rule changes with the breakpoint —
+          and logical `border-s` keeps that correct under RTL, which
+          `divide-x` (physical, and reversed) does not. */}
+      <RailCell label={t.hero.rail.now} className="col-span-2 lg:col-span-1">
+        <p className="text-base leading-snug text-ink">{current.role}</p>
+        <p className="mt-1 truncate font-mono text-xs text-mist">{current.company}</p>
+      </RailCell>
+
+      <RailCell label={t.hero.rail.localTime} className="border-t lg:border-s lg:border-t-0">
+        {/* tabular-nums so the minute ticking over never nudges the layout */}
+        <p className="font-mono text-base leading-snug tabular-nums text-ink">{time ?? "--:--"}</p>
+        <p className="mt-1 truncate font-mono text-xs text-mist">
+          {t.hero.rail.city}
+          {offset ? ` · ${offset}` : ""}
+        </p>
+      </RailCell>
+
+      <RailCell
+        label={t.hero.rail.latest}
+        className="border-s border-t lg:border-t-0"
+        // A placeholder "#" href (Face Age has no public URL yet) would be a
+        // link that goes nowhere, so the cell stays plain text until there is
+        // something real to open.
+        href={latestHost ? latest.href : undefined}
+      >
+        <p className="flex items-center gap-1.5 text-base leading-snug text-ink transition-colors duration-fast ease-brand group-hover:text-violet-soft">
+          {latest.title}
+          {latestHost && <ArrowUpRight size={15} className="shrink-0" />}
+        </p>
+        <p className="mt-1 truncate font-mono text-xs text-mist">{latestHost ?? latest.context}</p>
+      </RailCell>
+
+      <RailCell
+        label={t.hero.rail.links}
+        className="col-span-2 border-t lg:col-span-1 lg:border-s lg:border-t-0"
+      >
+        <div className="flex items-center gap-2">
+          <RailLink href={t.contact.github} label={t.hero.rail.github} Icon={Github} />
+          <RailLink href={`mailto:${t.contact.email}`} label={t.hero.rail.email} Icon={Mail} />
+          <RailLink
+            href={t.contact.resume.pdfUrl}
+            label={t.contact.resume.eyebrow}
+            Icon={FileText}
+            download={t.contact.resume.pdfFileName}
+          />
         </div>
-      </div>
-      <div data-piece className="hidden md:absolute md:end-[2%] md:top-[8%] md:block">
-        <BadgeProof />
-      </div>
-      <div data-piece className="w-full md:absolute md:bottom-[10%] md:start-[8%] md:w-[82%]">
-        <CommitLogProof />
-      </div>
+      </RailCell>
     </div>
   );
 }
 
-function BadgeProof({
-  label = "Available for work",
-  tone = "mint",
+/** One labelled cell of the rail. Renders as an anchor when `href` is given,
+ *  so the whole cell — not just its title — is the click target. */
+function RailCell({
+  label,
+  href,
+  className = "",
+  children,
 }: {
-  label?: string;
-  tone?: "mint" | "amber";
+  label: string;
+  href?: string;
+  className?: string;
+  children: React.ReactNode;
 }) {
-  const toneClasses =
-    tone === "mint"
-      ? "border-mint/40 bg-mint/10 text-mint-soft"
-      : "border-amber/40 bg-amber/10 text-amber";
+  const shared = `group flex flex-col justify-center border-line px-5 py-4 ${className}`;
+
+  if (href) {
+    return (
+      <a
+        data-piece
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`${shared} focus-ring transition-colors duration-fast ease-brand hover:bg-white/[0.03]`}
+      >
+        <span className="caption mb-2 block">{label}</span>
+        {children}
+      </a>
+    );
+  }
+
   return (
-    <span
-      className={`glass inline-flex items-center gap-2 rounded-pill border px-4 py-2 text-sm font-mono ${toneClasses}`}
-    >
-      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-current" />
-      {label}
-    </span>
+    <div data-piece className={shared}>
+      <span className="caption mb-2 block">{label}</span>
+      {children}
+    </div>
   );
 }
 
-const SNIPPET = "const proof = () => {\n  return skill;\n};";
+function RailLink({
+  href,
+  label,
+  Icon,
+  download,
+}: {
+  href: string;
+  label: string;
+  Icon: LucideIcon;
+  download?: string;
+}) {
+  return (
+    <a
+      href={href}
+      aria-label={label}
+      title={label}
+      download={download}
+      // Downloads stay in place; the outbound ones open in a new tab so the
+      // visitor never loses the page they were reading.
+      target={download ? undefined : "_blank"}
+      rel={download ? undefined : "noopener noreferrer"}
+      className="focus-ring flex h-9 w-9 items-center justify-center rounded-pill border border-line text-mist transition-colors duration-fast ease-brand hover:border-violet/40 hover:bg-violet/10 hover:text-ink"
+    >
+      <Icon size={16} />
+    </a>
+  );
+}
 
-function CodeTypingProof() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  // The type/delete loop and caret blink below used to run unconditionally
-  // for the entire session — including deep into Contact, far past the
-  // hero — burning a setTimeout/setInterval tick every 20-45ms forever.
-  // Gate both on visibility the same way SplineScene gates its WebGL
-  // render loop: pause off-screen, resume (restarting the loop, which
-  // reads fine for a decorative typing animation) back in view.
-  const [isVisible, setIsVisible] = useState(false);
-  const [typed, setTyped] = useState(SNIPPET);
-  const [showCaret, setShowCaret] = useState(true);
+/**
+ * The one genuinely live piece of the rail: local time in {@link TIMEZONE},
+ * re-aligned to each real minute boundary instead of ticking on a fixed
+ * 60s interval (which drifts, and would show a minute that is up to 59s
+ * stale). Formatted on the client only — rendering a clock during SSR
+ * guarantees a hydration mismatch.
+ */
+function useLocalTime() {
+  const [time, setTime] = useState<string | null>(null);
+  const [offset, setOffset] = useState<string | null>(null);
 
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.isIntersecting),
-      { rootMargin: "200px 0px" }
+    // en-GB (not the active locale) on purpose: it gives 24h Latin digits,
+    // matching the numerals the rest of the page uses in both languages.
+    const clock = new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: TIMEZONE,
+    });
+    const zone = new Intl.DateTimeFormat("en-GB", {
+      timeZone: TIMEZONE,
+      timeZoneName: "shortOffset",
+    });
+
+    setOffset(
+      zone.formatToParts(new Date()).find((part) => part.type === "timeZoneName")?.value ?? null
     );
-    observer.observe(el);
-    return () => observer.disconnect();
+
+    let timeoutId: ReturnType<typeof setTimeout>;
+    const tick = () => {
+      const now = new Date();
+      setTime(clock.format(now));
+      timeoutId = setTimeout(tick, 60_000 - (now.getSeconds() * 1000 + now.getMilliseconds()));
+    };
+    tick();
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
-  useEffect(() => {
-    if (prefersReducedMotion() || !isVisible) return;
-
-    let i = 0;
-    let deleting = false;
-    let timeoutId: ReturnType<typeof setTimeout>;
-
-    const tick = () => {
-      if (!deleting) {
-        i++;
-        setTyped(SNIPPET.slice(0, i));
-        if (i >= SNIPPET.length) {
-          deleting = true;
-          timeoutId = setTimeout(tick, 2200);
-          return;
-        }
-        timeoutId = setTimeout(tick, 45);
-      } else {
-        i--;
-        setTyped(SNIPPET.slice(0, i));
-        if (i <= 0) {
-          deleting = false;
-          timeoutId = setTimeout(tick, 600);
-          return;
-        }
-        timeoutId = setTimeout(tick, 20);
-      }
-    };
-
-    timeoutId = setTimeout(tick, 800);
-    return () => clearTimeout(timeoutId);
-  }, [isVisible]);
-
-  // Caret blinks independently of the typing cadence, like a real editor.
-  useEffect(() => {
-    if (prefersReducedMotion() || !isVisible) return;
-    const id = setInterval(() => setShowCaret((v) => !v), 500);
-    return () => clearInterval(id);
-  }, [isVisible]);
-
-  return (
-    <div ref={containerRef} className="glass w-full overflow-hidden rounded-lg">
-      <div className="flex items-center gap-1.5 border-b border-line px-4 py-2.5">
-        <span className="h-2 w-2 rounded-full bg-mist/40" />
-        <span className="h-2 w-2 rounded-full bg-mist/40" />
-        <span className="h-2 w-2 rounded-full bg-mist/40" />
-        <span className="ms-2 font-mono text-xs text-mist">hero.tsx</span>
-      </div>
-      <pre className="min-h-[84px] whitespace-pre-wrap px-4 py-3 font-mono text-xs leading-relaxed text-ink">
-        {typed}
-        <span className={showCaret ? "text-violet" : "text-transparent"}>▌</span>
-      </pre>
-    </div>
-  );
+  return { time, offset };
 }
 
-function CommitLogProof() {
-  return (
-    <div className="glass flex items-center gap-3 overflow-hidden rounded-lg px-4 py-3 font-mono text-xs text-mist">
-      <span className="shrink-0 rounded-pill border border-mint/40 bg-mint/10 px-2 py-1 text-mint-soft">
-        a3f9c2d
-      </span>
-      <span className="truncate text-ink">feat: ship proof cluster</span>
-    </div>
-  );
+/** Bare hostname for display, or null when the entry is still a "#"
+ *  placeholder (see the TODOs in lib/i18n). */
+function hostOf(href: string): string | null {
+  try {
+    return new URL(href).hostname.replace(/^www\./, "");
+  } catch {
+    return null;
+  }
 }

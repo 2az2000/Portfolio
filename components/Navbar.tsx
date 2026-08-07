@@ -6,6 +6,7 @@ import { Languages, Menu, X, Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useLanguage } from "@/components/LanguageProvider";
 import { EASE_BRAND, DURATION } from "@/lib/theme";
+import { scrollToId, scrollToTop } from "@/lib/smoothScroll";
 
 const navSections = [
   { id: "about", key: "about" as const },
@@ -50,9 +51,12 @@ export function Navbar() {
 
   const closeMobile = useCallback(() => setMobileOpen(false), []);
 
+  // Routed through the shared helper rather than scrollIntoView: the page is
+  // driven by Lenis, and a native smooth scroll would animate the same
+  // scrollTop at the same time (see lib/smoothScroll.ts).
   const scrollTo = useCallback(
     (id: string) => {
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      scrollToId(id);
       closeMobile();
     },
     [closeMobile]
@@ -70,7 +74,7 @@ export function Navbar() {
         <nav className="container flex items-center justify-between py-4">
           {/* Logo */}
           <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={scrollToTop}
             className="font-display text-xl text-ink transition-colors duration-fast hover:text-violet focus-ring rounded-lg px-2 py-1 -ms-2"
             aria-label="Scroll to top"
           >

@@ -176,6 +176,10 @@ export function DocumentPreview({
         <Dialog.Overlay className="fixed inset-0 z-50 bg-void/80 backdrop-blur-sm data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
 
         <Dialog.Content
+          // Keeps the page's smooth scroller from treating a wheel gesture
+          // over the open dialog as a request to scroll the page behind it
+          // (see components/SmoothScroll.tsx).
+          data-lenis-prevent
           className={cn(
             // A fixed height (not max-height) on purpose: the preview scales
             // itself to the room left over, so that room has to be a known

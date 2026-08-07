@@ -6,6 +6,7 @@ import { useGsapReveal } from "@/lib/useGsapReveal";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { SplineScene } from "@/components/ui/SplineScene";
 import { HeroCluster } from "@/components/HeroCluster";
+import { scrollToId } from "@/lib/smoothScroll";
 
 const SPLINE_SCENE_URL = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode";
 
@@ -82,20 +83,11 @@ export function Hero() {
           </div>
 
           <div data-reveal className="mt-9 flex flex-wrap items-center gap-4">
-            <MagneticButton
-              onClick={() =>
-                document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })
-              }
-            >
+            <MagneticButton onClick={() => scrollToId("projects")}>
               {t.hero.ctaPrimary}
               <ArrowIcon size={16} />
             </MagneticButton>
-            <MagneticButton
-              variant="ghost"
-              onClick={() =>
-                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
-              }
-            >
+            <MagneticButton variant="ghost" onClick={() => scrollToId("contact")}>
               {t.hero.ctaSecondary}
             </MagneticButton>
           </div>
@@ -113,8 +105,10 @@ export function Hero() {
         </div>
       </div>
 
-      {/* ---- proof-piece cluster: real, clickable mini components (AGENTS.md §3.1) ---- */}
-      <div data-reveal className="mt-4">
+      {/* ---- fact rail: current role, local time, newest release and the
+             three links people otherwise scroll to Contact for — all read
+             from the same data as the sections below (AGENTS.md §3.1) ---- */}
+      <div data-reveal className="mt-12 md:mt-16">
         <HeroCluster />
       </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  memo,
   useRef,
   useState,
   useCallback,
@@ -55,7 +56,7 @@ const MAGNETIC_STRENGTH = 14;
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
-export function SkillNode({
+function SkillNodeImpl({
   id,
   label,
   clusterColor,
@@ -148,7 +149,13 @@ export function SkillNode({
         onFocus={() => onHover(id)}
         onBlur={() => onHover(null)}
         data-skills-node
-        className="focus-ring pointer-events-auto relative flex cursor-pointer items-center gap-2.5 whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium backdrop-blur-md"
+        // No backdrop-blur here on purpose. Every node runs a continuous
+        // CSS float, and a backdrop-filter on a moving element makes the
+        // browser re-blur what is behind it on every frame — ten of those
+        // over an animated background was the single most expensive thing
+        // in this section. The tinted, semi-opaque background below reads
+        // the same against this canvas.
+        className="focus-ring pointer-events-auto relative flex cursor-pointer items-center gap-2.5 whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium"
         style={{
           x: springX,
           y: springY,
@@ -157,9 +164,10 @@ export function SkillNode({
             : isConnected
               ? `${clusterColor}66`
               : `${clusterColor}30`,
+          // Slightly denser than before to make up for the dropped blur.
           backgroundColor: isHovered
-            ? `${clusterColor}1a`
-            : `${clusterColor}0d`,
+            ? `${clusterColor}2b`
+            : `${clusterColor}17`,
           boxShadow: isHovered
             ? `0 0 28px ${clusterColor}44, 0 8px 32px rgba(0,0,0,0.35)`
             : isConnected
@@ -240,3 +248,12 @@ export function SkillNode({
     </div>
   );
 }
+
+/**
+ * Memoised: hovering any node updates state on the parent graph, which
+ * re-renders all ten nodes even though only two of them (the hovered one
+ * and its neighbours) actually changed. Every prop here is a primitive plus
+ * one stable callback, so the default shallow comparison is enough to keep
+ * a pointer sweep across the canvas from re-rendering the whole graph.
+ */
+export const SkillNode = memo(SkillNodeImpl);

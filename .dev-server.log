@@ -3,15 +3,64 @@
 > next dev
 
 ▲ Next.js 16.2.10 (Turbopack)
-- Local:         http://localhost:3000
-- Network:       http://10.180.49.163:3000
-✓ Ready in 2.8s
-⨯ Another next dev server is already running.
+- Local:         http://localhost:3001
+- Network:       http://10.179.193.12:3001
+- Environments: .env.local
+✓ Ready in 9.3s
+⚠ Slow filesystem detected. The benchmark took 237ms. If D:\amirali\Portfolio\.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development
+- Experiments (use with caution):
+  · optimizePackageImports
 
-- Local:        http://localhost:3001
-- PID:          1336
-- Dir:          D:\amirali\Portfolio
-- Log:          .next\dev\logs\next-development.log
-
-Run taskkill /PID 1336 /F to stop it.
-[?25h
+○ Compiling / ...
+ GET /meta.json 404 in 11.6s (next.js: 11.4s, application-code: 254ms)
+ GET / 200 in 17.9s (next.js: 17.5s, application-code: 376ms)
+ GET / 200 in 142ms (next.js: 7ms, application-code: 135ms)
+ GET /meta.json 404 in 68ms (next.js: 7ms, application-code: 62ms)
+[browser] updating from  114 to  122
+ GET /meta.json 404 in 38ms (next.js: 3ms, application-code: 35ms)
+ GET /meta.json 404 in 37ms (next.js: 3ms, application-code: 33ms)
+ GET / 200 in 164ms (next.js: 4ms, application-code: 160ms)
+[browser] updating from  114 to  122
+ GET /meta.json 404 in 440ms (next.js: 37ms, application-code: 403ms)
+ GET /meta.json 404 in 55ms (next.js: 4ms, application-code: 51ms)
+ GET /meta.json 404 in 43ms (next.js: 4ms, application-code: 39ms)
+ GET /meta.json 404 in 255ms (next.js: 111ms, application-code: 143ms)
+ GET /meta.json 404 in 33ms (next.js: 4ms, application-code: 30ms)
+ GET /meta.json 404 in 188ms (next.js: 64ms, application-code: 124ms)
+ GET /meta.json 404 in 42ms (next.js: 4ms, application-code: 38ms)
+ GET /meta.json 404 in 202ms (next.js: 78ms, application-code: 124ms)
+ GET /meta.json 404 in 223ms (next.js: 108ms, application-code: 115ms)
+ GET /meta.json 404 in 226ms (next.js: 96ms, application-code: 130ms)
+ GET / 200 in 654ms (next.js: 105ms, application-code: 549ms)
+[browser] updating from  114 to  122
+ GET /meta.json 404 in 78ms (next.js: 40ms, application-code: 39ms)
+ GET /meta.json 404 in 353ms (next.js: 318ms, application-code: 35ms)
+ GET / 200 in 123ms (next.js: 2ms, application-code: 121ms)
+ GET /meta.json 404 in 42ms (next.js: 5ms, application-code: 37ms)
+ GET /meta.json 404 in 376ms (next.js: 122ms, application-code: 254ms)
+ GET /meta.json 404 in 187ms (next.js: 65ms, application-code: 122ms)
+ GET /meta.json 404 in 35ms (next.js: 3ms, application-code: 32ms)
+ GET /meta.json 404 in 36ms (next.js: 3ms, application-code: 33ms)
+ GET /meta.json 404 in 37ms (next.js: 4ms, application-code: 34ms)
+ GET /meta.json 404 in 81ms (next.js: 45ms, application-code: 35ms)
+ GET / 200 in 586ms (next.js: 114ms, application-code: 472ms)
+[browser] updating from  114 to  122
+ GET /meta.json 404 in 38ms (next.js: 4ms, application-code: 34ms)
+ GET /meta.json 404 in 37ms (next.js: 4ms, application-code: 33ms)
+ GET /meta.json 404 in 42ms (next.js: 3ms, application-code: 39ms)
+ GET /meta.json 404 in 36ms (next.js: 3ms, application-code: 33ms)
+ GET /meta.json 404 in 198ms (next.js: 64ms, application-code: 134ms)
+ GET /meta.json 404 in 38ms (next.js: 3ms, application-code: 35ms)
+ GET / 200 in 546ms (next.js: 80ms, application-code: 466ms)
+[browser] updating from  114 to  122
+ GET /meta.json 404 in 41ms (next.js: 4ms, application-code: 37ms)
+ GET /meta.json 404 in 39ms (next.js: 3ms, application-code: 36ms)
+ GET /meta.json 404 in 41ms (next.js: 5ms, application-code: 36ms)
+ GET /gold 404 in 51ms (next.js: 6ms, application-code: 45ms)
+ GET /firebase-messaging-sw.js?apiKey=AIzaSyCzRVQFIavXAXe37qUikKWT5sMS2mmmsCs&authDomain=brookli-stg-e4a73.firebaseapp.com&projectId=brookli-stg-e4a73&storageBucket=brookli-stg-e4a73.firebasestorage.app&messagingSenderId=395734297648&appId=1:395734297648:web:6df5e9eded9186cb7951f5 404 in 55ms (next.js: 5ms, application-code: 50ms)
+ GET / 200 in 165ms (next.js: 6ms, application-code: 160ms)
+ GET /firebase-messaging-sw.js?apiKey=AIzaSyCzRVQFIavXAXe37qUikKWT5sMS2mmmsCs&authDomain=brookli-stg-e4a73.firebaseapp.com&projectId=brookli-stg-e4a73&storageBucket=brookli-stg-e4a73.firebasestorage.app&messagingSenderId=395734297648&appId=1:395734297648:web:6df5e9eded9186cb7951f5 404 in 50ms (next.js: 4ms, application-code: 46ms)
+ GET /firebase-messaging-sw.js?apiKey=AIzaSyCzRVQFIavXAXe37qUikKWT5sMS2mmmsCs&authDomain=brookli-stg-e4a73.firebaseapp.com&projectId=brookli-stg-e4a73&storageBucket=brookli-stg-e4a73.firebasestorage.app&messagingSenderId=395734297648&appId=1:395734297648:web:6df5e9eded9186cb7951f5 404 in 72ms (next.js: 11ms, application-code: 62ms)
+ GET /firebase-messaging-sw.js?apiKey=AIzaSyCzRVQFIavXAXe37qUikKWT5sMS2mmmsCs&authDomain=brookli-stg-e4a73.firebaseapp.com&projectId=brookli-stg-e4a73&storageBucket=brookli-stg-e4a73.firebasestorage.app&messagingSenderId=395734297648&appId=1:395734297648:web:6df5e9eded9186cb7951f5 404 in 120ms (next.js: 15ms, application-code: 105ms)
+ GET /firebase-messaging-sw.js?apiKey=AIzaSyCzRVQFIavXAXe37qUikKWT5sMS2mmmsCs&authDomain=brookli-stg-e4a73.firebaseapp.com&projectId=brookli-stg-e4a73&storageBucket=brookli-stg-e4a73.firebasestorage.app&messagingSenderId=395734297648&appId=1:395734297648:web:6df5e9eded9186cb7951f5 404 in 39ms (next.js: 4ms, application-code: 36ms)

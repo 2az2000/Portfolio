@@ -21,6 +21,15 @@ export const fa: Dictionary = {
       caseStudies: "کیس‌استادی",
     },
     scrollCue: "اسکرول",
+    rail: {
+      now: "در حال حاضر",
+      localTime: "ساعت محلی",
+      city: "تهران",
+      latest: "آخرین انتشار",
+      links: "دسترسی سریع",
+      github: "گیت‌هاب",
+      email: "ایمیل",
+    },
   },
   about: {
     heading: "درباره من",
