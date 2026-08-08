@@ -74,7 +74,14 @@ const config: Config = {
       fontFamily: {
         display: ["var(--font-display)", "sans-serif"],
         body: ["var(--font-body)", "sans-serif"],
-        mono: ["var(--font-mono)", "monospace"],
+        // "Peyda Arabic" leads on purpose, and it is safe there because that
+        // face declares a `unicode-range` covering only Arabic (see
+        // globals.css): Latin glyphs are not in its range, so they skip
+        // straight to JetBrains Mono, while Persian ones are caught before
+        // they can reach the Arial-based fallback next/font appends inside
+        // `--font-mono`. That fallback is why the Persian in mono labels
+        // used to render in a system face instead of the site's own.
+        mono: ['"Peyda Arabic"', "var(--font-mono)", "monospace"],
         fa: ["var(--font-fa)", "sans-serif"],
       },
       fontSize: {

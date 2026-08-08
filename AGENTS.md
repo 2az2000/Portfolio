@@ -29,7 +29,7 @@ This file is the single reference document for this project. Any AI editor or de
 | Scroll / heavy animation | **GSAP** + ScrollTrigger | Precise timelines, scroll-driven sequences, high performance |
 | UI / state animation | **Framer Motion** | Component transitions, enter/exit, hover/tap states |
 | Icons | lucide-react | Minimal, consistent icon set |
-| Fonts | next/font (Vazirmatn for Persian) + Fontshare CDN (display) | Persian readability + typographic personality |
+| Fonts | next/font, all self-hosted (Peyda Pro for Persian, Clash Display + General Sans for Latin, JetBrains Mono) | Persian readability + typographic personality, with no third-party font CDN on the critical path |
 | Component inspiration | [21st.dev](https://21st.dev) | Visual reference for modern component patterns (spotlight card, magnetic button, bento grid) — **we don't copy, we reinterpret with our own theme** |
 
 Animation division of labor:
@@ -107,7 +107,7 @@ Rule: no other colors are introduced anywhere in the project. All shading is ach
 --font-display : Latin display face (Clash Display, Fontshare) — large Latin headings only
 --font-body    : Latin body face (General Sans, Fontshare)
 --font-mono    : JetBrains Mono — labels, code, commit log, UI tags ("spotlight-card.tsx")
---font-fa      : Vazirmatn (variable, via next/font/google) — all Persian text, both headings and body (Latin display faces don't render Persian correctly)
+--font-fa      : Peyda Pro (self-hosted via next/font/local, weights 400/500/600/700) — all Persian text, both headings and body (Latin display faces don't render Persian correctly)
 ```
 Type scale (custom Tailwind scale, used via utility classes, never manual `px`):
 ```

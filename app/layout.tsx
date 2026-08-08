@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Vazirmatn, JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -41,14 +41,45 @@ import { Providers } from "@/components/Providers";
 import { CustomCursor } from "@/components/CustomCursor";
 import { AmbientBackground } from "@/components/AmbientBackground";
 
-// Persian text (headings + body) — see AGENTS.md typography table.
-const vazirmatn = Vazirmatn({
-  subsets: ["arabic"],
+/**
+ * Peyda Pro — all Persian text, headings and body alike (AGENTS.md §4).
+ *
+ * Self-hosted for the same reason as the two Latin faces above, and built
+ * from the TTFs in `public/Peyda Pro/` by subsetting them to the Latin +
+ * Arabic ranges the site actually uses and recompressing to woff2:
+ * ~202KB per weight becomes ~28KB, so all four weights together cost less
+ * than a third of one original file. Regenerate with:
+ *
+ *   python -m fontTools.subset "public/Peyda Pro/Peyda-Regular.ttf" \
+ *     --output-file=app/fonts/Peyda-400.woff2 --flavor=woff2 \
+ *     --layout-features='*' --unicodes="U+0000-00FF,U+0600-06FF,..."
+ *
+ * `--layout-features='*'` is not optional: Arabic is a joining script, and
+ * dropping init/medi/fina/rlig/ccmp would leave every Persian word rendered
+ * as disconnected isolated letters.
+ *
+ * Only the four weights the site references are shipped (400 body, 500 for
+ * the `font-medium` labels, 600, 700) — the family also has thin through
+ * black, and nothing uses them.
+ */
+const peyda = localFont({
+  src: [
+    { path: "./fonts/Peyda-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/Peyda-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/Peyda-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/Peyda-700.woff2", weight: "700", style: "normal" },
+  ],
   variable: "--font-fa",
   display: "swap",
+  // No generic appended here: every Tailwind stack that consumes this
+  // variable already ends in one, and a `sans-serif` buried mid-stack would
+  // swallow glyphs meant for the faces listed after it.
 });
 
-// Labels, code, commit log, UI tags.
+// Labels, code, commit log, UI tags. Persian inside these is handled by the
+// range-scoped "Peyda Arabic" face in globals.css, not here — next/font
+// appends a metric-adjusted fallback built on local Arial to this family,
+// and Arial carries Arabic, so Persian glyphs would otherwise stop there.
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
@@ -92,7 +123,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
       <body
-        className={`${clashDisplay.variable} ${generalSans.variable} ${vazirmatn.variable} ${jetbrainsMono.variable}`}
+        className={`${clashDisplay.variable} ${generalSans.variable} ${peyda.variable} ${jetbrainsMono.variable}`}
       >
         {/* Outside Providers on purpose: this is a persistent backdrop, so
             it shouldn't fade/flicker along with LanguageProvider's

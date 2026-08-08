@@ -103,6 +103,41 @@
   }
 }
 
+/* ==========================================================================
+   PERSIAN INSIDE MONO LABELS
+   The mono face (JetBrains) has no Arabic, and the metric-adjusted fallback
+   next/font appends to it resolves to local Arial — which does, so every
+   Persian word in a `font-mono` label (captions, eyebrows, file tags) landed
+   on the reader's system Arial instead of the site's own Persian face.
+
+   This face fixes that by range: it is the same subset Peyda that next/font
+   serves for body text, redeclared under its own name and restricted to the
+   Arabic block, then listed *ahead* of the mono family in tailwind.config.
+   Latin is outside its `unicode-range`, so hashes, tech names and file
+   labels still render monospaced, and browsers only download it on a page
+   that actually paints an Arabic glyph.
+
+   Served from /public rather than through next/font because next/font emits
+   hashed URLs no hand-written @font-face can reference, and `unicode-range`
+   is not something its API exposes.
+   ========================================================================== */
+@font-face {
+  font-family: "Peyda Arabic";
+  src: url("/fonts/Peyda-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
+}
+@font-face {
+  font-family: "Peyda Arabic";
+  src: url("/fonts/Peyda-600.woff2") format("woff2");
+  font-weight: 500 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -213,6 +248,25 @@
      `uppercase` is already a no-op there. */
   html[lang="fa"] .caption {
     letter-spacing: normal;
+  }
+
+  /* Clash Display and General Sans carry no Persian glyphs at all, so every
+     element that opts into them explicitly — which is every section heading,
+     the hero title, the logo and the stat values — was silently falling back
+     to whatever sans-serif the OS happened to pick. That is why Persian
+     headings never matched the Persian body text around them. `body` alone
+     could not fix it: a `font-display` class on the element outranks an
+     inherited family.
+
+     The weight is pinned because the Latin display face only exists at
+     600/700, so an unstyled 400 would drop Persian headings a full step
+     lighter than their English counterparts. */
+  html[lang="fa"] .font-display {
+    font-family: var(--font-fa), sans-serif;
+    font-weight: 600;
+  }
+  html[lang="fa"] .font-body {
+    font-family: var(--font-fa), sans-serif;
   }
 
   .focus-ring {
