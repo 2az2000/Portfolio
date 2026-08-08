@@ -79,8 +79,9 @@ export type Dictionary = {
       highlights?: string[];
       /**
        * Path to the product's own logo in /public. Optional — cards without
-       * one simply lead with their title, so a missing logo never leaves a
-       * placeholder box behind.
+       * one fall back to the AZ monogram (see `FALLBACK_LOGO` in
+       * `components/sections/Projects.tsx`), so the grid never mixes cards
+       * that start with an icon and cards that start with a title.
        */
       logo?: string;
     }[];

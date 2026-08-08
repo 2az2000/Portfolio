@@ -8,10 +8,20 @@ import { useLanguage } from "@/components/LanguageProvider";
 import { useGsapReveal } from "@/lib/useGsapReveal";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { EASE_BRAND_CSS, prefersReducedMotion } from "@/lib/theme";
+import { cn } from "@/lib/utils";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
+
+/**
+ * Stand-in mark for projects that have no logo of their own — the same AZ
+ * monogram the site uses as its favicon and social card. It keeps every card
+ * in the grid on one shape instead of letting half of them start with a
+ * title and half with an icon, and it reads as "mine" rather than as an
+ * empty placeholder box.
+ */
+const FALLBACK_LOGO = "/images/amirali-96.webp";
 
 export function Projects() {
   const { t } = useLanguage();
@@ -86,20 +96,24 @@ export function Projects() {
               <div className="flex h-full flex-col">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex min-w-0 items-center gap-3">
-                    {project.logo && (
-                      // A plain <img>: these are 96px product marks a few KB
-                      // each, so routing them through the image optimizer
-                      // would cost a round trip to save nothing.
-                      <img
-                        src={project.logo}
-                        alt=""
-                        width={36}
-                        height={36}
-                        loading="lazy"
-                        decoding="async"
-                        className="h-9 w-9 shrink-0 rounded-md border border-line bg-white/90 object-contain p-1"
-                      />
-                    )}
+                    {/* A plain <img>: these are 96px product marks a few KB
+                        each, so routing them through the image optimizer
+                        would cost a round trip to save nothing. */}
+                    <img
+                      src={project.logo ?? FALLBACK_LOGO}
+                      alt=""
+                      width={36}
+                      height={36}
+                      loading="lazy"
+                      decoding="async"
+                      className={cn(
+                        "h-9 w-9 shrink-0 rounded-md border border-line object-contain p-1",
+                        // Product marks are flat and often dark, so they need a
+                        // light tile; the monogram is a lit 3D render that only
+                        // holds up on the background it was made for.
+                        project.logo ? "bg-white/90" : "bg-void"
+                      )}
+                    />
                     <h3
                       className={
                         project.featured

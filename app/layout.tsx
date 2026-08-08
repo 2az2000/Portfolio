@@ -55,9 +55,37 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://portfolio-amirali.vercel.app";
+
+const TITLE = "Amirali Zand — Frontend Developer";
+const DESCRIPTION =
+  "Frontend Developer — React, Next.js, TypeScript & the Node.js ecosystem.";
+
+/**
+ * The favicon, the apple touch icon and the social card are the AZ mark, and
+ * they're picked up from `app/icon.png`, `app/apple-icon.png` and
+ * `app/opengraph-image.jpg` by Next's file conventions — which is also why
+ * there's no `icons` key here. `metadataBase` is what turns those into the
+ * absolute URLs crawlers require.
+ */
 export const metadata: Metadata = {
-  title: "Amirali Zand — Frontend Developer",
-  description: "Frontend Developer — React, Next.js, TypeScript & the Node.js ecosystem.",
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: "Amirali Zand",
+    title: TITLE,
+    description: DESCRIPTION,
+    locale: "en_US",
+    alternateLocale: "fa_IR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
