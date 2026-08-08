@@ -8,6 +8,14 @@ import { useLanguage } from "@/components/LanguageProvider";
 import { EASE_BRAND, DURATION } from "@/lib/theme";
 import { scrollToId, scrollToTop } from "@/lib/smoothScroll";
 
+/** Each language labelled in Latin script so both segments stay legible in
+ *  either direction — the switcher has to be readable to someone who cannot
+ *  read the language they are switching away from. */
+const LOCALES = [
+  { code: "en" as const, label: "EN" },
+  { code: "fa" as const, label: "FA" },
+];
+
 const navSections = [
   { id: "about", key: "about" as const },
   { id: "skills", key: "skills" as const },
@@ -18,7 +26,7 @@ const navSections = [
 ];
 
 export function Navbar() {
-  const { locale, toggleLocale, t } = useLanguage();
+  const { locale, setLocale, isSwapping, t } = useLanguage();
   const { theme, setTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [active, setActive] = useState("about");
@@ -132,22 +140,41 @@ export function Navbar() {
               </button>
             )}
 
-            <button
-              onClick={toggleLocale}
-              className="focus-ring glass flex items-center gap-2 rounded-pill px-3 py-1.5 text-sm text-ink transition-all duration-fast hover:bg-white/[0.08] hover:shadow-glow"
-              aria-label="Toggle language"
+            {/* A segmented control rather than a blind toggle: both languages
+                are visible, so the choice is legible before it is made. Pinned
+                LTR so the two segments keep the same physical order across the
+                direction flip — a control that swaps sides at the moment you
+                use it reads as a bug. */}
+            <div
+              dir="ltr"
+              role="group"
+              aria-label="Language"
+              className="glass flex items-center rounded-pill p-1"
             >
-              <Languages size={14} className="text-violet" />
-              <motion.span
-                key={locale}
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DURATION.fast, ease: EASE_BRAND }}
-                className="font-mono uppercase"
-              >
-                {locale}
-              </motion.span>
-            </button>
+              <Languages size={14} className="mx-1.5 shrink-0 text-violet" aria-hidden />
+              {LOCALES.map(({ code, label }) => (
+                <button
+                  key={code}
+                  onClick={() => setLocale(code)}
+                  // Locked mid-sweep: a second swap queued behind the curtain
+                  // would flip the direction twice under one cover.
+                  disabled={isSwapping}
+                  aria-pressed={locale === code}
+                  className={`focus-ring relative rounded-pill px-2.5 py-1 font-mono text-xs uppercase transition-colors duration-fast ${
+                    locale === code ? "text-ink" : "text-mist hover:text-ink"
+                  }`}
+                >
+                  {locale === code && (
+                    <motion.span
+                      layoutId="locale-thumb"
+                      className="absolute inset-0 rounded-pill border border-violet/40 bg-violet/20"
+                      transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                    />
+                  )}
+                  <span className="relative z-10">{label}</span>
+                </button>
+              ))}
+            </div>
 
             <button
               onClick={() => setMobileOpen((prev) => !prev)}

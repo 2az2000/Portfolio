@@ -12,13 +12,16 @@ import {
 import { motion, useAnimation } from "framer-motion";
 import { dictionaries, type Dictionary, type Locale } from "@/lib/i18n";
 import { DURATION, EASE_BRAND, prefersReducedMotion } from "@/lib/theme";
+import { LocaleCurtain } from "@/components/LocaleCurtain";
 
 type LanguageContextValue = {
   locale: Locale;
   dir: "rtl" | "ltr";
   t: Dictionary;
-  toggleLocale: () => void;
   setLocale: (locale: Locale) => void;
+  /** True while the curtain is covering the page mid-swap — lets the toggle
+   *  in the navbar lock itself instead of queueing a second transition. */
+  isSwapping: boolean;
 };
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
@@ -26,10 +29,16 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 const STORAGE_KEY = "portfolio-locale";
 const dirOf = (locale: Locale): "rtl" | "ltr" => (locale === "fa" ? "rtl" : "ltr");
 
+/** Must match the sheet's sweep-in duration in LocaleCurtain — the language
+ *  swap lands the moment the page is fully covered, never a frame before. */
+const COVER_MS = 560;
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
   // Defaults to English; swaps instantly on mount if storage says otherwise.
   const [locale, setLocaleState] = useState<Locale>("en");
-  const isFirstLocaleChange = useRef(true);
+  const [curtainTarget, setCurtainTarget] = useState<Locale>("en");
+  const [isSwapping, setIsSwapping] = useState(false);
+  const swapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const controls = useAnimation();
 
   useEffect(() => {
@@ -37,78 +46,88 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     if (stored === "en" || stored === "fa") setLocaleState(stored);
   }, []);
 
-  // Cross-fade the content in place on every locale change after the
-  // initial mount. This intentionally does NOT remount the tree (no
-  // `key={locale}` on a wrapping AnimatePresence, unlike before) — keying
-  // the whole app by locale tore down and rebuilt every GSAP ScrollTrigger,
-  // the Spline WebGL context, and every IntersectionObserver on each
-  // toggle, and that teardown/rebuild race is what left the page blank
-  // until a hard refresh.
-  //
-  // The `dir`/`lang` attribute flip (and the RTL font swap in globals.css)
-  // triggers an instant, untransitioned reflow, so it's sequenced to land
-  // while the content is fully invisible (opacity 0, not a partial dip) —
-  // otherwise the direction/font snap is still visible mid-fade and reads
-  // as a jarring jump.
+  // Keep the document attributes in sync on first paint (and on any swap that
+  // bypassed the animation, e.g. reduced motion). The animated path sets them
+  // itself, mid-curtain — see setLocale below.
   useEffect(() => {
-    if (isFirstLocaleChange.current) {
-      isFirstLocaleChange.current = false;
-      document.documentElement.lang = locale;
-      document.documentElement.dir = dirOf(locale);
-      return;
-    }
+    document.documentElement.lang = locale;
+    document.documentElement.dir = dirOf(locale);
+  }, [locale]);
 
-    if (prefersReducedMotion()) {
-      document.documentElement.lang = locale;
-      document.documentElement.dir = dirOf(locale);
-      controls.set({ opacity: 1 });
-      return;
-    }
-
-    let cancelled = false;
-    (async () => {
-      await controls.start({
-        opacity: 0,
-        transition: { duration: DURATION.fast, ease: EASE_BRAND },
-      });
-      if (cancelled) return;
-      document.documentElement.lang = locale;
-      document.documentElement.dir = dirOf(locale);
-      await controls.start({
-        opacity: 1,
-        transition: { duration: DURATION.base, ease: EASE_BRAND },
-      });
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [locale, controls]);
-
-  const setLocale = useCallback((next: Locale) => {
-    setLocaleState(next);
-    window.localStorage.setItem(STORAGE_KEY, next);
+  useEffect(() => () => {
+    if (swapTimeoutRef.current) clearTimeout(swapTimeoutRef.current);
   }, []);
 
-  const toggleLocale = useCallback(() => {
-    setLocale(locale === "fa" ? "en" : "fa");
-  }, [locale, setLocale]);
+  /**
+   * The signature transition (AGENTS.md §3.7). Sequence:
+   *
+   *   0ms      curtain starts sweeping in, in the reading direction of the
+   *            language being switched to; content fades out beneath it
+   *   ~560ms   page is fully covered — only now does the dictionary swap and
+   *            the `dir`/`lang`/font flip happen, so the untransitionable
+   *            reflow they cause is never visible
+   *   ~560ms+  curtain sweeps onward off the far edge, uncovering content
+   *            that is already fading back in
+   *
+   * The tree is deliberately never remounted (no `key={locale}`): keying the
+   * app by locale tore down every GSAP ScrollTrigger, the Spline WebGL
+   * context and every IntersectionObserver on each toggle, and that
+   * teardown/rebuild race is what used to leave the page blank until a hard
+   * refresh.
+   */
+  const setLocale = useCallback(
+    (next: Locale) => {
+      if (next === locale || swapTimeoutRef.current) return;
+      window.localStorage.setItem(STORAGE_KEY, next);
+
+      if (prefersReducedMotion()) {
+        setLocaleState(next);
+        controls.set({ opacity: 1 });
+        return;
+      }
+
+      setCurtainTarget(next);
+      setIsSwapping(true);
+      controls.start({
+        opacity: 0,
+        transition: { duration: DURATION.fast, ease: EASE_BRAND, delay: 0.18 },
+      });
+
+      swapTimeoutRef.current = setTimeout(() => {
+        swapTimeoutRef.current = null;
+        setLocaleState(next);
+        setIsSwapping(false);
+        // Fades back in *while* the curtain is still leaving, so its trailing
+        // edge uncovers content that is already on its way in rather than a
+        // blank page that starts fading only once the wipe has finished.
+        controls.start({
+          opacity: 1,
+          transition: { duration: DURATION.base, ease: EASE_BRAND, delay: 0.12 },
+        });
+      }, COVER_MS);
+    },
+    [locale, controls]
+  );
 
   const value: LanguageContextValue = {
     locale,
     dir: dirOf(locale),
     t: dictionaries[locale],
-    toggleLocale,
     setLocale,
+    isSwapping,
   };
 
   return (
     <LanguageContext.Provider value={value}>
-      {/* Cross-fade on locale change instead of an abrupt text/direction
-          jump — this transition IS one of the signature details called out
-          in AGENTS.md §3.7. Not keyed by locale: the tree stays mounted so
-          GSAP/Spline/observers survive the toggle (see effect above). */}
+      {/* Opacity only — never transform or filter. Both would turn this
+          wrapper into the containing block for every `position: fixed`
+          descendant (the navbar, the custom cursor), which would tear them
+          off the viewport for the length of the transition. */}
       <motion.div animate={controls}>{children}</motion.div>
+
+      {/* Rendered outside that wrapper for the same reason: the curtain is a
+          fixed, full-viewport layer and must not inherit its animation. */}
+      <LocaleCurtain active={isSwapping} target={curtainTarget} />
     </LanguageContext.Provider>
   );
 }
