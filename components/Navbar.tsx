@@ -83,10 +83,40 @@ export function Navbar() {
           {/* Logo */}
           <button
             onClick={scrollToTop}
-            className="font-display text-xl text-ink transition-colors duration-fast hover:text-violet focus-ring rounded-lg px-2 py-1 -ms-2"
+            className="focus-ring group -ms-2 rounded-lg"
             aria-label="Scroll to top"
           >
-            AZ
+            {/* The mark is a dark 3D render, so it needs a surface to sit on:
+                against the light theme it would otherwise float on bare
+                white, and against the dark one its edges dissolve into the
+                page. The tile is the same `glass` used by the controls on the
+                other end of the bar, which also keeps both ends of the navbar
+                on one material. */}
+            <span className="glass relative flex items-center justify-center rounded-lg px-2.5 py-1.5 transition-all duration-fast ease-brand group-hover:border-violet/30 group-hover:shadow-glow">
+              {/* Soft violet bloom under the mark. Always on, but faint —
+                  it lifts the logo off the tile without reading as a second
+                  glow next to the hover state. */}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-1 rounded-lg bg-violet/20 blur-md transition-opacity duration-fast ease-brand group-hover:opacity-80"
+              />
+              {/* A plain <img> for the same reason as the project marks: a
+                  3.7KB 96px asset gains nothing from a round trip through the
+                  image optimizer. Intrinsic size is declared so the row never
+                  reflows once it decodes, and `alt` is empty because the
+                  button already carries the label. */}
+              <img
+                src="/images/amirali-96.webp"
+                alt=""
+                width={96}
+                height={96}
+                // The one image on the page above the fold in every viewport —
+                // the only place on this site where eager beats lazy.
+                fetchPriority="high"
+                decoding="async"
+                className="relative h-8 w-auto transition-transform duration-fast ease-brand group-hover:scale-110"
+              />
+            </span>
           </button>
 
           {/* Desktop nav links */}
