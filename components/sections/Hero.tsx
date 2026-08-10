@@ -108,9 +108,9 @@ export function Hero() {
       {/* ---- fact rail: current role, local time, newest release and the
              three links people otherwise scroll to Contact for — all read
              from the same data as the sections below (AGENTS.md §3.1) ---- */}
-      <div data-reveal className="mt-12 md:mt-16">
+      {/* <div data-reveal className="mt-12 md:mt-16">
         <HeroCluster />
-      </div>
+      </div> */}
 
       {/* ---- scroll cue: purely decorative, points at TechMarquee/About
              right below — respects prefers-reduced-motion globally via the

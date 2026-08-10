@@ -14,7 +14,16 @@
    mist #9A9AB0 -> muted-foreground | amber #FFB86B -> (brand accent only)
    ========================================================================== */
 @layer base {
-  :root {
+  /* `.light` alongside :root so the light palette can also be scoped to a
+     single element, the way `.dark` already can. The theme wipe
+     (components/ThemeWipe.tsx) paints a circle in the colour of the theme it
+     is switching *to*, which means it has to read that theme's tokens while
+     the page is still showing the other one — it puts the target theme's class
+     on a wrapper and reads `bg-void` from inside it. Without this, only dark
+     was scopable and the light half of the effect would have needed its page
+     colour hardcoded, which §4 forbids. */
+  :root,
+  .light {
     /* ---- shadcn semantic tokens (light mode) ---- */
     --background: 230 10% 97%;
     --foreground: 235 25% 14%;
@@ -57,6 +66,23 @@
     --mint-soft: 143 245 217;
     --amber: 255 184 107;
     --line: rgba(0, 0, 0, 0.08);
+
+    /* ---- skills constellation backdrop (light) ----
+       These are tokens rather than props because SkillsGraph used to read
+       `useTheme()` purely to pick between two sets of them. That made a 500-line
+       component with memoised per-edge gradients and a dozen animated particles
+       re-render on every theme switch, at the exact moment the browser is
+       already restyling and repainting the whole page. Expressed as variables,
+       the switch is a style recalculation the compositor handles and React
+       never hears about it. */
+    --skills-grid-line: rgba(0, 0, 0, 0.035);
+    --skills-wash: radial-gradient(ellipse 55% 50% at 22% 28%, #7c5cfc0c, transparent),
+      radial-gradient(ellipse 50% 55% at 78% 62%, #33e6b809, transparent),
+      radial-gradient(ellipse 38% 38% at 58% 18%, #ffb86b07, transparent);
+    /* Particles carry their own per-particle alpha, so the token is the tint
+       and the element multiplies it with `opacity`. */
+    --skills-particle: 0 0 0;
+    --skills-particle-alpha: 0.5;
   }
 
   .dark {
@@ -100,6 +126,14 @@
     --mint-soft: 143 245 217;
     --amber: 255 184 107;
     --line: rgba(255, 255, 255, 0.08);
+
+    /* ---- skills constellation backdrop (dark) ---- */
+    --skills-grid-line: rgba(255, 255, 255, 0.025);
+    --skills-wash: radial-gradient(ellipse 55% 50% at 22% 28%, #7c5cfc16, transparent),
+      radial-gradient(ellipse 50% 55% at 78% 62%, #33e6b812, transparent),
+      radial-gradient(ellipse 38% 38% at 58% 18%, #ffb86b0d, transparent);
+    --skills-particle: 255 255 255;
+    --skills-particle-alpha: 1;
   }
 }
 
@@ -295,6 +329,63 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+}
+
+/* ==========================================================================
+   X-RAY MODE — see components/XRayProvider.tsx
+
+   The entire visual layer of the mode is here, hanging off one class on
+   <html>, so toggling it costs a single class mutation instead of a re-render
+   of every region on the page. The file name is read straight out of the
+   `data-xray` attribute with attr(), which is also why no component needs to
+   know whether the mode is on.
+
+   The regions are already `position: relative` unconditionally (see
+   XRayRegion.tsx), so nothing below establishes a containing block — turning
+   the mode on cannot move anything, it only draws.
+   ========================================================================== */
+html.is-xray [data-xray] {
+  outline: 1px dashed rgb(var(--violet) / 0.45);
+  outline-offset: -1px;
+  border-radius: 8px;
+}
+
+html.is-xray [data-xray]::before {
+  content: attr(data-xray);
+  position: absolute;
+  z-index: 40;
+  top: 0.5rem;
+  inset-inline-start: 0.5rem;
+  pointer-events: none;
+
+  /* Same material and type as the rest of the site's labels — the mode is a
+     view onto the page, not a separate skin for it. Values are spelled out
+     rather than @apply'd because this block sits outside @layer utilities. */
+  font-family: "Peyda Arabic", var(--font-mono), monospace;
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background-color: rgb(var(--surface) / 0.92);
+  border: 1px solid rgb(var(--violet) / 0.35);
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+
+  /* violet-soft is tuned to carry against the dark surface and washes out on
+     the light one, so each theme gets the end of the ramp that survives on it
+     — the same split the legend's file paths use. */
+  color: rgb(var(--violet));
+}
+html.is-xray.dark [data-xray]::before {
+  color: rgb(var(--violet-soft));
+}
+
+/* The navbar is `fixed` at the top of the viewport, so a chip above its top
+   edge would be off-screen and one inside it would land on the logo. */
+html.is-xray [data-xray][data-xray-pos="below"]::before {
+  top: 100%;
+  margin-top: 0.4rem;
 }
 
 /* ==========================================================================

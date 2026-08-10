@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { DURATION, prefersReducedMotion } from "@/lib/theme";
 import { setSmoothScroller } from "@/lib/smoothScroll";
+import { publishScrollVelocity, resetScrollVelocity } from "@/lib/scrollVelocity";
 
 /**
  * Site-wide inertial scrolling (Lenis). Renders nothing — it only takes over
@@ -45,7 +46,14 @@ export function SmoothScroll() {
 
     setSmoothScroller(lenis);
 
-    lenis.on("scroll", ScrollTrigger.update);
+    // One scroll callback feeding both consumers of the scroll position:
+    // ScrollTrigger, which needs to know where the page is, and the velocity
+    // store, which needs to know how fast it is getting there (see
+    // lib/scrollVelocity.ts — the marquee reads it every frame).
+    lenis.on("scroll", () => {
+      ScrollTrigger.update();
+      publishScrollVelocity(lenis.velocity);
+    });
 
     const tick = (time: number) => lenis.raf(time * 1000); // gsap ticker is in seconds
     gsap.ticker.add(tick);
@@ -58,6 +66,7 @@ export function SmoothScroll() {
       gsap.ticker.lagSmoothing(500, 33); // GSAP's own defaults
       lenis.destroy();
       setSmoothScroller(null);
+      resetScrollVelocity();
     };
   }, []);
 

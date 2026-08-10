@@ -125,6 +125,21 @@ export type Dictionary = {
     sending: string;
     success: string;
     errorGeneric: string;
+    /**
+     * The terminal transcript the form prints while submitting. Each line is
+     * tied to a real step, and `{ms}` is filled with the measured duration of
+     * the actual request — never a simulated one. The technical tokens
+     * (`--name`, `POST /api/contact`) stay Latin in both locales: they are the
+     * literal flags and route, not prose.
+     */
+    log: {
+      validating: string;
+      request: string;
+      /** Contains `{ms}`. */
+      delivered: string;
+      /** Contains `{ms}`. */
+      failed: string;
+    };
     // TODO: replace with real links
     email: string;
     github: string;
@@ -148,6 +163,101 @@ export type Dictionary = {
       documentUrl: string;
       pdfUrl: string;
       pdfFileName: string;
+    };
+  };
+  /**
+   * The closing colophon (components/Footer.tsx). Labels only — every value
+   * beside them is a real build fact inlined by next.config.js, so nothing
+   * here can claim a version the bundle isn't actually running.
+   */
+  footer: {
+    /** The mono eyebrow above the block, styled as a shell prompt. */
+    command: string;
+    keys: {
+      framework: string;
+      built: string;
+      type: string;
+      fonts: string;
+      motion: string;
+    };
+    values: {
+      selfHosted: string;
+    };
+    rights: string;
+    source: string;
+  };
+  /**
+   * ⌘K command palette (components/ui/CommandPalette.tsx). Only the chrome
+   * lives here — every searchable row is built from `nav`, `projects`,
+   * `caseStudies` and `contact` above, so the palette can never offer
+   * something the page itself doesn't have.
+   */
+  palette: {
+    /** Accessible name for the dialog, and the navbar button's label. */
+    title: string;
+    description: string;
+    placeholder: string;
+    empty: string;
+    groups: {
+      navigate: string;
+      projects: string;
+      caseStudies: string;
+      actions: string;
+    };
+    actions: {
+      themeToLight: string;
+      themeToDark: string;
+      /** Phrased as "switch to <the other language>", read in the current one. */
+      language: string;
+      xrayOn: string;
+      xrayOff: string;
+      xrayHint: string;
+      copyEmail: string;
+      copied: string;
+      resume: string;
+    };
+    hints: {
+      navigate: string;
+      select: string;
+      close: string;
+    };
+  };
+  /**
+   * X-ray mode (components/XRayProvider.tsx) — the shortcut that outlines
+   * every region of the page with the file that renders it.
+   *
+   * The keys under `regions` and `behavioral` must match the ids in
+   * `lib/xray.ts` exactly; that file holds the paths, this one holds every
+   * word a visitor actually reads. Each note describes the *technique*, not
+   * the content — the outline already says where the box is, so the value
+   * added here is what a reader can't see by looking.
+   */
+  xray: {
+    /** Sits next to the `X` key cap in the pre-launch hint chip. */
+    hint: string;
+    title: string;
+    description: string;
+    exit: string;
+    close: string;
+    regionsLabel: string;
+    behavioralLabel: string;
+    regions: {
+      navbar: string;
+      hero: string;
+      marquee: string;
+      about: string;
+      skills: string;
+      projects: string;
+      caseStudies: string;
+      experience: string;
+      contact: string;
+      footer: string;
+    };
+    behavioral: {
+      cursor: string;
+      curtain: string;
+      smoothScroll: string;
+      reveal: string;
     };
   };
 };
@@ -440,6 +550,12 @@ experience: {
     sending: "sending...",
     success: "message sent — I'll get back to you soon.",
     errorGeneric: "something went wrong — please email me directly.",
+    log: {
+      validating: "> validating --name --email --message",
+      request: "> POST /api/contact",
+      delivered: "✓ delivered in {ms}ms",
+      failed: "✗ failed after {ms}ms",
+    },
     email: "amirali.zand79@gmail.com",
     github: "https://github.com/2az2000",
     linkedin: "https://linkedin.com/in/TODO",
@@ -456,6 +572,77 @@ experience: {
       documentUrl: "/resume/amirali-zand-resume.html",
       pdfUrl: "/resume/Amirali-Zand-Resume.pdf",
       pdfFileName: "Amirali-Zand-Resume.pdf",
+    },
+  },
+  footer: {
+    command: "amirali@portfolio:~$ cat colophon",
+    keys: {
+      framework: "framework",
+      built: "built",
+      type: "typefaces",
+      fonts: "delivery",
+      motion: "motion",
+    },
+    values: {
+      selfHosted: "self-hosted — no third-party font CDN",
+    },
+    rights: "Designed and built by Amirali Zand.",
+    source: "Source on GitHub",
+  },
+  palette: {
+    title: "Command palette",
+    description: "Search sections, projects and case studies, or run an action.",
+    placeholder: "Search or jump to…",
+    empty: "Nothing matches that.",
+    groups: {
+      navigate: "Go to",
+      projects: "Projects",
+      caseStudies: "Case studies",
+      actions: "Actions",
+    },
+    actions: {
+      themeToLight: "Switch to light mode",
+      themeToDark: "Switch to dark mode",
+      language: "خواندن به فارسی",
+      xrayOn: "Turn on X-ray mode",
+      xrayOff: "Turn off X-ray mode",
+      xrayHint: "Outline every region with the file that renders it",
+      copyEmail: "Copy email address",
+      copied: "Copied to clipboard",
+      resume: "Download resume (PDF)",
+    },
+    hints: {
+      navigate: "navigate",
+      select: "select",
+      close: "close",
+    },
+  },
+  xray: {
+    hint: "inspect this page",
+    title: "X-ray mode",
+    description:
+      "Every region outlined with the file that renders it, and the technique behind it.",
+    exit: "Press X or Esc to exit",
+    close: "Close",
+    regionsLabel: "Regions on the page",
+    behavioralLabel: "No outline — these are behaviour, not layout",
+    regions: {
+      navbar: "Sliding pill indicator on Framer Motion's layoutId, plus an IntersectionObserver scrollspy.",
+      hero: "GSAP fade-and-rise stagger. The three stats are computed from the data further down the page, never typed by hand.",
+      marquee: "One Framer motion value driven every frame, so hover eases the strip to a stop and you can drag to scrub it.",
+      about: "Per-word scramble-decrypt on hover; the rest of the paragraph dims to keep the hovered word the subject.",
+      skills: "SVG constellation — hovering a node lights its edges and dims the rest. Each node has its own magnetic pull.",
+      projects: "GSAP ScrollTrigger.batch with a spring scale-pop, over an asymmetric bento where the flagship takes 2x2.",
+      caseStudies: "Radix tabs, panels force-mounted so all three studies stay in the HTML for crawlers.",
+      experience: "Scroll-scrubbed alternating slide, with a progress beam whose position ignites each commit node as it passes.",
+      contact: "A real form dressed as a terminal session — the flags are the field labels, and the timings it prints are measured around the actual request.",
+      footer: "Build facts inlined at compile time, so the version and date belong to the bundle you're running.",
+    },
+    behavioral: {
+      cursor: "Two springs: a hard dot that tracks exactly, and a ring that snaps onto whatever you can click, matching its shape.",
+      curtain: "Language switches under cover — the dictionary and text direction flip only while the page is fully hidden.",
+      smoothScroll: "Lenis running off GSAP's ticker, so the whole site shares one animation frame and no scroll effect lags a frame behind.",
+      reveal: "One shared entrance hook for every section, so nothing on this page enters with an ease that doesn't match the rest.",
     },
   },
 };

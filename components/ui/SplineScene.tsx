@@ -54,6 +54,12 @@ export function SplineScene({ scene, className }: SplineSceneProps) {
     const el = containerRef.current;
     if (!el) return;
 
+    // Visibility is the only thing that drives the loop. The theme wipe used
+    // to stop it too, while the page was covered — it made the theme repaint
+    // measurably cheaper, but stopping and restarting a live GL context is
+    // not free on real hardware the way it is under software rendering, and
+    // a scene that re-initialises is a far worse thing to show someone than
+    // the milliseconds it saved.
     const observer = new IntersectionObserver(
       ([entry]) => {
         const app = appRef.current;

@@ -7,6 +7,8 @@ import { Experience } from "@/components/sections/Experience";
 import { Projects } from "@/components/sections/Projects";
 import { CaseStudies } from "@/components/sections/CaseStudies";
 import { Contact } from "@/components/sections/Contact";
+import { Footer } from "@/components/Footer";
+import { XRayRegion } from "@/components/XRayRegion";
 
 // -----------------------------------------------------------------------
 // Previous inline hero (kept for reference / rollback). Replaced by the
@@ -30,16 +32,41 @@ import { Contact } from "@/components/sections/Contact";
 
 export default function Home() {
   return (
+    <>
     <main>
       <Navbar />
-      <Hero />
-      <TechMarquee />
-      <About />
-      <Skills />
-      <Projects />
-      <CaseStudies />
-      <Experience />
-      <Contact />
+      {/* Each section is wrapped rather than tagged in place so X-ray mode
+          needs no edit inside the section components themselves, and so the
+          file chip has a box to hang off that no section's own
+          `overflow-hidden` can clip. See components/XRayRegion.tsx. */}
+      <XRayRegion id="hero">
+        <Hero />
+      </XRayRegion>
+      <XRayRegion id="marquee">
+        <TechMarquee />
+      </XRayRegion>
+      <XRayRegion id="about">
+        <About />
+      </XRayRegion>
+      <XRayRegion id="skills">
+        <Skills />
+      </XRayRegion>
+      <XRayRegion id="projects">
+        <Projects />
+      </XRayRegion>
+      <XRayRegion id="caseStudies">
+        <CaseStudies />
+      </XRayRegion>
+      <XRayRegion id="experience">
+        <Experience />
+      </XRayRegion>
+      <XRayRegion id="contact">
+        <Contact />
+      </XRayRegion>
     </main>
+      {/* Outside <main>: a <footer> nested inside it is the footer *of* that
+          content, not of the page. */}
+      <Footer />
+    </>
   );
 }

@@ -2,11 +2,15 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Languages, Menu, X, Sun, Moon } from "lucide-react";
+import { Languages, Menu, X, Sun, Moon, Search } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useLanguage } from "@/components/LanguageProvider";
 import { EASE_BRAND, DURATION } from "@/lib/theme";
+import { currentTheme, toggleThemeWithWipe } from "@/lib/themeWipe";
 import { scrollToId, scrollToTop } from "@/lib/smoothScroll";
+import { XRAY_REGIONS } from "@/lib/xray";
+import { NAV_SECTIONS } from "@/lib/navSections";
+import { openCommandPalette } from "@/components/ui/CommandPalette";
 
 /** Each language labelled in Latin script so both segments stay legible in
  *  either direction — the switcher has to be readable to someone who cannot
@@ -16,15 +20,6 @@ const LOCALES = [
   { code: "fa" as const, label: "FA" },
 ];
 
-const navSections = [
-  { id: "about", key: "about" as const },
-  { id: "skills", key: "skills" as const },
-  { id: "projects", key: "projects" as const },
-  { id: "case-studies", key: "caseStudies" as const },
-  { id: "experience", key: "experience" as const },
-  { id: "contact", key: "contact" as const },
-];
-
 export function Navbar() {
   const { locale, setLocale, isSwapping, t } = useLanguage();
   const { theme, setTheme } = useTheme();
@@ -32,8 +27,12 @@ export function Navbar() {
   const [active, setActive] = useState("about");
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isApple, setIsApple] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+    setIsApple(/Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent));
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -42,7 +41,7 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    const sections = navSections.map((s) => document.getElementById(s.id));
+    const sections = NAV_SECTIONS.map((s) => document.getElementById(s.id));
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -56,6 +55,27 @@ export function Navbar() {
     sections.forEach((el) => el && observer.observe(el));
     return () => observer.disconnect();
   }, []);
+
+  /** The circle grows out of the button that was pressed, so the change
+   *  visibly comes from the control that caused it (see lib/themeWipe.ts).
+   *  While the locale curtain is mid-sweep the wipe is skipped: two
+   *  full-viewport transitions over each other read as a glitch, not as two
+   *  features. */
+  const toggleTheme = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      if (isSwapping) {
+        setTheme(currentTheme() === "dark" ? "light" : "dark");
+        return;
+      }
+
+      const rect = event.currentTarget.getBoundingClientRect();
+      toggleThemeWithWipe(
+        { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
+        setTheme
+      );
+    },
+    [setTheme, isSwapping]
+  );
 
   const closeMobile = useCallback(() => setMobileOpen(false), []);
 
@@ -73,6 +93,13 @@ export function Navbar() {
   return (
     <>
       <header
+        // Tagged here rather than wrapped by an <XRayRegion> in page.tsx like
+        // every other region: the bar is `fixed`, so a wrapper would collapse
+        // to a zero-height box at the top of the document and outline nothing.
+        // `below` drops the file chip under the bar instead of above it, where
+        // it would sit off the top of the viewport.
+        data-xray={XRAY_REGIONS.navbar.file}
+        data-xray-pos="below"
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-base ease-brand ${
           scrolled
             ? "glass shadow-glass"
@@ -121,7 +148,7 @@ export function Navbar() {
 
           {/* Desktop nav links */}
           <ul className="hidden items-center gap-1 md:flex">
-            {navSections.map((section) => (
+            {NAV_SECTIONS.map((section) => (
               <li key={section.id}>
                 <button
                   onClick={() => scrollTo(section.id)}
@@ -148,11 +175,31 @@ export function Navbar() {
             ))}
           </ul>
 
-          {/* Right side: theme toggle + language toggle + mobile menu button */}
+          {/* Right side: palette + theme toggle + language toggle + mobile menu */}
           <div className="flex items-center gap-2">
+            {/* The palette's real entrance is ⌘K, but a shortcut nobody is
+                told about is a shortcut nobody uses — and on a phone there is
+                no keyboard to press it with, which would otherwise put the
+                projects search and X-ray mode out of reach entirely. */}
+            <button
+              onClick={openCommandPalette}
+              aria-label={t.palette.title}
+              className="focus-ring glass flex h-9 items-center gap-2 rounded-pill px-2.5 text-mist transition-all duration-fast hover:bg-white/[0.08] hover:text-ink"
+            >
+              <Search size={15} />
+              {/* Rendered only after mount: the modifier key depends on the
+                  visitor's platform, which the server can't know, and guessing
+                  it would be a hydration mismatch on half the traffic. */}
+              {mounted && (
+                <kbd className="hidden font-mono text-xs sm:block">
+                  {isApple ? "⌘K" : "Ctrl K"}
+                </kbd>
+              )}
+            </button>
+
             {mounted && (
               <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                onClick={toggleTheme}
                 className="focus-ring glass flex h-9 w-9 items-center justify-center rounded-pill text-ink transition-all duration-fast hover:bg-white/[0.08]"
                 aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
               >
@@ -247,7 +294,7 @@ export function Navbar() {
               className="container flex flex-col gap-1 pt-24"
               onClick={(e) => e.stopPropagation()}
             >
-              {navSections.map((section, i) => (
+              {NAV_SECTIONS.map((section, i) => (
                 <motion.li
                   key={section.id}
                   // Slides in from the inline-start edge, so the direction

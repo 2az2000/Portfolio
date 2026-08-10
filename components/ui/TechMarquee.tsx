@@ -15,6 +15,7 @@ import {
 } from "react-icons/si";
 import type { IconType } from "react-icons";
 import { prefersReducedMotion } from "@/lib/theme";
+import { getScrollVelocity } from "@/lib/scrollVelocity";
 
 type MarqueeItem = {
   label: string;
@@ -40,6 +41,11 @@ const ITEMS: MarqueeItem[] = [
 
 const BASE_SPEED = 40; // px/s
 const EASE_FACTOR = 0.06; // how quickly velocity chases its target each frame
+
+/** Extra px/s at full scroll velocity. Roughly 8x the idle speed, which is
+ *  enough for the strip to visibly lean into a scroll without the labels
+ *  smearing into something unreadable. */
+const SCROLL_BOOST = 320;
 
 /**
  * An auto-scrolling, drag-to-scrub strip of the tech stack — Framer Motion
@@ -78,10 +84,23 @@ export function TechMarquee() {
   useAnimationFrame((_, delta) => {
     if (reducedMotion || !setWidth || isDraggingRef.current) return;
 
+    // The strip leans into the page's own motion: scrolling down pushes it
+    // along, scrolling up drags it back the other way. Free to add, because
+    // the whole component already runs on one motion value updated per frame
+    // — it just has a second term now.
+    //
+    // Skipped while hovered, where the target is 0: stopping the strip is an
+    // explicit "let me read this", and a scroll shouldn't override it.
+    const isPaused = targetVelocityRef.current === 0;
+    const boost = isPaused ? 0 : getScrollVelocity() * SCROLL_BOOST;
+
     // Ease current velocity toward its target (0 on hover, BASE_SPEED
     // otherwise) instead of snapping — this is what makes hovering feel
-    // like the strip is gliding to a stop under its own momentum.
-    velocityRef.current += (targetVelocityRef.current - velocityRef.current) * EASE_FACTOR;
+    // like the strip is gliding to a stop under its own momentum, and it is
+    // also what carries the scroll boost on past the end of the gesture
+    // rather than cutting it dead the moment the wheel stops.
+    const target = targetVelocityRef.current + boost;
+    velocityRef.current += (target - velocityRef.current) * EASE_FACTOR;
 
     let next = x.get() - (velocityRef.current * delta) / 1000;
     if (next <= -setWidth) next += setWidth;

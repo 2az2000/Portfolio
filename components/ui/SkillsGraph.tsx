@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { motion, useInView } from "framer-motion";
-import { useTheme } from "next-themes";
 import { SkillNode } from "./SkillNode";
 import { cn } from "@/lib/utils";
 import { COLORS, EASE_BRAND, prefersReducedMotion } from "@/lib/theme";
@@ -79,16 +78,12 @@ export function SkillsGraph({ nodes, edges, clusters, className }: SkillsGraphPr
   /* ---- refs ---- */
   const containerRef = useRef<HTMLDivElement>(null);
 
-  /* ---- theme ---- */
-  const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  // Before mount, `theme` hasn't resolved from storage yet — fall back to
-  // the site's deterministic default (dark) so SSR and the first client
-  // render agree instead of a hydration mismatch (reading useTheme()
-  // unguarded forces React to throw away and re-render this whole subtree
-  // on first paint).
-  const isDark = mounted ? theme === "dark" : true;
+  // No `useTheme()` here on purpose. The three things that used to depend on
+  // it — the grid lines, the colour washes and the particle tint — are now
+  // tokens (`--skills-grid-line`, `--skills-wash`, `--skills-particle` in
+  // globals.css), so a theme switch restyles them without re-rendering this
+  // component at all. That also removes the mount guard this used to need to
+  // avoid a hydration mismatch, since nothing here reads client-only state.
 
   /* ---- reduced motion ---- */
   const reducedMotion = useMemo(() => prefersReducedMotion(), []);
@@ -269,9 +264,8 @@ export function SkillsGraph({ nodes, edges, clusters, className }: SkillsGraphPr
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: isDark
-              ? "linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px)"
-              : "linear-gradient(rgba(0,0,0,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.035) 1px,transparent 1px)",
+            backgroundImage:
+              "linear-gradient(var(--skills-grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--skills-grid-line) 1px,transparent 1px)",
             backgroundSize: "44px 44px",
           }}
         />
@@ -279,11 +273,7 @@ export function SkillsGraph({ nodes, edges, clusters, className }: SkillsGraphPr
         {/* radial colour washes */}
         <div
           className="absolute inset-0"
-          style={{
-            background: isDark
-              ? `radial-gradient(ellipse 55% 50% at 22% 28%,${COLORS.violet}16,transparent),radial-gradient(ellipse 50% 55% at 78% 62%,${COLORS.mint}12,transparent),radial-gradient(ellipse 38% 38% at 58% 18%,${COLORS.amber}0d,transparent)`
-              : `radial-gradient(ellipse 55% 50% at 22% 28%,${COLORS.violet}0c,transparent),radial-gradient(ellipse 50% 55% at 78% 62%,${COLORS.mint}09,transparent),radial-gradient(ellipse 38% 38% at 58% 18%,${COLORS.amber}07,transparent)`,
-          }}
+          style={{ background: "var(--skills-wash)" }}
         />
 
         {/* noise texture */}
@@ -332,9 +322,7 @@ export function SkillsGraph({ nodes, edges, clusters, className }: SkillsGraphPr
                 top: `${p.y}%`,
                 width: p.size,
                 height: p.size,
-                backgroundColor: isDark
-                  ? `rgba(255,255,255,${p.opacity})`
-                  : `rgba(0,0,0,${p.opacity * 0.5})`,
+                backgroundColor: `rgb(var(--skills-particle) / calc(${p.opacity} * var(--skills-particle-alpha)))`,
                 animation: `${p.keyframes} ${p.duration}s ease-in-out ${p.delay}s infinite`,
               }}
             />

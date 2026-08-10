@@ -287,6 +287,15 @@ experience: {
     sending: "در حال ارسال...",
     success: "پیام ارسال شد — به‌زودی جواب می‌دم.",
     errorGeneric: "یه مشکلی پیش اومد — لطفاً مستقیم ایمیل بزنید.",
+    // Kept in Latin in both locales on purpose: these are the literal flags
+    // and the literal route, the same way `run send.sh` above stays untranslated.
+    // Translating "POST /api/contact" would turn a real line into a costume.
+    log: {
+      validating: "> validating --name --email --message",
+      request: "> POST /api/contact",
+      delivered: "✓ delivered in {ms}ms",
+      failed: "✗ failed after {ms}ms",
+    },
     email: "amirali.zand79@gmail.com",
     github: "https://github.com/2az2000",
     linkedin: "https://linkedin.com/in/TODO",
@@ -303,6 +312,79 @@ experience: {
       documentUrl: "/resume/amirali-zand-resume.html",
       pdfUrl: "/resume/Amirali-Zand-Resume.pdf",
       pdfFileName: "Amirali-Zand-Resume.pdf",
+    },
+  },
+  footer: {
+    command: "amirali@portfolio:~$ cat colophon",
+    keys: {
+      framework: "فریم‌ورک",
+      built: "ساخت",
+      type: "قلم‌ها",
+      fonts: "تحویل",
+      motion: "انیمیشن",
+    },
+    values: {
+      selfHosted: "میزبانی روی همین دامنه — بدون CDN فونت",
+    },
+    rights: "طراحی و ساخت: امیرعلی زند.",
+    source: "سورس روی گیت‌هاب",
+  },
+  palette: {
+    title: "پالت دستورها",
+    description: "بین بخش‌ها، پروژه‌ها و کیس‌استادی‌ها بگردید یا یک کار را اجرا کنید.",
+    placeholder: "جست‌وجو یا پرش به…",
+    empty: "چیزی پیدا نشد.",
+    groups: {
+      navigate: "برو به",
+      projects: "پروژه‌ها",
+      caseStudies: "کیس‌استادی‌ها",
+      actions: "کارها",
+    },
+    actions: {
+      themeToLight: "تم روشن",
+      themeToDark: "تم تیره",
+      // Written in the language being switched *to*, the same way the Persian
+      // row reads in the English palette — the one person who needs this row
+      // is the one who cannot read the language currently on screen.
+      language: "Read in English",
+      xrayOn: "روشن‌کردن حالت اشعه‌ایکس",
+      xrayOff: "خاموش‌کردن حالت اشعه‌ایکس",
+      xrayHint: "دور هر بخش، فایلی که آن را می‌سازد",
+      copyEmail: "کپی آدرس ایمیل",
+      copied: "کپی شد",
+      resume: "دانلود رزومه (PDF)",
+    },
+    hints: {
+      navigate: "جابه‌جایی",
+      select: "انتخاب",
+      close: "بستن",
+    },
+  },
+  xray: {
+    hint: "این صفحه را بشکاف",
+    title: "حالت اشعه‌ایکس",
+    description: "دور هر بخش، فایلی که آن را می‌سازد و تکنیک پشتش.",
+    exit: "برای خروج X یا Esc",
+    close: "بستن",
+    regionsLabel: "بخش‌های صفحه",
+    behavioralLabel: "بدون کادر — اینها رفتارند، نه چیدمان",
+    regions: {
+      navbar: "نشانگر لغزانِ layoutId فریمر موشن، به‌همراه اسکرول‌اسپای با IntersectionObserver.",
+      hero: "ورود پلکانی محو‌و‌بالا با GSAP. هر سه عدد از داده‌های پایین همین صفحه حساب می‌شوند، نه دستی.",
+      marquee: "یک motion value که هر فریم رانده می‌شود؛ برای همین با هاور نرم می‌ایستد و می‌شود کشیدش.",
+      about: "رمزگشایی کلمه‌به‌کلمه روی هاور؛ باقی پاراگراف کم‌رنگ می‌شود تا کلمه‌ی زیر نشانگر موضوع بماند.",
+      skills: "صورت‌فلکی SVG — هاور روی هر گره یال‌هایش را روشن و بقیه را محو می‌کند. هر گره کشش مغناطیسی خودش را دارد.",
+      projects: "ScrollTrigger.batch با جهش فنری مقیاس، روی بنتوی نامتقارنی که کارت شاخص ۲×۲ می‌گیرد.",
+      caseStudies: "تب‌های رادیکس، با پنل‌های force-mount تا هر سه مطالعه برای خزنده‌ها داخل HTML بمانند.",
+      experience: "لغزش یک‌درمیانِ گره‌خورده به اسکرول، با پرتوی پیشرفتی که هر گره کامیت را موقع عبور روشن می‌کند.",
+      contact: "یک فرم واقعی در لباس نشست ترمینال — فلگ‌ها همان برچسب فیلدها هستند و زمانی که چاپ می‌کند، دور درخواست واقعی اندازه گرفته شده.",
+      footer: "اطلاعات build که موقع کامپایل داخل کد نشسته‌اند؛ پس نسخه و تاریخ، مالِ همان باندلی است که الان اجرا می‌شود.",
+    },
+    behavioral: {
+      cursor: "دو فنر: نقطه‌ای که دقیق دنبال می‌کند و حلقه‌ای که روی هر چیز کلیک‌شدنی می‌چسبد و شکلش را می‌گیرد.",
+      curtain: "زبان زیر پوشش عوض می‌شود — دیکشنری و جهت متن فقط وقتی می‌چرخند که صفحه کاملاً پوشیده است.",
+      smoothScroll: "لنیس روی تیکر GSAP؛ کل سایت یک فریم مشترک دارد و هیچ افکت اسکرولی یک فریم عقب نمی‌افتد.",
+      reveal: "یک هوک ورود مشترک برای همه‌ی بخش‌ها، تا هیچ چیز این صفحه با ایزی ناهماهنگ وارد نشود.",
     },
   },
 };
