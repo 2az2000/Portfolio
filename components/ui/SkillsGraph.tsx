@@ -271,10 +271,7 @@ export function SkillsGraph({ nodes, edges, clusters, className }: SkillsGraphPr
         />
 
         {/* radial colour washes */}
-        <div
-          className="absolute inset-0"
-          style={{ background: "var(--skills-wash)" }}
-        />
+        <div className="absolute inset-0" style={{ background: "var(--skills-wash)" }} />
 
         {/* noise texture */}
         <div

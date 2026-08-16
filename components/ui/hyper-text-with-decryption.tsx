@@ -32,13 +32,7 @@ interface WordProps {
  * hovered word's own decorations below, which mount/unmount for a single
  * word at a time and are cheap.
  */
-const Word = ({
-  children,
-  isDimmed,
-  isHighlightable,
-  onHoverStart,
-  onHoverEnd,
-}: WordProps) => {
+const Word = ({ children, isDimmed, isHighlightable, onHoverStart, onHoverEnd }: WordProps) => {
   const [displayText, setDisplayText] = useState(children);
   const [isHovered, setIsHovered] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -169,21 +163,21 @@ export default function HyperTextParagraph({
 
   // Improved clean function that handles both Latin and Persian/Arabic scripts
   const clean = (w: string) => {
-    return w
-      .toLowerCase()
-      // Remove punctuation and special characters
-      .replace(/[،،؛؛"'"()\[\]{}<>:;,.!?\-_=+*/\\|@#$%^&*~`]/g, "")
-      // Remove extra spaces
-      .trim();
+    return (
+      w
+        .toLowerCase()
+        // Remove punctuation and special characters
+        .replace(/[،،؛؛"'"()\[\]{}<>:;,.!?\-_=+*/\\|@#$%^&*~`]/g, "")
+        // Remove extra spaces
+        .trim()
+    );
   };
 
   return (
     <div className={cn("leading-relaxed tracking-wide", className)}>
       {words.map((word, i) => {
         const cleanedWord = clean(word);
-        const isHighlightable = highlightWords.some(
-          (hw) => clean(hw) === cleanedWord
-        );
+        const isHighlightable = highlightWords.some((hw) => clean(hw) === cleanedWord);
 
         return (
           <React.Fragment key={i}>

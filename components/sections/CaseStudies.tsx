@@ -34,7 +34,7 @@ export function CaseStudies() {
   return (
     <section id="case-studies" className="section-py container" ref={containerRef}>
       <div data-reveal className="mb-12 max-w-2xl">
-        <p className="caption mb-3">{t.nav.caseStudies}</p>
+        {/* <p className="caption mb-3">{t.nav.caseStudies}</p> */}
         <h2 className="text-h2 font-display text-ink">{t.caseStudies.heading}</h2>
         <p className="mt-3 text-body text-mist">{t.caseStudies.subheading}</p>
       </div>
@@ -106,13 +106,9 @@ export function CaseStudies() {
                 <div className="glass rounded-[20px] p-6 md:p-9">
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div className="min-w-0">
-                      <h3 className="font-display text-xl text-ink md:text-2xl">
-                        {cs.title}
-                      </h3>
+                      <h3 className="font-display text-xl text-ink md:text-2xl">{cs.title}</h3>
                       <p className="mt-1.5 text-sm text-mist">{cs.tagline}</p>
-                      <p className="caption mt-3 text-violet dark:text-violet-soft">
-                        {cs.role}
-                      </p>
+                      <p className="caption mt-3 text-violet dark:text-violet-soft">{cs.role}</p>
                     </div>
 
                     {/* Internal products with no public URL drop the button
@@ -153,10 +149,7 @@ export function CaseStudies() {
                         </span>
 
                         <p className="caption relative flex items-center gap-2 text-ink/70">
-                          <span
-                            aria-hidden
-                            className={`h-1.5 w-1.5 rounded-full ${step.dot}`}
-                          />
+                          <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${step.dot}`} />
                           {step.label}
                         </p>
                         <p className="relative mt-3 text-sm leading-relaxed text-mist">

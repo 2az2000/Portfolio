@@ -57,11 +57,7 @@ export function SpotlightCard({
         }}
       />
 
-      {fileLabel && (
-        <span className="caption relative z-10 mb-4 block">
-          {fileLabel}
-        </span>
-      )}
+      {fileLabel && <span className="caption relative z-10 mb-4 block">{fileLabel}</span>}
 
       <div className="relative z-10">{children}</div>
     </div>

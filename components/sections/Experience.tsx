@@ -177,7 +177,7 @@ export function Experience() {
   return (
     <section id="experience" className="section-py container" ref={headingRef}>
       <div data-reveal className="mb-12 max-w-2xl">
-        <p className="caption mb-3">{t.nav.experience}</p>
+        {/* <p className="caption mb-3">{t.nav.experience}</p> */}
         <h2 className="text-h2 font-display text-ink">{t.experience.heading}</h2>
         <p className="mt-3 text-body text-mist">{t.experience.subheading}</p>
       </div>

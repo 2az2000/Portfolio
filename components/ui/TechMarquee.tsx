@@ -126,10 +126,8 @@ export function TechMarquee() {
       dir="ltr"
       className="relative w-full overflow-hidden border-y border-line py-6"
       style={{
-        maskImage:
-          "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)",
-        WebkitMaskImage:
-          "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)",
+        maskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)",
+        WebkitMaskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)",
       }}
       onMouseEnter={() => {
         targetVelocityRef.current = 0;

@@ -77,9 +77,7 @@ export function Skills() {
   return (
     <section id="skills" className="section-py container" ref={containerRef}>
       <div data-reveal className="mb-12 max-w-2xl">
-        <h2 className="text-h2 font-display text-ink">
-          {t.skills.heading}
-        </h2>
+        <h2 className="text-h2 font-display text-ink">{t.skills.heading}</h2>
         <p className="mt-3 text-body text-mist">{t.skills.subheading}</p>
       </div>
 

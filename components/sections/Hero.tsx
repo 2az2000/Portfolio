@@ -5,7 +5,9 @@ import { useLanguage } from "@/components/LanguageProvider";
 import { useGsapReveal } from "@/lib/useGsapReveal";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { SplineScene } from "@/components/ui/SplineScene";
-import { HeroCluster } from "@/components/HeroCluster";
+// Commented out alongside the fact rail below, which is currently disabled.
+// Restore both together.
+// import { HeroCluster } from "@/components/HeroCluster";
 import { scrollToId } from "@/lib/smoothScroll";
 
 const SPLINE_SCENE_URL = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode";

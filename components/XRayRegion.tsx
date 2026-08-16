@@ -16,13 +16,7 @@ import { XRAY_REGIONS, type XRayRegionId } from "@/lib/xray";
  * mode is active would risk shifting descendants at the exact moment the
  * visitor is looking closely at the layout.
  */
-export function XRayRegion({
-  id,
-  children,
-}: {
-  id: XRayRegionId;
-  children: ReactNode;
-}) {
+export function XRayRegion({ id, children }: { id: XRayRegionId; children: ReactNode }) {
   return (
     <div className="relative" data-xray={XRAY_REGIONS[id].file}>
       {children}

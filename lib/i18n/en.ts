@@ -478,68 +478,68 @@ export const en: Dictionary = {
       },
     ],
   },
-experience: {
-  heading: "Experience",
-  subheading: "Where the commits actually happened.",
-  items: [
-    {
-      hash: "f8a21d4",
-      message: "Rebuilt the Sib Irani platform with Next.js & TypeScript",
-      date: "2025",
-      company: "Sib Irani",
-      role: "Senior Frontend Developer",
-    },
-    {
-      hash: "d1bc93e",
-      message: "Developed Face Age using webcam & Mediapipe integration",
-      date: "2025",
-      company: "Sib Irani",
-      role: "Senior Frontend Developer",
-    },
-    {
-      hash: "91ea0fd",
-      message: "Built scalable dashboards for the Developer Platform",
-      date: "2024",
-      company: "Sib Irani",
-      role: "Frontend Developer",
-    },
-    {
-      hash: "74c8fa1",
-      message: "Shipped Brookli, a calorie-tracking progressive web app",
-      date: "2024",
-      company: "Sib Irani",
-      role: "Frontend Developer",
-    },
-    {
-      hash: "5be20f7",
-      message: "Managed staging releases and CI/CD workflow",
-      date: "2024",
-      company: "Sib Irani",
-      role: "Frontend Developer",
-    },
-    {
-      hash: "ab4329d",
-      message: "Created a reusable React architecture and shared components",
-      date: "2024",
-      company: "Sib Irani",
-      role: "Frontend Developer",
-    },
-    {
-      hash: "4fd80a2",
-      message: "Optimized rendering, API flow and application performance",
-      date: "2024",
-      company: "Sib Irani",
-      role: "Frontend Developer",
-    },
-    {
-      hash: "7ac52bf",
-      message: "Started professional frontend engineering journey",
-      date: "2023",
-      company: "Amatis Dana Tech",
-      role: "Junior Frontend Developer",
-    },
-  ],
-},
+  experience: {
+    heading: "Experience",
+    subheading: "Where the commits actually happened.",
+    items: [
+      {
+        hash: "f8a21d4",
+        message: "Rebuilt the Sib Irani platform with Next.js & TypeScript",
+        date: "2025",
+        company: "Sib Irani",
+        role: "Senior Frontend Developer",
+      },
+      {
+        hash: "d1bc93e",
+        message: "Developed Face Age using webcam & Mediapipe integration",
+        date: "2025",
+        company: "Sib Irani",
+        role: "Senior Frontend Developer",
+      },
+      {
+        hash: "91ea0fd",
+        message: "Built scalable dashboards for the Developer Platform",
+        date: "2024",
+        company: "Sib Irani",
+        role: "Frontend Developer",
+      },
+      {
+        hash: "74c8fa1",
+        message: "Shipped Brookli, a calorie-tracking progressive web app",
+        date: "2024",
+        company: "Sib Irani",
+        role: "Frontend Developer",
+      },
+      {
+        hash: "5be20f7",
+        message: "Managed staging releases and CI/CD workflow",
+        date: "2024",
+        company: "Sib Irani",
+        role: "Frontend Developer",
+      },
+      {
+        hash: "ab4329d",
+        message: "Created a reusable React architecture and shared components",
+        date: "2024",
+        company: "Sib Irani",
+        role: "Frontend Developer",
+      },
+      {
+        hash: "4fd80a2",
+        message: "Optimized rendering, API flow and application performance",
+        date: "2024",
+        company: "Sib Irani",
+        role: "Frontend Developer",
+      },
+      {
+        hash: "7ac52bf",
+        message: "Started professional frontend engineering journey",
+        date: "2023",
+        company: "Amatis Dana Tech",
+        role: "Junior Frontend Developer",
+      },
+    ],
+  },
   contact: {
     heading: "Let's talk",
     subheading: "Open to new opportunities and collaborations.",
@@ -627,22 +627,35 @@ experience: {
     regionsLabel: "Regions on the page",
     behavioralLabel: "No outline — these are behaviour, not layout",
     regions: {
-      navbar: "Sliding pill indicator on Framer Motion's layoutId, plus an IntersectionObserver scrollspy.",
+      navbar:
+        "Sliding pill indicator on Framer Motion's layoutId, plus an IntersectionObserver scrollspy.",
       hero: "GSAP fade-and-rise stagger. The three stats are computed from the data further down the page, never typed by hand.",
-      marquee: "One Framer motion value driven every frame, so hover eases the strip to a stop and you can drag to scrub it.",
-      about: "Per-word scramble-decrypt on hover; the rest of the paragraph dims to keep the hovered word the subject.",
-      skills: "SVG constellation — hovering a node lights its edges and dims the rest. Each node has its own magnetic pull.",
-      projects: "GSAP ScrollTrigger.batch with a spring scale-pop, over an asymmetric bento where the flagship takes 2x2.",
-      caseStudies: "Radix tabs, panels force-mounted so all three studies stay in the HTML for crawlers.",
-      experience: "Scroll-scrubbed alternating slide, with a progress beam whose position ignites each commit node as it passes.",
-      contact: "A real form dressed as a terminal session — the flags are the field labels, and the timings it prints are measured around the actual request.",
-      footer: "Build facts inlined at compile time, so the version and date belong to the bundle you're running.",
+      marquee:
+        "One Framer motion value driven every frame, so hover eases the strip to a stop and you can drag to scrub it.",
+      about:
+        "Per-word scramble-decrypt on hover; the rest of the paragraph dims to keep the hovered word the subject.",
+      skills:
+        "SVG constellation — hovering a node lights its edges and dims the rest. Each node has its own magnetic pull.",
+      projects:
+        "GSAP ScrollTrigger.batch with a spring scale-pop, over an asymmetric bento where the flagship takes 2x2.",
+      caseStudies:
+        "Radix tabs, panels force-mounted so all three studies stay in the HTML for crawlers.",
+      experience:
+        "Scroll-scrubbed alternating slide, with a progress beam whose position ignites each commit node as it passes.",
+      contact:
+        "A real form dressed as a terminal session — the flags are the field labels, and the timings it prints are measured around the actual request.",
+      footer:
+        "Build facts inlined at compile time, so the version and date belong to the bundle you're running.",
     },
     behavioral: {
-      cursor: "Two springs: a hard dot that tracks exactly, and a ring that snaps onto whatever you can click, matching its shape.",
-      curtain: "Language switches under cover — the dictionary and text direction flip only while the page is fully hidden.",
-      smoothScroll: "Lenis running off GSAP's ticker, so the whole site shares one animation frame and no scroll effect lags a frame behind.",
-      reveal: "One shared entrance hook for every section, so nothing on this page enters with an ease that doesn't match the rest.",
+      cursor:
+        "Two springs: a hard dot that tracks exactly, and a ring that snaps onto whatever you can click, matching its shape.",
+      curtain:
+        "Language switches under cover — the dictionary and text direction flip only while the page is fully hidden.",
+      smoothScroll:
+        "Lenis running off GSAP's ticker, so the whole site shares one animation frame and no scroll effect lags a frame behind.",
+      reveal:
+        "One shared entrance hook for every section, so nothing on this page enters with an ease that doesn't match the rest.",
     },
   },
 };
