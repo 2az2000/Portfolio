@@ -101,9 +101,7 @@ export function Navbar() {
         data-xray={XRAY_REGIONS.navbar.file}
         data-xray-pos="below"
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-base ease-brand ${
-          scrolled
-            ? "glass shadow-glass"
-            : "bg-transparent"
+          scrolled ? "glass shadow-glass" : "bg-transparent"
         }`}
       >
         <nav className="container flex items-center justify-between py-4">
@@ -113,12 +111,12 @@ export function Navbar() {
             className="focus-ring group -ms-2 rounded-lg"
             aria-label="Scroll to top"
           >
-            {/* The mark is a dark 3D render, so it needs a surface to sit on:
-                against the light theme it would otherwise float on bare
-                white, and against the dark one its edges dissolve into the
-                page. The tile is the same `glass` used by the controls on the
-                other end of the bar, which also keeps both ends of the navbar
-                on one material. */}
+            {/* The mark is transparent, and its structural strokes are dark
+                navy — against the dark theme those edges dissolve into the
+                page and only the blue/gold accents survive. The tile gives it
+                a ground to read against in both themes, and it is the same
+                `glass` used by the controls on the other end of the bar, which
+                keeps both ends of the navbar on one material. */}
             <span className="glass relative flex items-center justify-center rounded-lg px-2.5 py-1.5 transition-all duration-fast ease-brand group-hover:border-violet/30 group-hover:shadow-glow">
               {/* Soft violet bloom under the mark. Always on, but faint —
                   it lifts the logo off the tile without reading as a second
@@ -128,12 +126,14 @@ export function Navbar() {
                 className="pointer-events-none absolute inset-1 rounded-lg bg-violet/20 blur-md transition-opacity duration-fast ease-brand group-hover:opacity-80"
               />
               {/* A plain <img> for the same reason as the project marks: a
-                  3.7KB 96px asset gains nothing from a round trip through the
+                  2.8KB 96px asset gains nothing from a round trip through the
                   image optimizer. Intrinsic size is declared so the row never
                   reflows once it decodes, and `alt` is empty because the
-                  button already carries the label. */}
+                  button already carries the label. Subset from
+                  assets/images-src/AZlogo.webp — see assets/README.md. */}
+              {/* eslint-disable-next-line @next/next/no-img-element -- deliberate, see above */}
               <img
-                src="/images/amirali-96.webp"
+                src="/images/az-logo-96.webp"
                 alt=""
                 width={96}
                 height={96}
@@ -153,9 +153,7 @@ export function Navbar() {
                 <button
                   onClick={() => scrollTo(section.id)}
                   className={`relative rounded-lg px-3 py-2 font-mono text-caption uppercase transition-colors duration-fast focus-ring ${
-                    active === section.id
-                      ? "text-ink"
-                      : "text-mist hover:text-ink"
+                    active === section.id ? "text-ink" : "text-mist hover:text-ink"
                   }`}
                 >
                   {active === section.id && (
@@ -191,9 +189,7 @@ export function Navbar() {
                   visitor's platform, which the server can't know, and guessing
                   it would be a hydration mismatch on half the traffic. */}
               {mounted && (
-                <kbd className="hidden font-mono text-xs sm:block">
-                  {isApple ? "⌘K" : "Ctrl K"}
-                </kbd>
+                <kbd className="hidden font-mono text-xs sm:block">{isApple ? "⌘K" : "Ctrl K"}</kbd>
               )}
             </button>
 
@@ -211,7 +207,11 @@ export function Navbar() {
                     exit={{ opacity: 0, rotate: 90, scale: 0.8 }}
                     transition={{ duration: DURATION.fast, ease: EASE_BRAND }}
                   >
-                    {theme === "dark" ? <Sun size={16} className="text-amber" /> : <Moon size={16} className="text-violet" />}
+                    {theme === "dark" ? (
+                      <Sun size={16} className="text-amber" />
+                    ) : (
+                      <Moon size={16} className="text-violet" />
+                    )}
                   </motion.span>
                 </AnimatePresence>
               </button>
