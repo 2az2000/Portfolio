@@ -37,7 +37,7 @@ export function CustomCursor() {
   // re-measured when the page scrolls underneath a stationary pointer.
   const snapElRef = useRef<HTMLElement | null>(null);
   const pointerRef = useRef({ x: -100, y: -100 });
-  const rafRef = useRef<number>();
+  const rafRef = useRef<number | null>(null);
 
   const px = useMotionValue(-100);
   const py = useMotionValue(-100);

@@ -19,18 +19,18 @@
  */
 const CHAR_FOLDING: Record<string, string> = {
   // yeh: Arabic / Alef Maksura -> Farsi Yeh
-  "ي": "ی",
-  "ى": "ی",
+  ي: "ی",
+  ى: "ی",
   // kaf: Arabic Kaf -> Keheh
-  "ك": "ک",
+  ك: "ک",
   // alef with hamza/madda -> bare alef
-  "أ": "ا",
-  "إ": "ا",
-  "آ": "ا",
+  أ: "ا",
+  إ: "ا",
+  آ: "ا",
   // teh marbuta -> heh
-  "ة": "ه",
+  ة: "ه",
   // heh with hamza -> heh
-  "ۀ": "ه",
+  ۀ: "ه",
 };
 
 /** Harakat and friends: typed almost never, present in text occasionally. */
@@ -49,7 +49,7 @@ function foldDigits(char: string): string | null {
 
 /** Lowercased, de-accented, script-folded form used for all comparisons. */
 export function normalize(input: string): string {
-  let out = input
+  const out = input
     .toLowerCase()
     // Splits accented Latin into base + combining mark so the marks can be
     // dropped — "café" should be reachable by typing "cafe".
