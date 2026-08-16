@@ -1,7 +1,24 @@
-import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
-import "./globals.css";
+import { Providers } from "@/components/Providers";
+import { CustomCursor } from "@/components/CustomCursor";
+import { AmbientBackground } from "@/components/AmbientBackground";
+import type { Locale } from "@/lib/i18n";
+
+/**
+ * Everything the two root layouts have in common.
+ *
+ * There are two of them — `app/(en)/layout.tsx` and `app/(fa)/layout.tsx` —
+ * because only a root layout may render `<html>`, and `lang`/`dir` have to be
+ * correct in the server response for each locale. Making one shared layout
+ * vary by route would mean reading `headers()`, which opts the whole site out
+ * of static rendering to decide two attributes.
+ *
+ * The cost of that split is duplication, and this component is where it stops:
+ * the font loaders in particular must be module-level singletons, and defining
+ * them twice would emit two sets of @font-face rules and two preload chains.
+ */
 
 /**
  * Clash Display + General Sans, self-hosted.
@@ -19,8 +36,8 @@ import "./globals.css";
  */
 const clashDisplay = localFont({
   src: [
-    { path: "./fonts/ClashDisplay-600.woff2", weight: "600", style: "normal" },
-    { path: "./fonts/ClashDisplay-700.woff2", weight: "700", style: "normal" },
+    { path: "../app/fonts/ClashDisplay-600.woff2", weight: "600", style: "normal" },
+    { path: "../app/fonts/ClashDisplay-700.woff2", weight: "700", style: "normal" },
   ],
   variable: "--font-display",
   display: "swap",
@@ -29,28 +46,25 @@ const clashDisplay = localFont({
 
 const generalSans = localFont({
   src: [
-    { path: "./fonts/GeneralSans-400.woff2", weight: "400", style: "normal" },
-    { path: "./fonts/GeneralSans-500.woff2", weight: "500", style: "normal" },
-    { path: "./fonts/GeneralSans-600.woff2", weight: "600", style: "normal" },
+    { path: "../app/fonts/GeneralSans-400.woff2", weight: "400", style: "normal" },
+    { path: "../app/fonts/GeneralSans-500.woff2", weight: "500", style: "normal" },
+    { path: "../app/fonts/GeneralSans-600.woff2", weight: "600", style: "normal" },
   ],
   variable: "--font-body",
   display: "swap",
   fallback: ["sans-serif"],
 });
-import { Providers } from "@/components/Providers";
-import { CustomCursor } from "@/components/CustomCursor";
-import { AmbientBackground } from "@/components/AmbientBackground";
 
 /**
  * Peyda Pro — all Persian text, headings and body alike (AGENTS.md §4).
  *
  * Self-hosted for the same reason as the two Latin faces above, and built
- * from the TTFs in `public/Peyda Pro/` by subsetting them to the Latin +
+ * from the TTFs in `assets/fonts-src/Peyda Pro/` by subsetting them to Latin +
  * Arabic ranges the site actually uses and recompressing to woff2:
  * ~202KB per weight becomes ~28KB, so all four weights together cost less
  * than a third of one original file. Regenerate with:
  *
- *   python -m fontTools.subset "public/Peyda Pro/Peyda-Regular.ttf" \
+ *   python -m fontTools.subset "assets/fonts-src/Peyda Pro/Peyda-Regular.ttf" \
  *     --output-file=app/fonts/Peyda-400.woff2 --flavor=woff2 \
  *     --layout-features='*' --unicodes="U+0000-00FF,U+0600-06FF,..."
  *
@@ -64,10 +78,10 @@ import { AmbientBackground } from "@/components/AmbientBackground";
  */
 const peyda = localFont({
   src: [
-    { path: "./fonts/Peyda-400.woff2", weight: "400", style: "normal" },
-    { path: "./fonts/Peyda-500.woff2", weight: "500", style: "normal" },
-    { path: "./fonts/Peyda-600.woff2", weight: "600", style: "normal" },
-    { path: "./fonts/Peyda-700.woff2", weight: "700", style: "normal" },
+    { path: "../app/fonts/Peyda-400.woff2", weight: "400", style: "normal" },
+    { path: "../app/fonts/Peyda-500.woff2", weight: "500", style: "normal" },
+    { path: "../app/fonts/Peyda-600.woff2", weight: "600", style: "normal" },
+    { path: "../app/fonts/Peyda-700.woff2", weight: "700", style: "normal" },
   ],
   variable: "--font-fa",
   display: "swap",
@@ -86,45 +100,26 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://portfolio-amirali.vercel.app";
-
-const TITLE = "Amirali Zand — Frontend Developer";
-const DESCRIPTION =
-  "Frontend Developer — React, Next.js, TypeScript & the Node.js ecosystem.";
-
 /**
- * The favicon, the apple touch icon and the social card are the AZ mark, and
- * they're picked up from `app/icon.png`, `app/apple-icon.png` and
- * `app/opengraph-image.jpg` by Next's file conventions — which is also why
- * there's no `icons` key here. `metadataBase` is what turns those into the
- * absolute URLs crawlers require.
+ * The four font variable classes, as one string.
+ *
+ * Exported because `app/not-found.tsx` needs the same typography without the
+ * rest of the shell: a root not-found sits above both route groups, and Next
+ * supplies its own bare `<html>` for it, so that page applies these to a
+ * wrapper element instead of to `<body>`. CSS variables cascade, so the
+ * distinction does not matter to anything downstream.
  */
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: TITLE,
-  description: DESCRIPTION,
-  openGraph: {
-    type: "website",
-    url: SITE_URL,
-    siteName: "Amirali Zand",
-    title: TITLE,
-    description: DESCRIPTION,
-    locale: "en_US",
-    alternateLocale: "fa_IR",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: TITLE,
-    description: DESCRIPTION,
-  },
-};
+export const fontVariables = [
+  clashDisplay.variable,
+  generalSans.variable,
+  peyda.variable,
+  jetbrainsMono.variable,
+].join(" ");
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export function RootShell({ locale, children }: { locale: Locale; children: ReactNode }) {
   return (
-    <html lang="en" dir="ltr" suppressHydrationWarning>
-      <body
-        className={`${clashDisplay.variable} ${generalSans.variable} ${peyda.variable} ${jetbrainsMono.variable}`}
-      >
+    <html lang={locale} dir={locale === "fa" ? "rtl" : "ltr"} suppressHydrationWarning>
+      <body className={fontVariables}>
         {/* Outside Providers on purpose: this is a persistent backdrop, so
             it shouldn't fade/flicker along with LanguageProvider's
             locale-switch cross-fade wrapper. */}
@@ -135,7 +130,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             leaving the page with no visible cursor at all, since we hide the
             native one. It consumes no context. */}
         <CustomCursor />
-        <Providers>{children}</Providers>
+        <Providers initialLocale={locale}>{children}</Providers>
       </body>
     </html>
   );

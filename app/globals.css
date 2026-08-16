@@ -76,7 +76,8 @@
        the switch is a style recalculation the compositor handles and React
        never hears about it. */
     --skills-grid-line: rgba(0, 0, 0, 0.035);
-    --skills-wash: radial-gradient(ellipse 55% 50% at 22% 28%, #7c5cfc0c, transparent),
+    --skills-wash:
+      radial-gradient(ellipse 55% 50% at 22% 28%, #7c5cfc0c, transparent),
       radial-gradient(ellipse 50% 55% at 78% 62%, #33e6b809, transparent),
       radial-gradient(ellipse 38% 38% at 58% 18%, #ffb86b07, transparent);
     /* Particles carry their own per-particle alpha, so the token is the tint
@@ -129,7 +130,8 @@
 
     /* ---- skills constellation backdrop (dark) ---- */
     --skills-grid-line: rgba(255, 255, 255, 0.025);
-    --skills-wash: radial-gradient(ellipse 55% 50% at 22% 28%, #7c5cfc16, transparent),
+    --skills-wash:
+      radial-gradient(ellipse 55% 50% at 22% 28%, #7c5cfc16, transparent),
       radial-gradient(ellipse 50% 55% at 78% 62%, #33e6b812, transparent),
       radial-gradient(ellipse 38% 38% at 58% 18%, #ffb86b0d, transparent);
     --skills-particle: 255 255 255;
@@ -395,9 +397,11 @@ html.is-xray [data-xray][data-xray-pos="below"]::before {
    ignites in the same tint as its card's spotlight.
    ========================================================================== */
 [data-exp-node] {
-  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s
-      cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s
-      cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 [data-exp-node].is-active {
   background-color: rgb(var(--exp-node-color, var(--violet)));
@@ -415,45 +419,97 @@ html.is-xray [data-xray][data-xray-pos="below"]::before {
    `transform` (used for magnetic + hover) without conflict.
    ========================================================================== */
 @keyframes skillFloat0 {
-  0%, 100% { translate: 0 0; }
-  25% { translate: 3px -7px; }
-  50% { translate: -2px -11px; }
-  75% { translate: 4px -5px; }
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  25% {
+    translate: 3px -7px;
+  }
+  50% {
+    translate: -2px -11px;
+  }
+  75% {
+    translate: 4px -5px;
+  }
 }
 @keyframes skillFloat1 {
-  0%, 100% { translate: 0 0; }
-  25% { translate: -4px -9px; }
-  50% { translate: 5px -6px; }
-  75% { translate: -2px -12px; }
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  25% {
+    translate: -4px -9px;
+  }
+  50% {
+    translate: 5px -6px;
+  }
+  75% {
+    translate: -2px -12px;
+  }
 }
 @keyframes skillFloat2 {
-  0%, 100% { translate: 0 0; }
-  25% { translate: 5px -5px; }
-  50% { translate: -3px -10px; }
-  75% { translate: 2px -8px; }
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  25% {
+    translate: 5px -5px;
+  }
+  50% {
+    translate: -3px -10px;
+  }
+  75% {
+    translate: 2px -8px;
+  }
 }
 @keyframes skillFloat3 {
-  0%, 100% { translate: 0 0; }
-  25% { translate: -2px -10px; }
-  50% { translate: 4px -7px; }
-  75% { translate: -5px -9px; }
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  25% {
+    translate: -2px -10px;
+  }
+  50% {
+    translate: 4px -7px;
+  }
+  75% {
+    translate: -5px -9px;
+  }
 }
 /* Hover state of an edge: the dashes travel from one node to the other.
    CSS rather than SMIL — see the comment at the usage in SkillsGraph.tsx. */
 @keyframes skillEdgeFlow {
-  to { stroke-dashoffset: -8; }
+  to {
+    stroke-dashoffset: -8;
+  }
 }
 /* One-shot glow when the random "energy pulse" picks an edge. */
 @keyframes skillEdgePulse {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 0.55; }
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.55;
+  }
 }
 
 @keyframes skillFloat4 {
-  0%, 100% { translate: 0 0; }
-  25% { translate: 4px -8px; }
-  50% { translate: -5px -5px; }
-  75% { translate: 3px -12px; }
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  25% {
+    translate: 4px -8px;
+  }
+  50% {
+    translate: -5px -5px;
+  }
+  75% {
+    translate: 3px -12px;
+  }
 }
 
 /* ==========================================================================
@@ -465,16 +521,31 @@ html.is-xray [data-xray][data-xray-pos="below"]::before {
    runs behind every section for the entire session, not just one.
    ========================================================================== */
 @keyframes ambientDrift1 {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 6vw 4vh; }
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 6vw 4vh;
+  }
 }
 @keyframes ambientDrift2 {
-  0%, 100% { translate: 0 0; }
-  50% { translate: -5vw 5vh; }
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: -5vw 5vh;
+  }
 }
 @keyframes ambientDrift3 {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 4vw -6vh; }
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 4vw -6vh;
+  }
 }
 
 /* Respect reduced-motion globally: any element opting into motion should

@@ -7,8 +7,16 @@ import { ThemeWipe } from "@/components/ThemeWipe";
 import { XRayProvider } from "@/components/XRayProvider";
 import { XRayLegend } from "@/components/XRayLegend";
 import { CommandPalette } from "@/components/ui/CommandPalette";
+import type { Locale } from "@/lib/i18n";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({
+  children,
+  initialLocale,
+}: {
+  children: React.ReactNode;
+  /** Seeded from the route, so the server renders the right language. */
+  initialLocale: Locale;
+}) {
   return (
     <ThemeProvider
       attribute="class"
@@ -27,7 +35,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       {/* Inside LanguageProvider because the legend's copy is translated —
           the whole point of X-ray mode is explaining the page, and an
           explanation only lands in the reader's own language. */}
-      <LanguageProvider>
+      <LanguageProvider initialLocale={initialLocale}>
         <XRayProvider>
           {children}
           <XRayLegend />
