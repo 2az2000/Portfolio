@@ -117,13 +117,13 @@ export function Navbar() {
                 a ground to read against in both themes, and it is the same
                 `glass` used by the controls on the other end of the bar, which
                 keeps both ends of the navbar on one material. */}
-            <span className="glass relative flex items-center justify-center rounded-lg px-2.5 py-1.5 transition-all duration-fast ease-brand group-hover:border-violet/30 group-hover:shadow-glow">
+            <span className=" relative flex items-center justify-center rounded-lg px-1 transition-all duration-fast ease-brand group-hover:border-violet/30 group-hover:shadow-glow">
               {/* Soft violet bloom under the mark. Always on, but faint —
                   it lifts the logo off the tile without reading as a second
                   glow next to the hover state. */}
               <span
                 aria-hidden
-                className="pointer-events-none absolute inset-1 rounded-lg bg-violet/20 blur-md transition-opacity duration-fast ease-brand group-hover:opacity-80"
+                className="pointer-events-none absolute inset-1 rounded-lg bg-violet/50 blur-md transition-opacity duration-fast ease-brand group-hover:opacity-80"
               />
               {/* A plain <img> for the same reason as the project marks: a
                   2.8KB 96px asset gains nothing from a round trip through the
@@ -135,13 +135,13 @@ export function Navbar() {
               <img
                 src="/images/az-logo-96.webp"
                 alt=""
-                width={96}
-                height={96}
+                width={45}
+                height={45}
                 // The one image on the page above the fold in every viewport —
                 // the only place on this site where eager beats lazy.
                 fetchPriority="high"
                 decoding="async"
-                className="relative h-8 w-auto transition-transform duration-fast ease-brand group-hover:scale-110"
+                className="relative transition-transform duration-fast ease-brand group-hover:scale-110"
               />
             </span>
           </button>

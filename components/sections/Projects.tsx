@@ -101,11 +101,11 @@ export function Projects() {
                         loading="lazy"
                         decoding="async"
                         className={cn(
-                          "h-9 w-9 shrink-0 rounded-md border border-line object-contain p-1",
+                          "h-9 w-9 shrink-0 rounded-md border border-line object-contain",
                           // Product marks are flat and often dark, so they need a
                           // light tile; the AZ mark is transparent with dark navy
                           // strokes, and only separates from the card on a dark one.
-                          project.logo ? "bg-white/90" : "bg-void"
+                          project.logo ? "bg-white/90" : "bg-white/80"
                         )}
                       />
                       <h3
