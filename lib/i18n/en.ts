@@ -92,6 +92,13 @@ export type Dictionary = {
     problemLabel: string;
     approachLabel: string;
     resultLabel: string;
+    /**
+     * Heading above the before → after table. Rendered only for the studies
+     * that carry a `migration` array — i.e. the refactors.
+     */
+    migrationLabel: string;
+    /** Heading above the "built once the refactor landed" list. */
+    shippedLabel: string;
     viewLive: string;
     items: {
       title: string;
@@ -100,6 +107,18 @@ export type Dictionary = {
       problem: string;
       approach: string;
       result: string;
+      /**
+       * The version jump at the centre of a refactor, as rows of
+       * label / before / after. Optional, and deliberately so: on a study
+       * that isn't a migration there is nothing honest to put here, and an
+       * empty table would be worse than no table.
+       */
+      migration?: { label: string; from: string; to: string }[];
+      /**
+       * What was built *after* the refactor landed — the part a version table
+       * can't show. Optional for the same reason as `migration`.
+       */
+      shipped?: string[];
       stack: string[];
       href: string;
     }[];
@@ -295,7 +314,7 @@ export const en: Dictionary = {
   },
   about: {
     heading: "About",
-    body: "I'm a frontend developer who believes the best interfaces are the ones that feel alive. With a focus on React, Next.js, and TypeScript, I build applications that don't just work — they respond, adapt, and surprise. Every pixel, every transition, every micro-interaction is intentional. I don't write code to fill a screen; I craft experiences that prove the craft.",
+    body: "I'm a frontend developer in Tehran, building products people actually use: an alternative app store, installable PWAs, AI features that run inside the browser. React, Next.js and TypeScript are where I work. What I care about is the part users feel — how fast a page becomes usable, whether it survives a bad network, whether the interface responds like it's paying attention.",
   },
   skills: {
     heading: "Skills",
@@ -333,8 +352,8 @@ export const en: Dictionary = {
       {
         title: "Brookli",
         description:
-          "A calorie tracker that installs straight from the browser — log meals, follow daily nutrition goals, and keep using it offline, with no app-store download in the way.",
-        stack: ["React", "PWA", "AI"],
+          "A calorie tracker that installs straight from the browser — photograph a plate or just say what you ate, and the entry lands logged against the day's goals, offline included. I debugged the app end to end and carried it from React 18 and Material UI 4 to React 19 and MUI 9.",
+        stack: ["React 19", "MUI 9", "PWA", "AI"],
         href: "https://app.brookliapp.com/",
         context: "Product",
         logo: "/images/brookli-96.png",
@@ -362,7 +381,7 @@ export const en: Dictionary = {
         description:
           "A Persian RTL storefront for locks and door hardware on Next.js 16 and Payload CMS 3. A typed service layer sits between them, so the UI never queries the CMS directly and the whole stack comes up with one Docker command.",
         stack: ["Next.js", "Payload CMS", "PostgreSQL"],
-        href: "https://github.com/2az2000/door-lock-shop",
+        href: "https://doorlock-shop.vercel.app/",
         context: "Open source",
       },
       {
@@ -381,6 +400,8 @@ export const en: Dictionary = {
     problemLabel: "Problem",
     approachLabel: "Approach",
     resultLabel: "Result",
+    migrationLabel: "Version jump",
+    shippedLabel: "Shipped on the new base",
     viewLive: "View live",
     items: [
       {
@@ -399,15 +420,28 @@ export const en: Dictionary = {
       },
       {
         title: "Brookli",
-        tagline: "A calorie-tracking PWA you can install straight from the browser.",
-        role: "Frontend Developer",
+        tagline:
+          "Debugging a shipped calorie tracker, then carrying it from React 18 and Material UI 4 to React 19 and MUI 9.",
+        role: "Frontend Developer — owned the refactor end to end",
         problem:
-          "Brookli needed a lightweight, installable nutrition-tracking experience that worked reliably as a PWA across devices, without the overhead of a native app.",
+          "Brookli was live and working, but pinned to Material UI 4 — a major built on JSS and makeStyles that the ecosystem had left three releases earlier. That one pin held the entire dependency tree in place: React couldn't move past 18, no current library would install cleanly beside it, and every new feature turned into a negotiation with a styling engine nobody maintains. Sitting under all of it was a backlog of reproducible bugs that nobody wanted to touch while the floor was moving.",
         approach:
-          "Implemented the PWA foundations (install prompts, offline caching, service worker), shipped AI-powered features, coordinated with the product/design team on the meal-logging flow, and optimized rendering performance across the app.",
+          "Bugs before versions: every reported defect reproduced and closed first, so that nothing could later hide behind the upgrade and be mistaken for migration fallout. Then the migration as an ordered sequence rather than one heroic commit — the @material-ui/* packages renamed to @mui/*, every makeStyles and withStyles block rewritten as Emotion styled and sx, the theme reshaped major by major up to 9, and only then React itself to 19, dropping findDOMNode and defaultProps and taking refs as ordinary props. The new features went in last, on a base that had stopped moving: meal recognition from a photo, and logging a meal by speaking it.",
         result:
-          "A stable, installable PWA that lets users log meals and track calories entirely from the browser — no app-store download required.",
-        stack: ["React", "PWA"],
+          "A calorie tracker running on current React and MUI with the bug backlog closed rather than inherited, AI meal logging by camera and by voice built on top, and the installable, offline PWA behaviour intact from the first commit of the migration to the last.",
+        migration: [
+          { label: "React", from: "18", to: "19" },
+          { label: "Material UI", from: "4", to: "9" },
+          { label: "Package scope", from: "@material-ui/core", to: "@mui/material" },
+          { label: "Styling engine", from: "JSS · makeStyles", to: "Emotion · styled + sx" },
+        ],
+        shipped: [
+          "Photo meal logging — point the camera at a plate and the entry arrives filled in instead of typed",
+          "Voice meal logging — say what you ate and it lands as the same structured entry",
+          "A full bug sweep first, so the migration started from a known-good app rather than a moving one",
+          "Installable and offline throughout — the service worker and cached shell survived the upgrade instead of being rebuilt after it",
+        ],
+        stack: ["React 19", "MUI 9", "PWA", "AI"],
         href: "https://app.brookliapp.com/",
       },
       {
@@ -461,7 +495,7 @@ export const en: Dictionary = {
         result:
           "An RTL storefront where staff manage categories, brands and products from the admin panel, with sitemap, robots and metadata generated, and a fresh clone running locally in a single command.",
         stack: ["Next.js", "Payload CMS", "PostgreSQL"],
-        href: "https://github.com/2az2000/door-lock-shop",
+        href: "https://doorlock-shop.vercel.app/",
       },
       {
         title: "fabioCoffee",
@@ -483,6 +517,13 @@ export const en: Dictionary = {
     subheading: "Where the commits actually happened.",
     items: [
       {
+        hash: "3e91c07",
+        message: "Refactored Brookli to React 19 & MUI 9, and shipped AI meal logging",
+        date: "2026",
+        company: "Sib Irani",
+        role: "Senior Frontend Developer",
+      },
+      {
         hash: "f8a21d4",
         message: "Rebuilt the Sib Irani platform with Next.js & TypeScript",
         date: "2025",
@@ -499,35 +540,35 @@ export const en: Dictionary = {
       {
         hash: "91ea0fd",
         message: "Built scalable dashboards for the Developer Platform",
-        date: "2024",
+        date: "2025",
         company: "Sib Irani",
         role: "Frontend Developer",
       },
       {
         hash: "74c8fa1",
         message: "Shipped Brookli, a calorie-tracking progressive web app",
-        date: "2024",
+        date: "2025",
         company: "Sib Irani",
         role: "Frontend Developer",
       },
       {
         hash: "5be20f7",
         message: "Managed staging releases and CI/CD workflow",
-        date: "2024",
+        date: "2025",
         company: "Sib Irani",
         role: "Frontend Developer",
       },
       {
         hash: "ab4329d",
         message: "Created a reusable React architecture and shared components",
-        date: "2024",
+        date: "2025",
         company: "Sib Irani",
         role: "Frontend Developer",
       },
       {
         hash: "4fd80a2",
         message: "Optimized rendering, API flow and application performance",
-        date: "2024",
+        date: "2025",
         company: "Sib Irani",
         role: "Frontend Developer",
       },
@@ -639,7 +680,7 @@ export const en: Dictionary = {
       projects:
         "GSAP ScrollTrigger.batch with a spring scale-pop, over an asymmetric bento where the flagship takes 2x2.",
       caseStudies:
-        "Radix tabs, panels force-mounted so all three studies stay in the HTML for crawlers.",
+        "Radix tabs, panels force-mounted so every study stays in the HTML for crawlers.",
       experience:
         "Scroll-scrubbed alternating slide, with a progress beam whose position ignites each commit node as it passes.",
       contact:

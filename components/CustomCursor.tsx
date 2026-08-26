@@ -36,25 +36,40 @@ export function CustomCursor() {
   // The element the ring is currently locked onto, kept so it can be
   // re-measured when the page scrolls underneath a stationary pointer.
   const snapElRef = useRef<HTMLElement | null>(null);
+  // That element's own corner radius, cached. Reading it costs a style
+  // recalc, and a magnetic button slides under the pointer every frame — so
+  // the box has to be re-measured continuously while the radius cannot have
+  // changed. Re-reading it anyway was a forced recalc on every frame of
+  // every hover.
+  const snapRadiusRef = useRef(0);
   const pointerRef = useRef({ x: -100, y: -100 });
+  const targetRef = useRef<HTMLElement | null>(null);
   const rafRef = useRef<number | null>(null);
+  // Mirrors `visible` so the move handler can skip the setState entirely
+  // once the cursor is on screen, instead of dispatching an identical value
+  // on every pointer event and leaning on React's bail-out.
+  const visibleRef = useRef(false);
 
+  // Every spring below is damped to ζ ≈ 1 (c ≈ 2·√(k·m)) — the point where
+  // it arrives as fast as it can without overshooting. The ring used to sit
+  // just under that, so each movement ended in a small bounce, and the dot
+  // just over it, which reads as drag. Neither is what a cursor should do.
   const px = useMotionValue(-100);
   const py = useMotionValue(-100);
-  const dotX = useSpring(px, { damping: 32, stiffness: 1100, mass: 0.18 });
-  const dotY = useSpring(py, { damping: 32, stiffness: 1100, mass: 0.18 });
+  const dotX = useSpring(px, { damping: 28, stiffness: 1200, mass: 0.16 });
+  const dotY = useSpring(py, { damping: 28, stiffness: 1200, mass: 0.16 });
 
   const rx = useMotionValue(-100);
   const ry = useMotionValue(-100);
-  const ringX = useSpring(rx, { damping: 24, stiffness: 240, mass: 0.7 });
-  const ringY = useSpring(ry, { damping: 24, stiffness: 240, mass: 0.7 });
+  const ringX = useSpring(rx, { damping: 28, stiffness: 210, mass: 0.85 });
+  const ringY = useSpring(ry, { damping: 28, stiffness: 210, mass: 0.85 });
 
   const w = useMotionValue(RING_IDLE);
   const h = useMotionValue(RING_IDLE);
   const r = useMotionValue(999);
-  const ringW = useSpring(w, { damping: 30, stiffness: 300, mass: 0.5 });
-  const ringH = useSpring(h, { damping: 30, stiffness: 300, mass: 0.5 });
-  const ringR = useSpring(r, { damping: 30, stiffness: 300, mass: 0.5 });
+  const ringW = useSpring(w, { damping: 26, stiffness: 330, mass: 0.5 });
+  const ringH = useSpring(h, { damping: 26, stiffness: 330, mass: 0.5 });
+  const ringR = useSpring(r, { damping: 26, stiffness: 330, mass: 0.5 });
 
   useEffect(() => {
     const fine = window.matchMedia("(pointer: fine)").matches;
@@ -72,8 +87,17 @@ export function CustomCursor() {
     return () => root.classList.remove("has-custom-cursor");
   }, [enabled]);
 
+  /**
+   * Pins the ring to an element's box. `measureRadius` is true only when the
+   * ring arrives on a *different* element — while it stays on one, the box is
+   * re-read every frame (magnetic buttons move) but the radius is not.
+   */
   const lockTo = useCallback(
-    (el: HTMLElement) => {
+    (el: HTMLElement, measureRadius: boolean) => {
+      if (measureRadius) {
+        snapRadiusRef.current = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0;
+      }
+
       const rect = el.getBoundingClientRect();
       rx.set(rect.left + rect.width / 2);
       ry.set(rect.top + rect.height / 2);
@@ -82,8 +106,7 @@ export function CustomCursor() {
 
       // Follow the element's own corner radius so pills stay pills, but never
       // exceed a half-height (which would bulge a wide box into a lozenge).
-      const raw = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0;
-      r.set(Math.min(raw + SNAP_PAD / 2, (rect.height + SNAP_PAD) / 2));
+      r.set(Math.min(snapRadiusRef.current + SNAP_PAD / 2, (rect.height + SNAP_PAD) / 2));
     },
     [rx, ry, w, h, r]
   );
@@ -96,9 +119,10 @@ export function CustomCursor() {
       if (snap) {
         const rect = snap.getBoundingClientRect();
         if (rect.width <= MAX_SNAP && rect.height <= MAX_SNAP) {
+          const arrived = snap !== snapElRef.current;
           snapElRef.current = snap;
           setMode("snap");
-          lockTo(snap);
+          lockTo(snap, arrived);
           return;
         }
       }
@@ -123,17 +147,30 @@ export function CustomCursor() {
       // pointermove, so this path is reachable, not theoretical.
       if (!(e.target instanceof Element)) return;
 
+      // The position write is a plain value set — no layout read, no React
+      // render — so it happens on the event itself. Deferring it to the next
+      // frame, as this used to, is exactly the delay a cursor is felt as: up
+      // to a full frame of lag behind the pointer on every single move.
       pointerRef.current = { x: e.clientX, y: e.clientY };
-      const target = e.target as HTMLElement;
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      // One rAF batch for the position write and the (layout-reading)
-      // closest/getBoundingClientRect walk, so neither runs more than once
-      // per painted frame even at 120Hz+ pointer rates.
-      rafRef.current = requestAnimationFrame(() => {
-        px.set(e.clientX);
-        py.set(e.clientY);
+      px.set(e.clientX);
+      py.set(e.clientY);
+
+      if (!visibleRef.current) {
+        visibleRef.current = true;
         setVisible(true);
-        resolve(target);
+      }
+
+      // The hit-test behind it does read layout, so that half stays coalesced
+      // to one run per painted frame even at 1000Hz pointer rates. Holding the
+      // frame open and re-reading the newest target beats cancel-and-reschedule:
+      // it resolves one frame after the first move of a burst rather than one
+      // frame after the last, and still uses the position the burst ended at.
+      targetRef.current = e.target as HTMLElement;
+      if (rafRef.current !== null) return;
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = null;
+        const target = targetRef.current;
+        if (target) resolve(target);
       });
     };
 
@@ -147,11 +184,15 @@ export function CustomCursor() {
       scrollFrame = requestAnimationFrame(() => {
         scrollFrame = null;
         const el = snapElRef.current;
-        if (el) lockTo(el);
+        // Scrolling moves the box, never its corner radius.
+        if (el) lockTo(el, false);
       });
     };
 
-    const handleLeave = () => setVisible(false);
+    const handleLeave = () => {
+      visibleRef.current = false;
+      setVisible(false);
+    };
     const handleDown = () => setPressed(true);
     const handleUp = () => setPressed(false);
 
@@ -166,7 +207,14 @@ export function CustomCursor() {
       window.removeEventListener("pointerdown", handleDown);
       window.removeEventListener("pointerup", handleUp);
       document.removeEventListener("mouseleave", handleLeave);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      // Cleared, not just cancelled: a pending id left behind would make the
+      // handler above believe a frame is still queued after a re-mount, and
+      // no hit-test would ever be scheduled again.
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+      targetRef.current = null;
       if (scrollFrame !== null) cancelAnimationFrame(scrollFrame);
     };
   }, [enabled, lockTo, px, py, rx, ry, w, h, r]);

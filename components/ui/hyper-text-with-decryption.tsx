@@ -1,8 +1,7 @@
 "use client";
 
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 
 // --- Configuration ---
 const SCRAMBLE_SPEED = 10;
@@ -15,139 +14,92 @@ interface HyperTextProps {
   highlightWords?: string[];
 }
 
-interface WordProps {
-  children: string;
-  isDimmed: boolean;
-  isHighlightable: boolean;
-  onHoverStart: () => void;
-  onHoverEnd: () => void;
-}
+/**
+ * Normalises a word for comparison — case, punctuation, and the characters a
+ * caller cannot see in their own list. Persian compounds are written with a
+ * zero-width non-joiner ("فرانت‌اند"), so without stripping it no Persian
+ * word could ever match an entry someone typed without one.
+ */
+const clean = (w: string) =>
+  w
+    .toLowerCase()
+    .replace(/[،،؛؛"'"()\[\]{}<>:;,.!?\-_=+*/\|@#$%^&*~`]/g, "")
+    .replace(/[\u200B-\u200F\u061C\uFEFF]/g, "")
+    .trim();
 
 /**
- * Dimming/scale/color react to hover via plain CSS transitions (cheap,
- * GPU-composited) instead of Framer Motion `animate` — with one paragraph
- * hover toggling `isDimmed` on every word, driving all of them through JS
- * springs (plus an animated `filter: blur()`, one of the most expensive
- * CSS properties) tanked frame rate. Framer Motion is kept only for the
- * hovered word's own decorations below, which mount/unmount for a single
- * word at a time and are cheap.
+ * A word that answers to hover: it scramble-decrypts, lifts off the line and
+ * lights up, while the rest of the paragraph dims behind it.
+ *
+ * Only the scramble holds React state — one word's worth, only while that
+ * word is hovered. The lift, the colour, the panel behind it, the corner
+ * dots and the dimming of every *other* word are all CSS. That split is the
+ * point: this used to raise a `hovered` flag into the paragraph, which
+ * re-rendered all ~60 words on every hover and cost frames doing it.
  */
-const Word = ({ children, isDimmed, isHighlightable, onHoverStart, onHoverEnd }: WordProps) => {
+const KeyWord = ({ children }: { children: string }) => {
   const [displayText, setDisplayText] = useState(children);
-  const [isHovered, setIsHovered] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
+  const stop = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = null;
   }, []);
 
-  // `children` (the word text) changes in place when the locale switches —
-  // the Fragment above is keyed by index, not content, so this component
-  // instance survives the swap and its local `displayText` state would
-  // otherwise stay frozen on the old language until the next hover.
+  useEffect(() => stop, [stop]);
+
+  // `children` changes in place when the locale switches — the list below is
+  // keyed by index, not by content, so this instance survives the swap and
+  // its `displayText` would otherwise stay frozen on the old language.
   useEffect(() => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
+    stop();
     setDisplayText(children);
-  }, [children]);
+  }, [children, stop]);
 
   const scramble = useCallback(() => {
     let pos = 0;
-    if (intervalRef.current) clearInterval(intervalRef.current);
-
+    stop();
     intervalRef.current = setInterval(() => {
-      const scrambled = children
-        .split("")
-        .map((char, index) => {
-          if (pos / CYCLES_PER_LETTER > index) return char;
-          const randomChar = CHARS[Math.floor(Math.random() * CHARS.length)];
-          return randomChar;
-        })
-        .join("");
-
-      setDisplayText(scrambled);
+      setDisplayText(
+        children
+          .split("")
+          .map((char, index) =>
+            pos / CYCLES_PER_LETTER > index ? char : CHARS[Math.floor(Math.random() * CHARS.length)]
+          )
+          .join("")
+      );
       pos++;
-
       if (pos >= children.length * CYCLES_PER_LETTER) {
-        if (intervalRef.current) clearInterval(intervalRef.current);
+        stop();
         setDisplayText(children);
       }
     }, SCRAMBLE_SPEED);
-  }, [children]);
+  }, [children, stop]);
 
-  const stopScramble = useCallback(() => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
+  const reset = useCallback(() => {
+    stop();
     setDisplayText(children);
-  }, [children]);
-
-  const handleMouseEnter = () => {
-    if (isHighlightable) {
-      setIsHovered(true);
-      onHoverStart();
-      scramble();
-    }
-  };
-
-  const handleMouseLeave = () => {
-    if (isHighlightable) {
-      setIsHovered(false);
-      onHoverEnd();
-      stopScramble();
-    }
-  };
+  }, [children, stop]);
 
   return (
     <span
-      className={cn(
-        "relative inline-block font-mono font-medium whitespace-nowrap transition-[opacity,transform,color] duration-200 ease-out",
-        isHighlightable ? "cursor-pointer" : "cursor-default"
-      )}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        transform: isHovered ? "scale(1.1) translateY(-4px)" : "scale(1) translateY(0)",
-        opacity: isDimmed && !isHovered ? 0.3 : 1,
-        color: isHovered ? "#FFFFFF" : isHighlightable ? "#8B5CF6" : "#64748B",
-        zIndex: isHovered ? 20 : 1,
-      }}
+      onMouseEnter={scramble}
+      onMouseLeave={reset}
+      className="hyper-word hyper-key group relative z-[1] inline-block cursor-pointer whitespace-nowrap font-mono font-medium text-violet transition-[opacity,transform,color] duration-200 ease-out hover:z-20 hover:-translate-y-1 hover:scale-110 hover:text-ink dark:text-violet-soft"
     >
-      <AnimatePresence>
-        {isHovered && (
-          <motion.span
-            className="absolute -inset-2 rounded-lg bg-surface z-[-1]"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            layoutId="hover-bg"
-            style={{
-              boxShadow:
-                "0px 10px 25px -5px rgba(139, 92, 246, 0.4), 0px 8px 10px -6px rgba(0, 0, 0, 0.1)",
-            }}
-          />
-        )}
-      </AnimatePresence>
-
-      <span className="relative z-10 px-1">{displayText}</span>
-
-      <AnimatePresence>
-        {isHovered && (
-          <>
-            <motion.span
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
-              className="absolute -top-1 -end-1 w-2 h-2 bg-violet-500 rounded-full z-20"
-            />
-            <motion.span
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
-              className="absolute -bottom-1 -start-1 w-2 h-2 bg-emerald-400 rounded-full z-20"
-            />
-          </>
-        )}
-      </AnimatePresence>
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -inset-2 -z-10 scale-90 rounded-lg bg-surface opacity-0 shadow-glass transition-[opacity,transform] duration-200 ease-out group-hover:scale-100 group-hover:opacity-100"
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -top-1 -end-1 h-2 w-2 scale-0 rounded-full bg-violet transition-transform duration-200 ease-out group-hover:scale-100"
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -bottom-1 -start-1 h-2 w-2 scale-0 rounded-full bg-mint transition-transform duration-200 ease-out group-hover:scale-100"
+      />
+      <span className="relative px-1">{displayText}</span>
     </span>
   );
 };
@@ -157,42 +109,26 @@ export default function HyperTextParagraph({
   className = "",
   highlightWords = [],
 }: HyperTextProps) {
-  const [isParagraphHovered, setIsParagraphHovered] = useState(false);
-
-  const words = text.split(" ");
-
-  // Improved clean function that handles both Latin and Persian/Arabic scripts
-  const clean = (w: string) => {
-    return (
-      w
-        .toLowerCase()
-        // Remove punctuation and special characters
-        .replace(/[،،؛؛"'"()\[\]{}<>:;,.!?\-_=+*/\\|@#$%^&*~`]/g, "")
-        // Remove extra spaces
-        .trim()
-    );
-  };
+  const words = useMemo(() => text.split(" "), [text]);
+  const keys = useMemo(() => new Set(highlightWords.map(clean)), [highlightWords]);
 
   return (
-    <div className={cn("leading-relaxed tracking-wide", className)}>
-      {words.map((word, i) => {
-        const cleanedWord = clean(word);
-        const isHighlightable = highlightWords.some((hw) => clean(hw) === cleanedWord);
-
-        return (
-          <React.Fragment key={i}>
-            <Word
-              isDimmed={isParagraphHovered}
-              isHighlightable={isHighlightable}
-              onHoverStart={() => setIsParagraphHovered(true)}
-              onHoverEnd={() => setIsParagraphHovered(false)}
-            >
+    <div className={cn("hyper-para leading-relaxed tracking-wide", className)}>
+      {words.map((word, i) => (
+        <React.Fragment key={i}>
+          {keys.has(clean(word)) ? (
+            <KeyWord>{word}</KeyWord>
+          ) : (
+            // A word nobody can hover needs no state, no handlers and no
+            // decorations — just text that dims when a neighbour is hovered.
+            // Most of the paragraph is this branch.
+            <span className="hyper-word inline-block whitespace-nowrap font-mono font-medium text-mist transition-opacity duration-200 ease-out">
               {word}
-            </Word>
-            <span className="inline-block whitespace-pre"> </span>
-          </React.Fragment>
-        );
-      })}
+            </span>
+          )}
+          <span className="inline-block whitespace-pre"> </span>
+        </React.Fragment>
+      ))}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import * as Tabs from "@radix-ui/react-tabs";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useGsapReveal } from "@/lib/useGsapReveal";
@@ -158,6 +158,68 @@ export function CaseStudies() {
                       </div>
                     ))}
                   </div>
+
+                  {/* The refactor detail. Only the studies that actually are
+                      a migration carry these, so a study without them closes
+                      at the three steps rather than showing an empty frame. */}
+                  {(cs.migration || cs.shipped) && (
+                    <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                      {cs.migration && (
+                        <div className="rounded-lg border border-line bg-ink/[0.02] p-5">
+                          <p className="caption text-ink/70">{t.caseStudies.migrationLabel}</p>
+                          <dl className="mt-4 space-y-3">
+                            {cs.migration.map((row) => (
+                              <div
+                                key={row.label}
+                                className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-line pb-3 last:border-0 last:pb-0"
+                              >
+                                <dt className="text-sm text-mist">{row.label}</dt>
+                                {/* Package names and version numbers are Latin
+                                    strings with neutral characters (@ / +) at
+                                    their edges; without an explicit direction
+                                    the bidi algorithm reorders them once the
+                                    page flips to RTL. */}
+                                <dd
+                                  dir="ltr"
+                                  className="ms-auto flex items-center gap-2 font-mono text-xs"
+                                >
+                                  <span className="text-mist/60 line-through decoration-mist/40">
+                                    {row.from}
+                                  </span>
+                                  <ArrowRight
+                                    size={12}
+                                    aria-hidden
+                                    className="shrink-0 text-violet dark:text-violet-soft"
+                                  />
+                                  <span className="text-mint">{row.to}</span>
+                                </dd>
+                              </div>
+                            ))}
+                          </dl>
+                        </div>
+                      )}
+
+                      {cs.shipped && (
+                        <div className="rounded-lg border border-line bg-ink/[0.02] p-5">
+                          <p className="caption text-ink/70">{t.caseStudies.shippedLabel}</p>
+                          <ul className="mt-4 space-y-2.5">
+                            {cs.shipped.map((point) => (
+                              <li
+                                key={point}
+                                className="flex gap-2.5 text-sm leading-relaxed text-mist"
+                              >
+                                <span
+                                  aria-hidden
+                                  className="mt-[0.5em] h-1 w-1 shrink-0 rounded-full bg-mint"
+                                />
+                                <span>{point}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   <div className="mt-6 flex flex-wrap gap-2">
                     {cs.stack.map((tech) => (

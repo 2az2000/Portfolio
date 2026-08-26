@@ -248,6 +248,15 @@
     @apply py-20 md:py-28;
   }
 
+  /* The About paragraph dims so the hovered word is the subject. Done with
+     :has() rather than by lifting a "hovered" flag into React: the paragraph
+     is ~60 words, and re-rendering every one of them on each hover is what
+     cost frames. The selector only fires for words that are actually
+     interactive, so hovering ordinary text changes nothing. */
+  .hyper-para:has(.hyper-key:hover) .hyper-word:not(:hover) {
+    opacity: 0.3;
+  }
+
   .glass {
     @apply backdrop-blur-md border;
     background-color: rgb(255 255 255 / 0.6);

@@ -269,6 +269,12 @@ a{ color:inherit; text-decoration:none; }
    the logos carry their own color and two competing ones fight. */
 .proj-ic.logo{ background:#F3F3F9; border:1px solid #E9E9F3; padding:0.7mm; }
 .proj-ic.logo img{ width:100%; height:100%; object-fit:contain; display:block; }
+/* The AZ mark standing in for a project that has no logo of its own — the
+   same fallback the site's project grid uses, so a card never starts with a
+   generic glyph where the others start with a real mark. It's a transparent
+   mark drawn in dark navy rather than a solid product logo, so it takes a
+   white tile for contrast and a little more breathing room. */
+.proj-ic.logo.mark{ background:#fff; padding:0.9mm; }
 .proj-name{ font-size:9.6px; font-weight:700; color:var(--ink); line-height:1.2; }
 .proj-link{ display:block; font-family:var(--font-mono); font-size:7.2px; color:var(--violet); margin-top:0.5mm; }
 /* Same slot as .proj-link for products with no public URL — muted so it
@@ -280,8 +286,30 @@ a{ color:inherit; text-decoration:none; }
   font-family:var(--font-mono); font-size:7.2px; font-weight:500;
   color:#5B45D6; background:#F1EEFF; padding:0.9mm 2mm; border-radius:999px;
 }
-.proj-more{ font-size:8.2px; color:#7A7A90; margin-top:3mm; }
-.proj-more b{ color:var(--ink); font-weight:600; }
+/* Everything that earns a line but not a card. One row per project, each on
+   a single line — so the section can take another project for ~3mm instead
+   of the ~14mm a fifth card would cost, and the sheet stays one page. */
+.proj-list{ margin-top:3.2mm; }
+.proj-list-h{
+  font-family:var(--font-mono); font-weight:700; font-size:7.2px;
+  letter-spacing:1.2px; text-transform:uppercase; color:#8A8A9E;
+  margin-bottom:1.6mm;
+}
+.proj-list ul{ list-style:none; }
+.proj-list li{
+  display:flex; align-items:baseline; gap:1.8mm;
+  font-size:8.1px; line-height:1.4; color:#5A5A70;
+  margin-bottom:0.9mm;
+}
+.proj-list li:last-child{ margin-bottom:0; }
+.proj-list b{ flex:none; color:var(--ink); font-weight:700; }
+.proj-list .what{ flex:1; min-width:0; }
+/* Pushed to the outer edge so the stacks line up as their own column — and
+   logical, not `left`, so the rail follows the text direction. */
+.proj-list .tech{
+  flex:none; margin-inline-start:auto;
+  font-family:var(--font-mono); font-size:7px; color:#9494A8;
+}
 
 /* ---- Bottom row ---- */
 .bottom{ display:flex; gap:6mm; margin-top:6mm; }
@@ -459,15 +487,16 @@ a{ color:inherit; text-decoration:none; }
       <div class="job-body">
         <div class="job-top">
           <div>
-            <span class="job-role">Senior Frontend Developer</span>
+            <span class="job-role">Frontend Developer</span>
             <span style="color:#C4C4D2"> · </span>
             <span class="job-co">Sib Irani</span>
           </div>
-          <div class="job-meta">2024 — Present<br>Tehran, Iran</div>
+          <div class="job-meta">2025 — Present<br>Tehran, Iran</div>
         </div>
         <ul>
           <li>Rebuilt the <b>Sib Irani</b> app-store platform from scratch in Next.js and TypeScript, including full PWA support — installable, offline-capable, no app-store download required.</li>
-          <li>Built <b>Face Age</b>, an AI facial-analysis feature driven by webcam capture and MediaPipe, and shipped <b>Brookli</b>, a calorie-tracking PWA with real-time meal logging.</li>
+          <li>Debugged and refactored <b>Brookli</b> end to end — React 18&nbsp;→&nbsp;19, Material UI 4&nbsp;→&nbsp;9, JSS/makeStyles onto Emotion — then shipped AI meal logging by photo and by voice.</li>
+          <li>Built <b>Face Age</b>, an AI facial-analysis feature driven by webcam capture and MediaPipe.</li>
           <li>Delivered the dashboards behind the <b>developer portal</b> local publishers use to submit, review and manage their apps.</li>
           <li>Owned the release process end to end — versioning, staging deployments, pre-production testing and the CI/CD workflow.</li>
           <li>Established a reusable React architecture and shared component layer, then profiled and reworked rendering and API flow to cut load times.</li>
@@ -482,16 +511,16 @@ a{ color:inherit; text-decoration:none; }
       <div class="job-body">
         <div class="job-top">
           <div>
-            <span class="job-role">Junior Frontend Developer</span>
+            <span class="job-role">Frontend Developer</span>
             <span style="color:#C4C4D2"> · </span>
             <span class="job-co">Amatis Dana Tech</span>
           </div>
-          <div class="job-meta">2023 — 2024<br>Tehran, Iran</div>
+          <div class="job-meta">2023 — 2025<br>Tehran, Iran</div>
         </div>
         <ul>
           <li>Built and shipped React UI components across several team projects as an individual contributor.</li>
           <li>Reduced page load times by trimming bundle size and reworking asset loading strategy.</li>
-          <li>Integrated REST APIs and worked directly with design and backend to deliver complete product modules.</li>
+          <li>Integrated REST APIs and worked directly with design and backend teams.</li>
         </ul>
       </div>
     </article>
@@ -523,8 +552,8 @@ a{ color:inherit; text-decoration:none; }
             <a class="proj-link" href="https://app.brookliapp.com/" target="_blank" rel="noreferrer">app.brookliapp.com</a>
           </span>
         </div>
-        <p class="proj-desc">Installable calorie-tracking PWA for logging meals and following daily nutrition goals, with offline caching and push notifications.</p>
-        <div class="tags"><span class="tag">React</span><span class="tag">PWA</span><span class="tag">Firebase</span></div>
+        <p class="proj-desc">Installable calorie-tracking PWA. Debugged and refactored end to end — React 18&nbsp;→&nbsp;19, MUI 4&nbsp;→&nbsp;9 — then given AI meal logging by photo and by voice.</p>
+        <div class="tags"><span class="tag">React 19</span><span class="tag">MUI 9</span><span class="tag">PWA</span><span class="tag">AI</span></div>
       </div>
 
       <div class="proj">
@@ -541,23 +570,28 @@ a{ color:inherit; text-decoration:none; }
 
       <div class="proj">
         <div class="proj-top">
-          <span class="proj-ic" style="background:linear-gradient(135deg,#6FB6FF,#3A72DE)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2M4.9 4.9l1.4 1.4M2 12h2M19.1 4.9l-1.4 1.4M17 12a5 5 0 1 0-9.6 2"/><path d="M6.5 20a3.5 3.5 0 0 1 0-7 4.5 4.5 0 0 1 8.7-1.1A3.5 3.5 0 0 1 17.5 20z"/></svg></span>
+          <span class="proj-ic logo mark"><img src="data:image/webp;base64,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" alt=""></span>
           <span>
-            <span class="proj-name">Weather</span>
-            <a class="proj-link" href="https://github.com/2az2000/Weather-app-native" target="_blank" rel="noreferrer">github.com/2az2000</a>
+            <span class="proj-name">Door Lock Shop</span>
+            <a class="proj-link" href="https://doorlock-shop.vercel.app/" target="_blank" rel="noreferrer">doorlock-shop.vercel.app</a>
           </span>
         </div>
-        <p class="proj-desc">React Native app in clean architecture — data/domain/presentation layers behind a DI container, with forecasts cached offline.</p>
-        <div class="tags"><span class="tag">React Native</span><span class="tag">Expo</span><span class="tag">TanStack Query</span></div>
+        <p class="proj-desc">Persian RTL storefront on Next.js 16 and Payload CMS 3, with a typed service layer over Postgres and the stack in one Docker command.</p>
+        <div class="tags"><span class="tag">Next.js 16</span><span class="tag">Payload CMS</span><span class="tag">PostgreSQL</span></div>
       </div>
 
     </div>
 
-    <p class="proj-more">
-      Also shipped <b>Sib Bazar</b> (iOS app store with its own Adhoc signing pipeline),
-      <b>Door Lock Shop</b> (Next.js 16 + Payload CMS 3 storefront) and
-      <b>fabioCoffee</b> (Next.js café ordering and admin panel on an Express/Prisma API).
-    </p>
+    <div class="proj-list">
+      <div class="proj-list-h">Also built</div>
+      <ul>
+        <li><b>Sib Bazar</b><span class="what">iOS store on an in-house Adhoc signing pipeline</span><span class="tech">React · TS · PWA</span></li>
+        <li><b>smartShop</b><span class="what">Next.js 15 commerce — parallel &amp; intercepting routes, server actions</span><span class="tech">Prisma · Clerk</span></li>
+        <li><b>Weather</b><span class="what">React Native clean architecture, forecasts cached offline</span><span class="tech">Expo · TanStack</span></li>
+        <li><b>fabioCoffee</b><span class="what">Café ordering menu and admin panel over one Express API</span><span class="tech">Prisma · JWT</span></li>
+        <li><b>Diamond Laundry</b><span class="what">Laundry back-office — OTP login, invoicing, customers</span><span class="tech">React · Vite</span></li>
+      </ul>
+    </div>
 
     <div class="bottom">
       <div class="bottom-col">

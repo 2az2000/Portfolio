@@ -29,31 +29,46 @@ export function Projects() {
   const gridRef = useRef<HTMLDivElement>(null);
 
   // A third distinct GSAP technique (see Skills' fade/rise and Experience's
-  // scrubbed slide): ScrollTrigger.batch pops each card in with a spring-y
-  // scale as it crosses the viewport, batched so simultaneous entrances
-  // stagger together instead of firing one-by-one.
+  // scrubbed slide): ScrollTrigger.batch brings each card in as it crosses
+  // the line, batched so simultaneous entrances stagger together instead of
+  // firing one-by-one.
   useEffect(() => {
     const grid = gridRef.current;
-    if (!grid || prefersReducedMotion()) return;
+    if (!grid) return;
 
     const cards = grid.querySelectorAll<HTMLElement>("[data-project-card]");
+    if (!cards.length) return;
+
+    if (prefersReducedMotion()) {
+      gsap.set(cards, { opacity: 1, y: 0 });
+      return;
+    }
+
     const ctx = gsap.context(() => {
+      // Hidden up front rather than at trigger time. `fromTo` inside onEnter
+      // set the from-state only once a card had already crossed the start
+      // line — so a card that was on screen before the batch ran, or that a
+      // fast scroll carried well past the line, got painted in full and then
+      // snapped back to invisible to animate in. That snap is the jump.
+      gsap.set(cards, { opacity: 0, y: 24 });
+
       ScrollTrigger.batch(cards, {
         start: "top 88%",
         once: true,
         onEnter: (batch) =>
-          gsap.fromTo(
-            batch,
-            { opacity: 0, scale: 0.92, y: 24 },
-            {
-              opacity: 1,
-              scale: 1,
-              y: 0,
-              duration: 0.7,
-              ease: EASE_BRAND_CSS,
-              stagger: 0.12,
-            }
-          ),
+          gsap.to(batch, {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: EASE_BRAND_CSS,
+            stagger: 0.12,
+            // The scale-pop this used to open with is gone on purpose: the
+            // card underneath is a backdrop-blur surface, and scaling one of
+            // those makes the blur re-sample and re-rasterise on every frame
+            // of the tween. Seven at once is what made the entrance stutter.
+            // Opacity and translate alone stay on the compositor.
+            overwrite: true,
+          }),
       });
     }, grid);
 
