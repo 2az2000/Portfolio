@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import * as Tabs from "@radix-ui/react-tabs";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useGsapReveal } from "@/lib/useGsapReveal";
@@ -34,7 +34,7 @@ export function CaseStudies() {
   return (
     <section id="case-studies" className="section-py container" ref={containerRef}>
       <div data-reveal className="mb-12 max-w-2xl">
-        <p className="caption mb-3">{t.nav.caseStudies}</p>
+        {/* <p className="caption mb-3">{t.nav.caseStudies}</p> */}
         <h2 className="text-h2 font-display text-ink">{t.caseStudies.heading}</h2>
         <p className="mt-3 text-body text-mist">{t.caseStudies.subheading}</p>
       </div>
@@ -106,13 +106,9 @@ export function CaseStudies() {
                 <div className="glass rounded-[20px] p-6 md:p-9">
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div className="min-w-0">
-                      <h3 className="font-display text-xl text-ink md:text-2xl">
-                        {cs.title}
-                      </h3>
+                      <h3 className="font-display text-xl text-ink md:text-2xl">{cs.title}</h3>
                       <p className="mt-1.5 text-sm text-mist">{cs.tagline}</p>
-                      <p className="caption mt-3 text-violet dark:text-violet-soft">
-                        {cs.role}
-                      </p>
+                      <p className="caption mt-3 text-violet dark:text-violet-soft">{cs.role}</p>
                     </div>
 
                     {/* Internal products with no public URL drop the button
@@ -153,10 +149,7 @@ export function CaseStudies() {
                         </span>
 
                         <p className="caption relative flex items-center gap-2 text-ink/70">
-                          <span
-                            aria-hidden
-                            className={`h-1.5 w-1.5 rounded-full ${step.dot}`}
-                          />
+                          <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${step.dot}`} />
                           {step.label}
                         </p>
                         <p className="relative mt-3 text-sm leading-relaxed text-mist">
@@ -165,6 +158,68 @@ export function CaseStudies() {
                       </div>
                     ))}
                   </div>
+
+                  {/* The refactor detail. Only the studies that actually are
+                      a migration carry these, so a study without them closes
+                      at the three steps rather than showing an empty frame. */}
+                  {(cs.migration || cs.shipped) && (
+                    <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                      {cs.migration && (
+                        <div className="rounded-lg border border-line bg-ink/[0.02] p-5">
+                          <p className="caption text-ink/70">{t.caseStudies.migrationLabel}</p>
+                          <dl className="mt-4 space-y-3">
+                            {cs.migration.map((row) => (
+                              <div
+                                key={row.label}
+                                className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-line pb-3 last:border-0 last:pb-0"
+                              >
+                                <dt className="text-sm text-mist">{row.label}</dt>
+                                {/* Package names and version numbers are Latin
+                                    strings with neutral characters (@ / +) at
+                                    their edges; without an explicit direction
+                                    the bidi algorithm reorders them once the
+                                    page flips to RTL. */}
+                                <dd
+                                  dir="ltr"
+                                  className="ms-auto flex items-center gap-2 font-mono text-xs"
+                                >
+                                  <span className="text-mist/60 line-through decoration-mist/40">
+                                    {row.from}
+                                  </span>
+                                  <ArrowRight
+                                    size={12}
+                                    aria-hidden
+                                    className="shrink-0 text-violet dark:text-violet-soft"
+                                  />
+                                  <span className="text-mint">{row.to}</span>
+                                </dd>
+                              </div>
+                            ))}
+                          </dl>
+                        </div>
+                      )}
+
+                      {cs.shipped && (
+                        <div className="rounded-lg border border-line bg-ink/[0.02] p-5">
+                          <p className="caption text-ink/70">{t.caseStudies.shippedLabel}</p>
+                          <ul className="mt-4 space-y-2.5">
+                            {cs.shipped.map((point) => (
+                              <li
+                                key={point}
+                                className="flex gap-2.5 text-sm leading-relaxed text-mist"
+                              >
+                                <span
+                                  aria-hidden
+                                  className="mt-[0.5em] h-1 w-1 shrink-0 rounded-full bg-mint"
+                                />
+                                <span>{point}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   <div className="mt-6 flex flex-wrap gap-2">
                     {cs.stack.map((tech) => (

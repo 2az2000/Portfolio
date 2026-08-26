@@ -24,9 +24,11 @@ type RevealOptions = {
  * this instead of writing its own GSAP timeline, so entrance motion stays
  * identical site-wide (see AGENTS.md §5, modularity rule 4).
  */
-export function useGsapReveal<T extends HTMLElement>(
-  { selector, y = 32, stagger = STAGGER_BASE }: RevealOptions
-): RefObject<T> {
+export function useGsapReveal<T extends HTMLElement>({
+  selector,
+  y = 32,
+  stagger = STAGGER_BASE,
+}: RevealOptions): RefObject<T | null> {
   const containerRef = useRef<T>(null);
 
   useEffect(() => {

@@ -10,24 +10,26 @@ export function About() {
 
   // کلمات هایلایت باید دقیقاً با کلمات موجود در متن مطابقت داشته باشند
   // برای مثال اگر در متن "React" داریم، باید "react" (کوچک) باشد
+  //
+  // Both locales share one list: HyperTextParagraph lowercases and strips
+  // punctuation (and the zero-width non-joiner) before comparing, so the
+  // Latin entries below also match the Latin technology names that appear
+  // inside the Persian paragraph.
   const highlightWords = [
     // English keywords
     "react",
     "frontend",
     "nextjs",
     "typescript",
-    "interfaces",
-    "pixel",
-    "transitions",
-    "microinteractions",
-    "experiences",
-    // Persian keywords (بدون اعراب و تشدید)
+    "pwas",
+    "ai",
+    "browser",
+    "interface",
+    // Persian keywords (بدون نیم‌فاصله)
     "فرانتاند",
-    "رابطهای",
-    "پیکسل",
-    "انیمیشن",
-    "تعامل",
-    "تجربههایی",
+    "مرورگر",
+    "کاربر",
+    "رابط",
   ];
 
   return (

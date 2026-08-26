@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 
 type XRayContextValue = {
   enabled: boolean;
@@ -112,9 +105,7 @@ export function XRayProvider({ children }: { children: ReactNode }) {
     // The legend is mounted by Providers rather than here, so this file never
     // imports the component that consumes its context — an import cycle that
     // resolves at render time is a fuse waiting for someone to move a call.
-    <XRayContext.Provider value={{ enabled, toggle, setEnabled }}>
-      {children}
-    </XRayContext.Provider>
+    <XRayContext.Provider value={{ enabled, toggle, setEnabled }}>{children}</XRayContext.Provider>
   );
 }
 

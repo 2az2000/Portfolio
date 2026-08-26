@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# A second push to the same branch makes the first run's result irrelevant.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npm run format:check
+
+      # Also typechecks. It has to run before any bare `tsc` would: Next
+      # generates `next-env.d.ts` and `.next/types` during the build, and both
+      # are gitignored, so on a clean checkout they do not exist yet.
+      #
+      # No RESEND_API_KEY here on purpose — the contact route reads it per
+      # request, so nothing at build time needs the secret.
+      - run: npm run build

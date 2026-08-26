@@ -3,7 +3,7 @@ const { PHASE_PRODUCTION_BUILD } = require("next/constants");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-    // turbopack: false, // غیرفعال کردن Turbopack
+  // turbopack: false, // غیرفعال کردن Turbopack
 
   // Lets Next.js rewrite deep-package imports from these libraries into
   // per-icon/per-module paths automatically, so the client bundle only
@@ -36,7 +36,6 @@ module.exports = (phase) => ({
   ...nextConfig,
   env: {
     ...nextConfig.env,
-    NEXT_PUBLIC_BUILD_TIME:
-      phase === PHASE_PRODUCTION_BUILD ? new Date().toISOString() : "",
+    NEXT_PUBLIC_BUILD_TIME: phase === PHASE_PRODUCTION_BUILD ? new Date().toISOString() : "",
   },
 });

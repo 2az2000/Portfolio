@@ -107,12 +107,7 @@ export function Contact() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 p-5 font-mono text-sm">
-            <TerminalField
-              flag={t.contact.fieldName}
-              value={name}
-              onChange={setName}
-              required
-            />
+            <TerminalField flag={t.contact.fieldName} value={name} onChange={setName} required />
             <TerminalField
               flag={t.contact.fieldEmail}
               value={email}

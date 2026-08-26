@@ -25,6 +25,11 @@ export function SplineScene({ scene, className }: SplineSceneProps) {
   const [hasLoaded, setHasLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const appRef = useRef<Application | null>(null);
+  // Whether the scene is on screen right now. Drives the render loop below,
+  // and gates the pointer forwarding under it.
+  const visibleRef = useRef(false);
+  // The scene's <canvas>, looked up once instead of on every pointer move.
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -62,6 +67,7 @@ export function SplineScene({ scene, className }: SplineSceneProps) {
     // the milliseconds it saved.
     const observer = new IntersectionObserver(
       ([entry]) => {
+        visibleRef.current = entry.isIntersecting;
         const app = appRef.current;
         if (!app) return;
         if (entry.isIntersecting) app.play();
@@ -84,9 +90,29 @@ export function SplineScene({ scene, className }: SplineSceneProps) {
     const container = containerRef.current;
     if (!container) return;
 
-    const handlePointerMove = (e: PointerEvent) => {
-      const canvas = container.querySelector("canvas");
+    // Three things this listener must not do, because it sees every pointer
+    // move on the page for the whole session:
+    //   - run at all while the scene is off screen. Its render loop is
+    //     stopped there, so each forwarded event was a raycast into a paused
+    //     scene — still paid for down on the contact form.
+    //   - query the DOM per move. The <canvas> is looked up once and cached.
+    //   - fire more than once per painted frame. Spline consumes this at its
+    //     own frame rate, so anything denser is thrown away.
+    let frame: number | null = null;
+    let latest: PointerEvent | null = null;
+
+    const forward = () => {
+      frame = null;
+      const e = latest;
+      latest = null;
+      if (!e) return;
+
+      if (!canvasRef.current?.isConnected) {
+        canvasRef.current = container.querySelector("canvas");
+      }
+      const canvas = canvasRef.current;
       if (!canvas) return;
+
       canvas.dispatchEvent(
         new PointerEvent("pointermove", {
           clientX: e.clientX,
@@ -105,8 +131,17 @@ export function SplineScene({ scene, className }: SplineSceneProps) {
       );
     };
 
+    const handlePointerMove = (e: PointerEvent) => {
+      if (!visibleRef.current) return;
+      latest = e;
+      if (frame === null) frame = requestAnimationFrame(forward);
+    };
+
     window.addEventListener("pointermove", handlePointerMove);
-    return () => window.removeEventListener("pointermove", handlePointerMove);
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      if (frame !== null) cancelAnimationFrame(frame);
+    };
   }, [hasLoaded]);
 
   if (hasError) {

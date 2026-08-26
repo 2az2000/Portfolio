@@ -1,10 +1,14 @@
 "use client";
 
-import { useRef, type ButtonHTMLAttributes, type ReactNode } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useRef, type ReactNode } from "react";
+import { motion, useMotionValue, useSpring, type HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-type MagneticButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+// Based on framer-motion's own button props rather than React's
+// ButtonHTMLAttributes: motion redeclares onDrag/onAnimationStart and friends
+// with its own signatures, so the plain React type collides with them and the
+// spread below used to need an `any` cast to compile.
+type MagneticButtonProps = HTMLMotionProps<"button"> & {
   children: ReactNode;
   /** How far the button can travel toward the cursor, in px. */
   strength?: number;
@@ -58,7 +62,7 @@ export function MagneticButton({
           : "border border-line bg-transparent text-ink hover:border-violet/50 dark:hover:border-white/30",
         className
       )}
-      {...(props as any)}
+      {...props}
     >
       {children}
     </motion.button>

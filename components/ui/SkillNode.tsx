@@ -1,18 +1,7 @@
 "use client";
 
-import {
-  memo,
-  useRef,
-  useState,
-  useCallback,
-  useMemo,
-} from "react";
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  AnimatePresence,
-} from "framer-motion";
+import { memo, useRef, useState, useCallback, useMemo } from "react";
+import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { EASE_BRAND, prefersReducedMotion } from "@/lib/theme";
 
 /* ------------------------------------------------------------------ */
@@ -109,7 +98,7 @@ function SkillNodeImpl({
         my.set(0);
       }
     },
-    [mx, my, reducedMotion],
+    [mx, my, reducedMotion]
   );
 
   const handleMouseLeave = useCallback(() => {
@@ -165,9 +154,7 @@ function SkillNodeImpl({
               ? `${clusterColor}66`
               : `${clusterColor}30`,
           // Slightly denser than before to make up for the dropped blur.
-          backgroundColor: isHovered
-            ? `${clusterColor}2b`
-            : `${clusterColor}17`,
+          backgroundColor: isHovered ? `${clusterColor}2b` : `${clusterColor}17`,
           boxShadow: isHovered
             ? `0 0 28px ${clusterColor}44, 0 8px 32px rgba(0,0,0,0.35)`
             : isConnected
@@ -187,63 +174,63 @@ function SkillNodeImpl({
           scale: { type: "spring", stiffness: 320, damping: 22 },
         }}
       >
-      {/* ---- ripple ring ---- */}
-      <AnimatePresence>
-        {hasRipple && (
-          <motion.span
-            className="pointer-events-none absolute inset-0 rounded-full"
-            initial={{ opacity: 0.5, scale: 0.8 }}
-            animate={{ opacity: 0, scale: 2 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
-            onAnimationComplete={() => setHasRipple(false)}
-            style={{ border: `1.5px solid ${clusterColor}` }}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* ---- hover glow aura ---- */}
-      <AnimatePresence>
-        {isHovered && (
-          <motion.span
-            className="pointer-events-none absolute -inset-3 rounded-full"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            style={{
-              background: `radial-gradient(circle, ${clusterColor}18 0%, transparent 70%)`,
-            }}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* ---- indicator dot with pulse ---- */}
-      <span className="relative flex h-2 w-2 shrink-0 items-center justify-center">
-        <span
-          className="absolute h-full rounded-full"
-          style={{ backgroundColor: clusterColor }}
-        />
+        {/* ---- ripple ring ---- */}
         <AnimatePresence>
-          {isHovered && (
+          {hasRipple && (
             <motion.span
-              className="absolute h-full rounded-full"
-              initial={{ scale: 1, opacity: 0.6 }}
-              animate={{ scale: [1, 2.2, 1], opacity: [0.6, 0, 0.6] }}
+              className="pointer-events-none absolute inset-0 rounded-full"
+              initial={{ opacity: 0.5, scale: 0.8 }}
+              animate={{ opacity: 0, scale: 2 }}
               exit={{ opacity: 0 }}
-              transition={{
-                duration: 1.4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              style={{ backgroundColor: clusterColor }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              onAnimationComplete={() => setHasRipple(false)}
+              style={{ border: `1.5px solid ${clusterColor}` }}
             />
           )}
         </AnimatePresence>
-      </span>
 
-      {/* ---- label ---- */}
-      <span className="font-mono text-ink">{label}</span>
+        {/* ---- hover glow aura ---- */}
+        <AnimatePresence>
+          {isHovered && (
+            <motion.span
+              className="pointer-events-none absolute -inset-3 rounded-full"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              style={{
+                background: `radial-gradient(circle, ${clusterColor}18 0%, transparent 70%)`,
+              }}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* ---- indicator dot with pulse ---- */}
+        <span className="relative flex h-2 w-2 shrink-0 items-center justify-center">
+          <span
+            className="absolute h-full rounded-full"
+            style={{ backgroundColor: clusterColor }}
+          />
+          <AnimatePresence>
+            {isHovered && (
+              <motion.span
+                className="absolute h-full rounded-full"
+                initial={{ scale: 1, opacity: 0.6 }}
+                animate={{ scale: [1, 2.2, 1], opacity: [0.6, 0, 0.6] }}
+                exit={{ opacity: 0 }}
+                transition={{
+                  duration: 1.4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                style={{ backgroundColor: clusterColor }}
+              />
+            )}
+          </AnimatePresence>
+        </span>
+
+        {/* ---- label ---- */}
+        <span className="font-mono text-ink">{label}</span>
       </motion.button>
     </div>
   );

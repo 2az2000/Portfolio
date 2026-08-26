@@ -1,0 +1,10 @@
+.next
+node_modules
+out
+.agents
+public
+assets
+package-lock.json
+next-env.d.ts
+tsconfig.tsbuildinfo
+*.log

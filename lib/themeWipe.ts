@@ -132,9 +132,6 @@ export function switchThemeWithWipe(
 /** Flips to the other theme, deriving the target from what is actually on
  *  screen. Every caller should use this rather than computing the opposite of
  *  a React value — see {@link currentTheme}. */
-export function toggleThemeWithWipe(
-  origin: WipeOrigin | null,
-  commit: (theme: string) => void
-) {
+export function toggleThemeWithWipe(origin: WipeOrigin | null, commit: (theme: string) => void) {
   switchThemeWithWipe(currentTheme() === "dark" ? "light" : "dark", origin, commit);
 }

@@ -271,9 +271,7 @@ export function CommandPalette() {
     const scored = commands
       .map((command) => ({
         command,
-        score: needle
-          ? scoreFields(needle, [command.label, command.hint, command.keywords])
-          : 0,
+        score: needle ? scoreFields(needle, [command.label, command.hint, command.keywords]) : 0,
       }))
       .filter((entry) => entry.score >= 0);
 
@@ -293,9 +291,7 @@ export function CommandPalette() {
       .map((bucket) => ({
         group: bucket.group,
         best: Math.max(...bucket.entries.map((entry) => entry.score)),
-        items: [...bucket.entries]
-          .sort((a, b) => b.score - a.score)
-          .map((entry) => entry.command),
+        items: [...bucket.entries].sort((a, b) => b.score - a.score).map((entry) => entry.command),
       }))
       .sort((a, b) => b.best - a.best);
   }, [commands, query]);
@@ -411,9 +407,7 @@ export function CommandPalette() {
           )}
         >
           <Dialog.Title className="sr-only">{t.palette.title}</Dialog.Title>
-          <Dialog.Description className="sr-only">
-            {t.palette.description}
-          </Dialog.Description>
+          <Dialog.Description className="sr-only">{t.palette.description}</Dialog.Description>
 
           <div className="flex items-center gap-3 border-b border-line px-4">
             <Search size={16} className="shrink-0 text-mist" aria-hidden />
@@ -518,13 +512,9 @@ function CommandRow({
       />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm text-ink">{command.label}</span>
-        {command.hint && (
-          <span className="block truncate text-xs text-mist">{command.hint}</span>
-        )}
+        {command.hint && <span className="block truncate text-xs text-mist">{command.hint}</span>}
       </span>
-      {command.external && (
-        <ExternalLink size={13} className="shrink-0 text-mist" aria-hidden />
-      )}
+      {command.external && <ExternalLink size={13} className="shrink-0 text-mist" aria-hidden />}
     </button>
   );
 }

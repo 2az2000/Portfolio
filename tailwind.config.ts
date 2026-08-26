@@ -2,10 +2,7 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   darkMode: ["class"],
-  content: [
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  content: ["./app/**/*.{js,ts,jsx,tsx,mdx}", "./components/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     container: {
       center: true,
@@ -89,10 +86,7 @@ const config: Config = {
         h1: ["clamp(2rem, 4vw, 3.25rem)", { lineHeight: "1.1" }],
         h2: ["clamp(1.5rem, 2.5vw, 2.25rem)", { lineHeight: "1.2" }],
         body: ["1rem", { lineHeight: "1.7" }],
-        caption: [
-          "0.8125rem",
-          { lineHeight: "1.4", letterSpacing: "0.06em" },
-        ],
+        caption: ["0.8125rem", { lineHeight: "1.4", letterSpacing: "0.06em" }],
       },
       backgroundImage: {
         "grid-glow":

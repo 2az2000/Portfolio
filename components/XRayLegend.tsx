@@ -6,12 +6,7 @@ import { ScanLine, X } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useXRay } from "@/components/XRayProvider";
 import { DURATION, EASE_BRAND } from "@/lib/theme";
-import {
-  XRAY_BEHAVIORAL,
-  XRAY_BEHAVIORAL_IDS,
-  XRAY_REGIONS,
-  XRAY_REGION_IDS,
-} from "@/lib/xray";
+import { XRAY_BEHAVIORAL, XRAY_BEHAVIORAL_IDS, XRAY_REGIONS, XRAY_REGION_IDS } from "@/lib/xray";
 
 /** Far enough down that the hint never competes with the hero for attention. */
 const HINT_SCROLL_THRESHOLD = 400;
@@ -71,11 +66,7 @@ export function XRayLegend() {
 
             <LegendGroup label={t.xray.regionsLabel}>
               {XRAY_REGION_IDS.map((id) => (
-                <LegendRow
-                  key={id}
-                  path={XRAY_REGIONS[id].path}
-                  note={t.xray.regions[id]}
-                />
+                <LegendRow key={id} path={XRAY_REGIONS[id].path} note={t.xray.regions[id]} />
               ))}
             </LegendGroup>
 
@@ -164,8 +155,7 @@ function XRayHint() {
 
     const onScroll = () => {
       const scrolled = window.scrollY;
-      const remaining =
-        document.documentElement.scrollHeight - scrolled - window.innerHeight;
+      const remaining = document.documentElement.scrollHeight - scrolled - window.innerHeight;
       setVisible(scrolled > HINT_SCROLL_THRESHOLD && remaining > HINT_FOOTER_MARGIN);
     };
     onScroll();

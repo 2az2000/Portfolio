@@ -34,7 +34,7 @@ const browser = CANDIDATES.find((p) => p && existsSync(p));
 if (!browser) {
   console.error(
     "No Chrome/Edge binary found. Set CHROME_PATH to one and re-run:\n" +
-      "  CHROME_PATH=\"/path/to/chrome\" npm run resume:pdf"
+      '  CHROME_PATH="/path/to/chrome" npm run resume:pdf'
   );
   process.exit(1);
 }
