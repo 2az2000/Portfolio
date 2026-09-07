@@ -121,6 +121,27 @@ const config: Config = {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(calc(-1 * var(--marquee-distance, 50%)))" },
         },
+        // The hero's scroll hint: a dot running down the inside of its tube.
+        // Tailwind's own `animate-bounce` cannot do this job — its keyframe
+        // moves an element by 25% of *its own height*, and the dot is 6px, so
+        // it travelled 1.5px and read as nothing moving at all.
+        //
+        // The distance is a percentage of the dot rather than a pixel value so
+        // it stays tied to the geometry: the tube is h-9 with p-1.5 and a 1px
+        // border, which leaves 16px of track for a 6px dot, and 265% of 6px is
+        // that track.
+        //
+        // It ends where it starts — at the top, fully opaque — on purpose.
+        // The reduced-motion rule in globals.css collapses every animation to
+        // its final frame, so a keyframe list ending on `opacity: 0` would
+        // leave an empty tube for anyone who asked for less motion.
+        "scroll-cue": {
+          "0%": { transform: "translateY(0)", opacity: "1" },
+          "55%": { transform: "translateY(265%)", opacity: "1" },
+          "75%": { transform: "translateY(265%)", opacity: "0" },
+          "76%": { transform: "translateY(0)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -133,6 +154,7 @@ const config: Config = {
       animation: {
         float: "float 6s ease-in-out infinite",
         marquee: "marquee 22s linear infinite",
+        "scroll-cue": "scroll-cue 2s cubic-bezier(0.16, 1, 0.3, 1) infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
