@@ -293,7 +293,7 @@ export const en: Dictionary = {
   hero: {
     eyebrow: "// building interfaces that actually respond",
     title: "Amirali Zand",
-    subtitle: "Frontend Developer — React, Next.js, TypeScript & the Node.js ecosystem.",
+    subtitle: "Frontend Developer · React, Next.js, TypeScript and the Node.js ecosystem.",
     ctaPrimary: "View projects",
     ctaSecondary: "Get in touch",
     stats: {
@@ -314,25 +314,25 @@ export const en: Dictionary = {
   },
   about: {
     heading: "About",
-    body: "I'm a frontend developer in Tehran, building products people actually use: an alternative app store, installable PWAs, AI features that run inside the browser. React, Next.js and TypeScript are where I work. What I care about is the part users feel — how fast a page becomes usable, whether it survives a bad network, whether the interface responds like it's paying attention.",
+    body: "I'm a frontend developer based in Tehran. Most of my work has gone into things people use daily: an alternative app store, a few PWAs that install straight from the browser, and AI features that run on the user's own device instead of a server. I mostly work with React, Next.js and TypeScript. What I care about is simple: the page should load fast, keep working on a bad connection, and the interface should answer when someone clicks.",
   },
   skills: {
     heading: "Skills",
-    subheading: "How the pieces connect, not just a list.",
+    subheading: "Where these tools actually connect.",
   },
   projects: {
     heading: "Projects",
-    subheading: "Products in front of real users, and the code I write in the open.",
+    subheading: "Things that reached real users, and code I've put in the open.",
     items: [
       {
         title: "Sib Irani",
         description:
-          "Iran's alternative app store for iOS & Android, distributing lightweight WebView apps without an Apple ID. I inherited a class-based React codebase and rebuilt the entire frontend from zero in Next.js and TypeScript.",
+          "Iran's alternative app store for iOS and Android, distributing lightweight WebView apps without an Apple ID. The old codebase was built on React class components; I rebuilt the whole frontend from scratch in Next.js and TypeScript.",
         highlights: [
-          "Class components and lifecycle methods traded for the App Router, hooks and typed data fetching",
-          "Installable PWA — service worker, offline caching, install prompts",
+          "App Router, hooks and typed data fetching in place of class components and lifecycle methods",
+          "Installable PWA with a service worker, offline caching and install prompts",
           "Developer portal where local publishers submit apps and track releases",
-          "AI-powered features shipped on top of the store itself",
+          "A few AI features, on the store itself",
           "Hosts dozens of Iran's most-used apps: Snapp, Digikala, Divar",
         ],
         stack: ["Next.js", "TypeScript", "PWA"],
@@ -344,7 +344,7 @@ export const en: Dictionary = {
       {
         title: "Sib Bazar",
         description:
-          "The sister iOS store, running on an in-house Adhoc signing pipeline so apps install without an Apple ID — with its own dashboard where publishers watch a build move from upload to signed release.",
+          "The iPhone side of Sib Irani. It runs on an in-house Adhoc signing pipeline so apps install without an Apple ID, and publishers get a dashboard showing where their build is between upload and release.",
         stack: ["React", "TypeScript", "PWA"],
         href: "https://sibbazar.com/",
         context: "Product",
@@ -352,7 +352,7 @@ export const en: Dictionary = {
       {
         title: "Brookli",
         description:
-          "A calorie tracker that installs straight from the browser — photograph a plate or just say what you ate, and the entry lands logged against the day's goals, offline included. I debugged the app end to end and carried it from React 18 and Material UI 4 to React 19 and MUI 9.",
+          "A calorie tracker that installs straight from the browser. Photograph your plate or just say what you ate and the meal gets logged, offline included. I debugged the app end to end and moved it from React 18 and Material UI 4 to React 19 and MUI 9.",
         stack: ["React 19", "MUI 9", "PWA", "AI"],
         href: "https://app.brookliapp.com/",
         context: "Product",
@@ -361,7 +361,7 @@ export const en: Dictionary = {
       {
         title: "Face Age",
         description:
-          "Estimates apparent age and skin condition from a single webcam frame. MediaPipe landmark inference runs entirely in the browser, so nobody's face ever leaves their device.",
+          "Estimates apparent age and skin condition from a single webcam frame. MediaPipe landmark inference runs inside the browser, so nobody's face leaves their device.",
         stack: ["React", "MediaPipe", "AI"],
         // TODO: replace with the public Face Age URL once there is one.
         href: "#",
@@ -371,7 +371,7 @@ export const en: Dictionary = {
       {
         title: "Weather",
         description:
-          "A React Native app built in clean architecture — each feature split into data, domain and presentation layers behind a DI container. Forecasts, air quality and severe-weather alerts stay readable offline through queries persisted in MMKV and SQLite.",
+          "A React Native app in clean architecture. Each feature is split into data, domain and presentation layers behind a DI container, and forecasts, air quality and alerts stay readable offline through queries cached in MMKV and SQLite.",
         stack: ["React Native", "Expo", "TanStack Query"],
         href: "https://github.com/2az2000/Weather-app-native",
         context: "Open source",
@@ -379,7 +379,7 @@ export const en: Dictionary = {
       {
         title: "Door Lock Shop",
         description:
-          "A Persian RTL storefront for locks and door hardware on Next.js 16 and Payload CMS 3. A typed service layer sits between them, so the UI never queries the CMS directly and the whole stack comes up with one Docker command.",
+          "A Persian RTL storefront for locks and door hardware, on Next.js 16 and Payload CMS 3. A typed service layer sits between them so the UI never queries the CMS directly, and the whole stack comes up with one Docker command.",
         stack: ["Next.js", "Payload CMS", "PostgreSQL"],
         href: "https://doorlock-shop.vercel.app/",
         context: "Open source",
@@ -387,7 +387,7 @@ export const en: Dictionary = {
       {
         title: "fabioCoffee",
         description:
-          "A full-stack café system — a Next.js ordering menu and admin panel over an Express, Prisma and PostgreSQL API with JWT authentication.",
+          "A full-stack café system. A Next.js ordering menu and admin panel over an Express, Prisma and PostgreSQL API with JWT authentication.",
         stack: ["Next.js", "Express", "Prisma"],
         href: "https://fabio-coffee-frontend.vercel.app",
         context: "Open source",
@@ -400,46 +400,45 @@ export const en: Dictionary = {
     problemLabel: "Problem",
     approachLabel: "Approach",
     resultLabel: "Result",
-    migrationLabel: "Version jump",
-    shippedLabel: "Shipped on the new base",
+    migrationLabel: "Versions, before and after",
+    shippedLabel: "Added after the refactor",
     viewLive: "View live",
     items: [
       {
         title: "Sib Irani",
-        tagline:
-          "Rebuilding an Iranian iOS/Android app store's Next.js frontend from the ground up.",
-        role: "Frontend Developer — rebuilt the Next.js version from scratch",
+        tagline: "Rebuilding an Iranian app store's frontend from scratch.",
+        role: "Frontend Developer · rebuilt the Next.js frontend",
         problem:
-          "The existing Sib Irani frontend needed a full rebuild to support new PWA capabilities and a growing developer portal for local publishers, so the Next.js implementation was rewritten from zero.",
+          "The old frontend couldn't cover what we needed next. We wanted full PWA support and a developer portal that was growing fast, and adding both to the old code would have taken longer than rewriting it.",
         approach:
-          "Rebuilt the Next.js frontend from scratch, implemented full PWA support (installable, offline-capable), shipped several AI-powered features, and worked closely with backend, design, and product teams to ship a stable developer portal — all while continuously profiling and restructuring the codebase for performance.",
+          "I rewrote the frontend from scratch in Next.js, built full PWA support with install prompts and offline caching, added several AI features, and worked with the backend, design and product teams on the developer portal. Performance and code structure got cleaned up along the way.",
         result:
-          "A faster, more maintainable Next.js codebase now powering one of Iran's alternative iOS/Android app stores — hosting dozens of popular local apps (Snapp, Digikala, Divar, and more) alongside an active developer portal.",
+          "A codebase that is faster and easier to maintain, now running one of Iran's alternative app stores, with dozens of popular local apps on it (Snapp, Digikala, Divar) and an active developer portal.",
         stack: ["Next.js", "TypeScript", "PWA"],
         href: "https://sibirani.com",
       },
       {
         title: "Brookli",
         tagline:
-          "Debugging a shipped calorie tracker, then carrying it from React 18 and Material UI 4 to React 19 and MUI 9.",
-        role: "Frontend Developer — owned the refactor end to end",
+          "Debugging a live calorie tracker, then moving it from React 18 and MUI 4 to React 19 and MUI 9.",
+        role: "Frontend Developer · led the refactor",
         problem:
-          "Brookli was live and working, but pinned to Material UI 4 — a major built on JSS and makeStyles that the ecosystem had left three releases earlier. That one pin held the entire dependency tree in place: React couldn't move past 18, no current library would install cleanly beside it, and every new feature turned into a negotiation with a styling engine nobody maintains. Sitting under all of it was a backlog of reproducible bugs that nobody wanted to touch while the floor was moving.",
+          "Brookli worked, but it was stuck on Material UI 4, which still runs on JSS and makeStyles and is several majors behind the ecosystem. That one pin locked the whole dependency tree: React couldn't go past 18, current libraries wouldn't install cleanly next to it, and every new feature took longer than it should. There was also a backlog of bugs nobody wanted to touch while the code was in that state.",
         approach:
-          "Bugs before versions: every reported defect reproduced and closed first, so that nothing could later hide behind the upgrade and be mistaken for migration fallout. Then the migration as an ordered sequence rather than one heroic commit — the @material-ui/* packages renamed to @mui/*, every makeStyles and withStyles block rewritten as Emotion styled and sx, the theme reshaped major by major up to 9, and only then React itself to 19, dropping findDOMNode and defaultProps and taking refs as ordinary props. The new features went in last, on a base that had stopped moving: meal recognition from a photo, and logging a meal by speaking it.",
+          "I closed the bugs first and went after the versions second, so no old bug could later be blamed on the migration. The migration itself went in steps: packages renamed from @material-ui to @mui, every makeStyles and withStyles block rewritten with styled and sx in Emotion, the theme moved up one major at a time to 9, and React last, to 19, dropping findDOMNode and defaultProps and taking refs as ordinary props. New features came at the end, once the base had stopped moving.",
         result:
-          "A calorie tracker running on current React and MUI with the bug backlog closed rather than inherited, AI meal logging by camera and by voice built on top, and the installable, offline PWA behaviour intact from the first commit of the migration to the last.",
+          "The app now runs on current React and MUI, the bug backlog is empty, meal logging by photo and by voice is in, and the PWA stayed installable and offline the whole way through.",
         migration: [
           { label: "React", from: "18", to: "19" },
           { label: "Material UI", from: "4", to: "9" },
-          { label: "Package scope", from: "@material-ui/core", to: "@mui/material" },
-          { label: "Styling engine", from: "JSS · makeStyles", to: "Emotion · styled + sx" },
+          { label: "Package name", from: "@material-ui/core", to: "@mui/material" },
+          { label: "Styling", from: "JSS · makeStyles", to: "Emotion · styled + sx" },
         ],
         shipped: [
-          "Photo meal logging — point the camera at a plate and the entry arrives filled in instead of typed",
-          "Voice meal logging — say what you ate and it lands as the same structured entry",
-          "A full bug sweep first, so the migration started from a known-good app rather than a moving one",
-          "Installable and offline throughout — the service worker and cached shell survived the upgrade instead of being rebuilt after it",
+          "Photo meal logging: point the camera at your plate and the form fills itself",
+          "Voice meal logging: say what you ate and it saves as the same record",
+          "Clearing the bug backlog before the migration, so we knew what we were starting from",
+          "The PWA stayed installable and offline throughout, service worker and cache untouched",
         ],
         stack: ["React 19", "MUI 9", "PWA", "AI"],
         href: "https://app.brookliapp.com/",
@@ -451,62 +450,62 @@ export const en: Dictionary = {
         problem:
           "Iranian iPhone users can't reach the App Store, and local publishers had no dependable way to get a signed build onto their devices.",
         approach:
-          "Built the storefront and the publisher dashboard on top of an in-house Adhoc signing pipeline, surfacing each build's path from upload through signing to public release, and reused the PWA and component foundations already proven on Sib Irani.",
+          "I built the storefront and the publisher dashboard on top of an in-house Adhoc signing pipeline, so each build's path from upload through signing to release is visible in the dashboard. The PWA groundwork and components that already worked on Sib Irani got reused.",
         result:
-          "A working iOS distribution channel where users install straight from the browser and publishers follow a release end to end without leaving the dashboard.",
+          "An iOS distribution channel where users install straight from the browser and publishers follow a release end to end from the dashboard.",
         stack: ["React", "TypeScript", "PWA"],
         href: "https://sibbazar.com/",
       },
       {
         title: "Face Age",
-        tagline: "Facial analysis that never uploads your face.",
-        role: "Frontend Developer — Sib Irani",
+        tagline: "Face analysis without uploading a photo.",
+        role: "Frontend Developer · Sib Irani",
         problem:
-          "Estimating apparent age and skin condition means processing someone's face — the data users are least willing to hand to a server, and the slowest thing to round-trip over a weak connection.",
+          "Estimating apparent age and skin condition means processing someone's face: the most sensitive data you can ask for, and the heaviest thing to round-trip over a weak connection.",
         approach:
-          "Ran MediaPipe face-landmark inference directly against the webcam stream in the browser, so frames are analysed on the device and never leave it, and tuned model loading so the first estimate lands without a visible wait.",
+          "I ran MediaPipe face-landmark inference directly on the webcam stream in the browser, so frames are analysed on the device and never leave it, and tuned model loading so the first result arrives without a noticeable wait.",
         result:
-          "An in-browser facial-analysis product shipped inside the Sib Irani ecosystem, with no image of a user's face ever leaving their device.",
+          "An in-browser face analysis product shipped inside the Sib Irani ecosystem, with no image ever leaving the user's device.",
         stack: ["React", "MediaPipe", "AI"],
         // TODO: replace with the public Face Age URL once there is one.
         href: "#",
       },
       {
         title: "Weather",
-        tagline: "A React Native app built to survive a bad connection.",
-        role: "Solo — architecture and implementation",
+        tagline: "A React Native app that works on a bad connection.",
+        role: "Solo · architecture and implementation",
         problem:
-          "A weather app is least useful exactly when the network is worst, and a React Native codebase that grows feature by feature flattens into an undifferentiated pile of screens and hooks.",
+          "A weather app is usually needed exactly when the network is worst. And a React Native codebase that grows feature by feature turns into a mess after a while.",
         approach:
-          "Split every feature into data, domain and presentation layers resolved through a DI container, over one shared core for networking, caching, storage, logging and i18n — then persisted the TanStack Query cache into MMKV and SQLite so reads survive going offline.",
+          "I split each feature into data, domain and presentation layers resolved through a DI container, over one shared core for networking, caching, storage, logging and i18n. The TanStack Query cache is persisted to MMKV and SQLite so there is still data offline.",
         result:
-          "Seven feature slices — weather, air quality, alerts, locations, maps, recommendations and settings — sharing a single core, fully bilingual in Persian and English, with forecasts still readable on no connection.",
+          "Seven feature slices (weather, air quality, alerts, locations, maps, recommendations, settings) on one shared core, bilingual in Persian and English, with forecasts that still open with no connection.",
         stack: ["React Native", "Expo", "TanStack Query"],
         href: "https://github.com/2az2000/Weather-app-native",
       },
       {
         title: "Door Lock Shop",
-        tagline: "A Persian RTL catalogue non-technical staff can actually run.",
-        role: "Solo — architecture and implementation",
+        tagline: "A catalogue someone non-technical can actually run.",
+        role: "Solo · architecture and implementation",
         problem:
-          "A hardware catalogue has to be editable by people who don't write code, but wiring a CMS straight into page components means every schema change ripples out through the UI — and a Persian storefront has to be right-to-left everywhere, not just translated.",
+          "The shop's content has to be editable by someone who doesn't write code. But wiring the CMS straight into page components means every schema change reaches the UI, and a Persian storefront has to genuinely be right-to-left, not just translated.",
         approach:
-          "Put Next.js 16 over Payload CMS 3 on Postgres, with a typed service layer as the single data-access path so no component ever queries the CMS directly, and packaged the whole stack — database included — behind one Docker Compose command with a seeding script.",
+          "I put Next.js 16 on top of Payload CMS 3 and Postgres, with a typed service layer as the only path to data, so no component queries the CMS directly. The whole stack, database included, is packed behind one Docker Compose command and a seed script.",
         result:
-          "An RTL storefront where staff manage categories, brands and products from the admin panel, with sitemap, robots and metadata generated, and a fresh clone running locally in a single command.",
+          "A storefront where the team manages categories, brands and products from the admin panel, with sitemap, robots and metadata generated, and a fresh clone that comes up with one command.",
         stack: ["Next.js", "Payload CMS", "PostgreSQL"],
         href: "https://doorlock-shop.vercel.app/",
       },
       {
         title: "fabioCoffee",
-        tagline: "One café system serving both the customer and the counter.",
-        role: "Solo — full stack",
+        tagline: "One café system for the customer and the counter.",
+        role: "Solo · full stack",
         problem:
-          "A café menu and the panel staff use to maintain it are usually built as two disconnected things, which is how a product ends up live on the site after it has already been taken off the menu.",
+          "A café menu and the panel staff maintain it with are usually built as two separate things. That is how a product stays live on the site after it has been taken off the menu.",
         approach:
-          "Built both against one schema: a Next.js frontend carrying the ordering menu and the admin panel, over an Express API with Prisma on PostgreSQL, with JWT auth drawing the line between customer and staff access.",
+          "I built both on one schema: a Next.js frontend carrying the ordering menu and the admin panel, over an Express API with Prisma on PostgreSQL, with JWT separating customer and staff access.",
         result:
-          "A single full-stack system where an edit made behind the counter is the same record the ordering menu reads, rather than a second copy that has to be kept in sync.",
+          "An edit made behind the counter is the same record the ordering menu reads. There is no second copy to keep in sync.",
         stack: ["Next.js", "Express", "Prisma"],
         href: "https://fabio-coffee-frontend.vercel.app",
       },
@@ -514,7 +513,7 @@ export const en: Dictionary = {
   },
   experience: {
     heading: "Experience",
-    subheading: "Where the commits actually happened.",
+    subheading: "The track record, as a commit log.",
     items: [
       {
         hash: "3e91c07",
@@ -583,14 +582,14 @@ export const en: Dictionary = {
   },
   contact: {
     heading: "Let's talk",
-    subheading: "Open to new opportunities and collaborations.",
+    subheading: "Available for new work or collaboration.",
     fieldName: "--name",
     fieldEmail: "--email",
     fieldMessage: "--message",
     submit: "run send.sh",
     sending: "sending...",
-    success: "message sent — I'll get back to you soon.",
-    errorGeneric: "something went wrong — please email me directly.",
+    success: "message received. I'll get back to you soon.",
+    errorGeneric: "something went wrong. please email me directly.",
     log: {
       validating: "> validating --name --email --message",
       request: "> POST /api/contact",
@@ -606,7 +605,7 @@ export const en: Dictionary = {
       meta: "PDF · A4",
       action: "Preview resume",
       dialogTitle: "Resume",
-      dialogDescription: "Amirali Zand — Frontend Developer · updated 2026",
+      dialogDescription: "Amirali Zand · Frontend Developer · updated 2026",
       openInNewTab: "Open in new tab",
       download: "Download PDF",
       close: "Close",
@@ -625,7 +624,7 @@ export const en: Dictionary = {
       motion: "motion",
     },
     values: {
-      selfHosted: "self-hosted — no third-party font CDN",
+      selfHosted: "served from this domain, no font CDN",
     },
     rights: "Designed and built by Amirali Zand.",
     source: "Source on GitHub",
@@ -666,25 +665,25 @@ export const en: Dictionary = {
     exit: "Press X or Esc to exit",
     close: "Close",
     regionsLabel: "Regions on the page",
-    behavioralLabel: "No outline — these are behaviour, not layout",
+    behavioralLabel: "No outline, because these are behaviour rather than layout",
     regions: {
       navbar:
         "Sliding pill indicator on Framer Motion's layoutId, plus an IntersectionObserver scrollspy.",
-      hero: "GSAP fade-and-rise stagger. The three stats are computed from the data further down the page, never typed by hand.",
+      hero: "GSAP fade-and-rise stagger. The three stats are computed from the data further down the page, not typed by hand.",
       marquee:
         "One Framer motion value driven every frame, so hover eases the strip to a stop and you can drag to scrub it.",
       about:
         "Per-word scramble-decrypt on hover; the rest of the paragraph dims to keep the hovered word the subject.",
       skills:
-        "SVG constellation — hovering a node lights its edges and dims the rest. Each node has its own magnetic pull.",
+        "SVG constellation. Hovering a node lights its edges and dims the rest, and each node has its own magnetic pull.",
       projects:
-        "GSAP ScrollTrigger.batch with a spring scale-pop, over an asymmetric bento where the flagship takes 2x2.",
+        "ScrollTrigger.batch, so each card enters as it crosses the line, over an asymmetric bento where the flagship takes 2x2.",
       caseStudies:
         "Radix tabs, panels force-mounted so every study stays in the HTML for crawlers.",
       experience:
         "Scroll-scrubbed alternating slide, with a progress beam whose position ignites each commit node as it passes.",
       contact:
-        "A real form dressed as a terminal session — the flags are the field labels, and the timings it prints are measured around the actual request.",
+        "A real form in terminal clothing. The flags are the field labels, and the timings it prints are measured around the actual request.",
       footer:
         "Build facts inlined at compile time, so the version and date belong to the bundle you're running.",
     },
@@ -692,11 +691,10 @@ export const en: Dictionary = {
       cursor:
         "Two springs: a hard dot that tracks exactly, and a ring that snaps onto whatever you can click, matching its shape.",
       curtain:
-        "Language switches under cover — the dictionary and text direction flip only while the page is fully hidden.",
+        "Language switches under cover: the dictionary and text direction flip only while the page is fully hidden.",
       smoothScroll:
         "Lenis running off GSAP's ticker, so the whole site shares one animation frame and no scroll effect lags a frame behind.",
-      reveal:
-        "One shared entrance hook for every section, so nothing on this page enters with an ease that doesn't match the rest.",
+      reveal: "One shared entrance hook for every section, so the sections all enter in step.",
     },
   },
 };

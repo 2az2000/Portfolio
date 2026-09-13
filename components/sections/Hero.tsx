@@ -121,7 +121,7 @@ export function Hero() {
         <div className="flex flex-col items-center gap-2 text-mist">
           <span className="caption">{t.hero.scrollCue}</span>
           <span className="flex h-9 w-5 items-start justify-center rounded-pill border border-line p-1.5">
-            <span className="block h-1.5 w-1.5 animate-bounce rounded-full bg-mint" />
+            <span className="block h-1.5 w-1.5 animate-scroll-cue rounded-full bg-mint" />
           </span>
         </div>
       </div>
