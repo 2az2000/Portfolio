@@ -333,7 +333,7 @@ export const en: Dictionary = {
           "Installable PWA with a service worker, offline caching and install prompts",
           "Developer portal where local publishers submit apps and track releases",
           "A few AI features, on the store itself",
-          "Hosts dozens of Iran's most-used apps: Snapp, Digikala, Divar",
+          "Hundreds of apps and 5M users, with Snapp, Digikala and Divar among them",
         ],
         stack: ["Next.js", "TypeScript", "PWA"],
         href: "https://sibirani.com",
@@ -413,7 +413,7 @@ export const en: Dictionary = {
         approach:
           "I rewrote the frontend from scratch in Next.js, built full PWA support with install prompts and offline caching, added several AI features, and worked with the backend, design and product teams on the developer portal. Performance and code structure got cleaned up along the way.",
         result:
-          "A codebase that is faster and easier to maintain, now running one of Iran's alternative app stores, with dozens of popular local apps on it (Snapp, Digikala, Divar) and an active developer portal.",
+          "A codebase that is faster and easier to maintain, now running one of Iran's alternative app stores: hundreds of apps, 5M users, Snapp and Digikala and Divar among them, and an active developer portal.",
         stack: ["Next.js", "TypeScript", "PWA"],
         href: "https://sibirani.com",
       },
@@ -425,7 +425,7 @@ export const en: Dictionary = {
         problem:
           "Brookli worked, but it was stuck on Material UI 4, which still runs on JSS and makeStyles and is several majors behind the ecosystem. That one pin locked the whole dependency tree: React couldn't go past 18, current libraries wouldn't install cleanly next to it, and every new feature took longer than it should. There was also a backlog of bugs nobody wanted to touch while the code was in that state.",
         approach:
-          "I closed the bugs first and went after the versions second, so no old bug could later be blamed on the migration. The migration itself went in steps: packages renamed from @material-ui to @mui, every makeStyles and withStyles block rewritten with styled and sx in Emotion, the theme moved up one major at a time to 9, and React last, to 19, dropping findDOMNode and defaultProps and taking refs as ordinary props. New features came at the end, once the base had stopped moving.",
+          "I emptied the bug backlog first, so that nothing old could later be blamed on anything new, and built the features on top of that: meal logging from a photo and by voice. The dependency migration came last, in steps rather than one commit: packages renamed from @material-ui to @mui, every makeStyles and withStyles block rewritten with styled and sx in Emotion, the theme moved up one major at a time to 9, and React last, to 19, dropping findDOMNode and defaultProps and taking refs as ordinary props.",
         result:
           "The app now runs on current React and MUI, the bug backlog is empty, meal logging by photo and by voice is in, and the PWA stayed installable and offline the whole way through.",
         migration: [
@@ -437,7 +437,7 @@ export const en: Dictionary = {
         shipped: [
           "Photo meal logging: point the camera at your plate and the form fills itself",
           "Voice meal logging: say what you ate and it saves as the same record",
-          "Clearing the bug backlog before the migration, so we knew what we were starting from",
+          "Clearing the bug backlog first, before any of the new work went in",
           "The PWA stayed installable and offline throughout, service worker and cache untouched",
         ],
         stack: ["React 19", "MUI 9", "PWA", "AI"],
