@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amirali Zand — Frontend Developer Resume</title>
+<meta name="description" content="ATS-friendly resume of Amirali Zand, Frontend Developer specializing in React, Next.js, TypeScript and the Node.js ecosystem.">
+<meta name="author" content="Amirali Zand">
+
+<style>
+/* ==========================================================================
+   Amirali Zand — ATS-friendly Resume
+   Single-column plain-text-first version of amirali-zand-resume.html, built
+   for parsers rather than people: no icons, no images, no multi-column
+   sections, no pills, standard web-safe fonts, ASCII-friendly punctuation.
+   The title/date-on-one-line rows below are still a single reading column —
+   each row is one flex line, not a layout grid — so they stay ATS-safe.
+   Content is kept in sync with amirali-zand-resume.html by hand — same
+   source facts, different presentation.
+   ========================================================================== */
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+@page{ size:A4; margin:8mm 15mm; }
+
+html{ -webkit-text-size-adjust:100%; }
+
+body{
+  font-family:Arial,Helvetica,'Segoe UI',Calibri,sans-serif;
+  font-size:9.6pt;
+  line-height:1.26;
+  color:#1a1a1a;
+  background:#ffffff;
+}
+
+.page{
+  width:210mm;
+  min-height:297mm;
+  margin:0 auto;
+  padding:8mm 15mm;
+  background:#ffffff;
+}
+
+a{ color:#1a1a1a; text-decoration:underline; text-underline-offset:1.5px; }
+
+/* ---- Header ---- */
+header.resume-header{ margin-bottom:5pt; padding-bottom:4pt; border-bottom:2px solid #1a1a1a; }
+h1{ font-size:17pt; font-weight:700; color:#000000; }
+.title{ font-size:11pt; font-weight:600; margin-top:1pt; color:#333333; }
+.contact-line{ font-size:9pt; margin-top:3pt; color:#1a1a1a; }
+.contact-line .sep{ color:#888888; margin:0 4pt; }
+
+/* ---- Section headings ---- */
+h2{
+  font-size:11pt; font-weight:700; color:#000000;
+  margin-top:5pt; margin-bottom:2pt;
+  padding-bottom:1pt; border-bottom:1px solid #1a1a1a;
+  text-transform:uppercase;
+}
+
+p.summary{ font-size:9.6pt; margin:1pt 0 0; }
+
+/* ---- Experience / Projects rows ---- */
+.entry{ margin-bottom:3pt; }
+.entry:last-child{ margin-bottom:0; }
+.entry-row{
+  display:flex; justify-content:space-between; align-items:baseline; gap:8pt;
+}
+.entry-title{ font-weight:700; font-size:10pt; }
+.entry-meta{ font-size:8.6pt; font-style:italic; color:#333333; white-space:nowrap; }
+.entry-sub{ font-size:8.6pt; color:#333333; margin-top:0.5pt; }
+
+ul{ margin:1pt 0 0 14pt; padding:0; }
+li{ margin-bottom:0.5pt; }
+
+.proj-desc{ font-size:9.4pt; margin-top:1pt; }
+
+.also-built{ font-size:9pt; margin-top:3pt; color:#1a1a1a; }
+.also-built b{ font-weight:700; }
+
+/* ---- Skills / Education / Certifications / Languages ---- */
+.skills-line{ margin-bottom:1.5pt; font-size:9.4pt; }
+.skills-line b{ font-weight:700; }
+
+.edu-line, .cert-line, .lang-line{ font-size:9.4pt; margin-bottom:1.5pt; }
+.lang-row{ display:flex; gap:16pt; }
+
+@media print{
+  body{ background:#ffffff; }
+  .page{ box-shadow:none; margin:0; padding:8mm 15mm; }
+}
+
+@media screen and (min-width:900px){
+  body{ background:#e8e8e8; padding:24px 0; }
+  .page{ box-shadow:0 12px 30px rgba(0,0,0,0.15); }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="resume-header">
+    <h1>Amirali Zand</h1>
+    <div class="title">Frontend Developer</div>
+    <div class="contact-line">
+      Email: <a href="mailto:amirali.zand79@gmail.com">amirali.zand79@gmail.com</a><span class="sep">|</span>Phone: <a href="tel:+989395766410">+98 939 576 6410</a><span class="sep">|</span>Location: Tehran, Iran - Open to remote, UTC+3:30, flexible overlap with EU hours
+    </div>
+    <div class="contact-line">
+      LinkedIn: <a href="[TODO: LinkedIn URL]">[TODO: LinkedIn URL]</a><span class="sep">|</span>GitHub: <a href="https://github.com/2az2000" target="_blank" rel="noreferrer">github.com/2az2000</a><span class="sep">|</span>Portfolio: <a href="https://portfolio-amirali.vercel.app/" target="_blank" rel="noreferrer">portfolio-amirali.vercel.app</a>
+    </div>
+  </header>
+
+  <main>
+
+    <section>
+      <h2>Summary</h2>
+      <p class="summary">
+        Frontend developer with 3+ years in React, Next.js and TypeScript. Owns features end to
+        end; strongest on legacy code, breaking major upgrades, bug backlogs and measured
+        performance. Builds AI into products and uses AI tooling daily to plan, review and ship.
+      </p>
+    </section>
+
+    <section>
+      <h2>Experience</h2>
+
+      <article class="entry">
+        <div class="entry-row">
+          <span class="entry-title">Frontend Developer - Sib Irani</span>
+          <span class="entry-meta">Tehran, Iran | May 2025 - Present</span>
+        </div>
+        <ul>
+          <li>Rebuilt the Sib Irani app-store platform from scratch in Next.js and TypeScript: hundreds of apps, 5M users, full PWA support with offline caching and no app-store download.</li>
+          <li>Debugged Brookli end to end, shipped AI meal logging by photo and by voice, then moved the stack from React 18 to 19 and Material UI 4 to 9, JSS/makeStyles onto Emotion.</li>
+          <li>Built Face Age, an AI facial-analysis feature driven by webcam capture and MediaPipe.</li>
+          <li>Delivered the dashboards behind the developer portal local publishers use to submit, review and manage their apps.</li>
+          <li>Owned the release process end to end - versioning, staging deployments, pre-production testing (Jest, React Testing Library, Playwright, Cypress) and the CI/CD workflow.</li>
+          <li>Built a shared React component library used across [TODO: N] products; profiled rendering and API flow, cutting LCP from [TODO: X]s to [TODO: Y]s.</li>
+        </ul>
+      </article>
+
+      <article class="entry">
+        <div class="entry-row">
+          <span class="entry-title">Frontend Developer - Amatis Dana Tech</span>
+          <span class="entry-meta">Tehran, Iran | [TODO: Mon] 2023 - [TODO: Mon] 2025</span>
+        </div>
+        <ul>
+          <li>Shipped UI as sole frontend contributor across 5+ client and internal products [TODO: name product domains, e.g. e-commerce, dashboard, booking].</li>
+          <li>Reduced page load time by [TODO: X]% by trimming bundle size and reworking the asset-loading strategy.</li>
+          <li>Integrated REST APIs and worked directly with design and backend teams to ship features end to end.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <h2>Projects</h2>
+
+      <article class="entry">
+        <div class="entry-row">
+          <span class="entry-title">Sib Irani</span>
+          <span class="entry-meta">sibirani.com</span>
+        </div>
+        <p class="proj-desc">Alternative iOS and Android app store with hundreds of apps and 5M users. Rebuilt from a legacy class-based React codebase to Next.js and TypeScript. Tech: Next.js, TypeScript, PWA.</p>
+      </article>
+
+      <article class="entry">
+        <div class="entry-row">
+          <span class="entry-title">Brookli</span>
+          <span class="entry-meta">app.brookliapp.com</span>
+        </div>
+        <p class="proj-desc">Installable calorie-tracking PWA. Debugged and refactored end to end - React 18 to 19, MUI 4 to 9 - then given AI meal logging by photo and by voice. Tech: React 19, MUI 9, PWA, AI. AI product built at Sib Irani.</p>
+      </article>
+
+      <article class="entry">
+        <div class="entry-row">
+          <span class="entry-title">Face Age</span>
+          <span class="entry-meta">AI product, Sib Irani</span>
+        </div>
+        <p class="proj-desc">Webcam-driven facial analysis estimating apparent age and skin condition in the browser, built on MediaPipe face landmarks. Tech: React, MediaPipe, AI.</p>
+      </article>
+
+      <article class="entry">
+        <div class="entry-row">
+          <span class="entry-title">Door Lock Shop</span>
+          <span class="entry-meta">doorlock-shop.vercel.app</span>
+        </div>
+        <div class="entry-sub">GitHub: [TODO: GitHub repo link]</div>
+        <p class="proj-desc">Persian RTL storefront on Next.js 16 and Payload CMS 3, with a typed service layer over Postgres and the stack in one Docker command. Tech: Next.js 16, Payload CMS, PostgreSQL, Docker.</p>
+      </article>
+
+      <p class="also-built">
+        <b>Also built:</b> smartShop (Next.js 15 commerce, parallel and intercepting routes, server actions; Prisma, Clerk),
+        Sib Bazar (iOS store on an in-house Adhoc signing pipeline; React, TypeScript, PWA),
+        Weather (React Native clean architecture, forecasts cached offline; Expo, TanStack),
+        fabioCoffee (cafe ordering menu and admin panel over one Express API; Prisma, JWT),
+        Diamond Laundry (laundry back-office with OTP login, invoicing and customers; React, Vite).
+      </p>
+    </section>
+
+    <section>
+      <h2>Skills</h2>
+      <div class="skills-line"><b>Core:</b> HTML5, CSS3, React, Next.js, TypeScript, JavaScript ES6+, React Native</div>
+      <div class="skills-line"><b>Styling and UI:</b> Tailwind, MUI, shadcn/ui, Sass, Framer Motion, GSAP</div>
+      <div class="skills-line"><b>State and Data:</b> Redux Toolkit, React Query, REST, Prisma, PostgreSQL, MongoDB</div>
+      <div class="skills-line"><b>Platform and Tooling:</b> PWA, Node.js, Express, Git, CI/CD, Vite, Docker, SSR/SSG/ISR, Core Web Vitals, Accessibility (a11y), SEO, i18n and RTL, Storybook</div>
+      <div class="skills-line"><b>Testing:</b> Jest, React Testing Library, Vitest, Playwright, Cypress</div>
+    </section>
+
+    <section>
+      <h2>Education</h2>
+      <div class="edu-line"><b>B.Sc. Software Engineering</b> - Iran Data Processing University</div>
+      <div class="edu-line">Web Design track, Tehran, 2023</div>
+    </section>
+
+    <section>
+      <h2>Certifications</h2>
+      <div class="cert-line">Advanced Web Development - Tehran Technical Complex, [TODO: cert year]</div>
+    </section>
+
+    <section>
+      <h2>Languages</h2>
+      <div class="lang-row">
+        <span class="lang-line">Persian - Native</span>
+        <span class="lang-line">English - Professional</span>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+</body>
+</html>

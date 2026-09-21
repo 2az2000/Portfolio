@@ -1,12 +1,13 @@
 /**
- * Regenerates public/resume/Amirali-Zand-Resume.pdf from the HTML résumé
- * next to it, by printing the file with an installed Chromium browser.
+ * Regenerates a résumé PDF from its HTML source next to it, by printing the
+ * file with an installed Chromium browser.
  *
  * The HTML is the single source of truth for the document — the site embeds
  * it live in the résumé preview, so the PDF is the only rendition that can
  * drift. Run this after every edit to the HTML:
  *
- *   npm run resume:pdf
+ *   npm run resume:pdf         (designed version -> Amirali-Zand-Resume.pdf)
+ *   npm run resume:pdf:ats     (ATS version -> Amirali-Zand-Resume-ATS.pdf)
  */
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
@@ -14,8 +15,15 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const source = resolve(root, "public/resume/amirali-zand-resume.html");
-const output = resolve(root, "public/resume/Amirali-Zand-Resume.pdf");
+const [, , sourceArg, outputArg] = process.argv;
+const source = resolve(
+  root,
+  sourceArg ?? "public/resume/amirali-zand-resume.html"
+);
+const output = resolve(
+  root,
+  outputArg ?? "public/resume/Amirali-Zand-Resume.pdf"
+);
 
 // Chromium is only used as a print engine here, so any of these will do.
 const CANDIDATES = [

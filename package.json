@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "resume:pdf": "node scripts/build-resume-pdf.mjs"
+    "resume:pdf": "node scripts/build-resume-pdf.mjs",
+    "resume:pdf:ats": "node scripts/build-resume-pdf.mjs public/resume/resume-ats.html public/resume/Amirali-Zand-Resume-ATS.pdf"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "1.1.15",
