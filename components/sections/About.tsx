@@ -21,15 +21,14 @@ export function About() {
     "frontend",
     "nextjs",
     "typescript",
-    "pwas",
     "ai",
-    "browser",
-    "interface",
+    "legacy",
+    "performance",
     // Persian keywords (بدون نیم‌فاصله)
     "فرانتاند",
-    "مرورگر",
-    "کاربر",
-    "رابط",
+    "هوش",
+    "مصنوعی",
+    "پرفورمنس",
   ];
 
   return (

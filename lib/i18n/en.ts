@@ -314,7 +314,7 @@ export const en: Dictionary = {
   },
   about: {
     heading: "About",
-    body: "I'm a frontend developer based in Tehran. Most of my work has gone into things people use daily: an alternative app store, a few PWAs that install straight from the browser, and AI features that run on the user's own device instead of a server. I mostly work with React, Next.js and TypeScript. What I care about is simple: the page should load fast, keep working on a bad connection, and the interface should answer when someone clicks.",
+    body: "Dynamic frontend developer with over 3 years of experience specializing in React, Next.js, and TypeScript. Recently revitalized an app store serving 5 million users. Demonstrates strong ownership of features from inception to deployment, excelling in managing legacy code, implementing significant upgrades, and addressing bug backlogs while optimizing performance metrics. Adept at integrating AI features into products and leveraging AI tools daily for planning, reviewing, and delivering high-quality results. Committed to driving innovation and enhancing user experience through cutting-edge technology solutions.",
   },
   skills: {
     heading: "Skills",
