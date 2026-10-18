@@ -119,8 +119,16 @@ export type Dictionary = {
        * can't show. Optional for the same reason as `migration`.
        */
       shipped?: string[];
+      /**
+       * Grouped feature inventory for the studies that are whole products
+       * rather than one refactor. Optional: most studies tell their story in
+       * the three steps and need nothing below them.
+       */
+      features?: { label: string; items: string[] }[];
       stack: string[];
       href: string;
+      /** Overrides `viewLive` when the link is source code, not a running app. */
+      hrefLabel?: string;
     }[];
   };
   experience: {
@@ -369,6 +377,22 @@ export const en: Dictionary = {
         logo: "/images/faceage-96.png",
       },
       {
+        title: "Intelligent Project Manager",
+        description:
+          "A bilingual (Persian and English, RTL and LTR) project-management platform: Kanban boards, critical-path scheduling with Monte Carlo delivery forecasts, real-time collaboration and AI assistance. A TypeScript monorepo with a Next.js 16 client, an Express 5 API and PostgreSQL.",
+        highlights: [
+          "Critical path, slack and a predicted finish date on a Gantt timeline, aware of Iranian holidays and a configurable weekend",
+          "Monte Carlo forecast: 2,000 scheduling runs turn one optimistic date into P50, P85 and P95",
+          "Live boards over Socket.IO with presence, per-task viewers, notifications and an activity log",
+          "AI task enrichment, estimates, stand-ups and full project docs, with retry and provider fallbacks",
+          "CI on every push: lint, typecheck, 160+ server tests and builds; Docker Compose and Caddy in production",
+        ],
+        stack: ["Next.js 16", "Express 5", "PostgreSQL", "Socket.IO"],
+        href: "https://github.com/2az2000/IntelligentProjectManager",
+        featured: true,
+        context: "Open source",
+      },
+      {
         title: "Weather",
         description:
           "A React Native app in clean architecture. Each feature is split into data, domain and presentation layers behind a DI container, and forecasts, air quality and alerts stay readable offline through queries cached in MMKV and SQLite.",
@@ -469,6 +493,76 @@ export const en: Dictionary = {
         stack: ["React", "MediaPipe", "AI"],
         // TODO: replace with the public Face Age URL once there is one.
         href: "#",
+      },
+      {
+        title: "Intelligent Project Manager",
+        tagline: "A project tool that schedules the plan, not just stores it.",
+        role: "Solo · full stack, from architecture to deployment",
+        problem:
+          "Most task boards only store tasks. They can't say which work actually holds up the delivery date, they offer one optimistic finish date, and they don't know the Iranian calendar: a Thursday and Friday weekend and Nowruz quietly push every estimate out. A Persian-speaking team also needs a real right-to-left interface, not an English app with translated labels.",
+        approach:
+          "I built it as a TypeScript monorepo, in phases from foundation to production readiness. The Express 5 API is a modular monolith of 15 feature modules, each split into domain, application, infrastructure and HTTP layers, with the boundaries between modules enforced by ESLint. The scheduling algorithms (dependency graph, cycle detection, critical path, Monte Carlo) are pure functions with their own unit tests. The Next.js 16 client is feature-sliced, keeps all server state in TanStack Query and talks to the API only over REST, so the API stays usable by any other client.",
+        result:
+          "A working bilingual platform on 17 data models across 12 migrations, covered by 160+ server tests (unit tests plus 15 integration suites against a real PostgreSQL), 80+ client tests and Playwright end-to-end flows. Every push goes through CI, and production is one Docker Compose stack behind Caddy with automatic HTTPS and daily database backups.",
+        features: [
+          {
+            label: "Product and UX",
+            items: [
+              "Per-project roles (owner, admin, member, viewer); non-members get a 404, so other people's projects stay invisible",
+              "Kanban drag and drop by mouse or keyboard, with screen-reader announcements, fractional ordering and optimistic updates that roll back on error",
+              "Custom workflow statuses, list view, bulk actions, templates, subtasks, labels, @mention comments with reactions, attachments and time tracking",
+              "Persian (default) and English with real RTL and a Jalali calendar, light and dark themes, and an installable PWA with an offline page",
+            ],
+          },
+          {
+            label: "Scheduling and analytics",
+            items: [
+              "Task dependencies with cycle prevention, then critical path and slack in one O(V + E) pass",
+              "Gantt timeline with the critical path highlighted and a predicted finish date",
+              "Monte Carlo forecast over 2,000 runs with triangular durations, reported as P50, P85 and P95",
+              "Automatic 0 to 100 risk score per task, plus burndown, workload heatmap and cost reports; Iranian holidays in every date",
+            ],
+          },
+          {
+            label: "Real-time and background jobs",
+            items: [
+              "A Socket.IO room per project for live board updates and who-is-online presence",
+              "Per-task viewers tracked per socket, so the same person in 2 tabs never disappears from either",
+              "Notifications for assignments, mentions, comments and due dates, plus a per-task activity log",
+              "BullMQ jobs on Redis for due-date reminders and a daily 08:00 digest e-mail, switched off automatically when Redis is absent",
+            ],
+          },
+          {
+            label: "AI assistance",
+            items: [
+              "Works with any OpenAI-compatible provider; without a key the AI endpoints answer 503 and nothing else is affected",
+              "Task enrichment: description, subtasks, assignee and estimate suggestions, with estimates learned from the team's closed tasks",
+              "Stand-up reports, thread summaries and full project documentation generated in Markdown from the project's real data",
+              "Retry with back-off that honours Retry-After, model fallbacks and a second provider for busy free-tier models",
+            ],
+          },
+          {
+            label: "Security",
+            items: [
+              "15-minute JWT access token and an opaque, rotating 7-day refresh token, both in httpOnly cookies",
+              "Only an HMAC of the refresh token is stored, and reusing a rotated token revokes the whole session",
+              "bcrypt with timing-equalised login, rate-limited credential endpoints and password reset by e-mail",
+              "Strict Zod validation on every request body, Helmet, a CORS allowlist and an Origin/Referer CSRF guard",
+            ],
+          },
+          {
+            label: "Quality, CI and deployment",
+            items: [
+              "GitHub Actions on every push and pull request: lint, typecheck, tests and build for the API; lint, typecheck and build for the client; npm audit gates",
+              "API tests run in CI against a real PostgreSQL 16 service container",
+              "Vitest and Supertest on the API, Vitest, Testing Library and MSW on the client, Playwright for tasks, timeline and real-time flows",
+              "Production as one Docker Compose stack: Caddy with automatic HTTPS, client, API, PostgreSQL, Redis and a daily pg_dump keeping 14 backups",
+            ],
+          },
+        ],
+        stack: ["Next.js 16", "React 19", "TypeScript", "Express 5", "Prisma 7", "PostgreSQL", "Socket.IO", "BullMQ", "Docker"],
+        href: "https://github.com/2az2000/IntelligentProjectManager",
+        hrefLabel: "View on GitHub",
       },
       {
         title: "Weather",

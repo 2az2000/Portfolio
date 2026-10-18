@@ -120,7 +120,7 @@ export function CaseStudies() {
                         rel="noreferrer"
                         className="focus-ring group/live flex shrink-0 items-center gap-1.5 rounded-pill border border-line px-4 py-2 text-sm text-ink transition-colors duration-fast ease-brand hover:border-violet/40"
                       >
-                        {t.caseStudies.viewLive}
+                        {cs.hrefLabel ?? t.caseStudies.viewLive}
                         <ArrowUpRight
                           size={14}
                           className="transition-transform duration-fast ease-brand group-hover/live:translate-x-0.5 group-hover/live:-translate-y-0.5 group-hover/live:text-mint rtl:group-hover/live:-translate-x-0.5"
@@ -218,6 +218,35 @@ export function CaseStudies() {
                           </ul>
                         </div>
                       )}
+                    </div>
+                  )}
+
+                  {/* Product-sized studies list what the product does, grouped
+                      by area; three columns keep six groups at two rows. */}
+                  {cs.features && (
+                    <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                      {cs.features.map((group) => (
+                        <div
+                          key={group.label}
+                          className="rounded-lg border border-line bg-ink/[0.02] p-5"
+                        >
+                          <p className="caption text-ink/70">{group.label}</p>
+                          <ul className="mt-4 space-y-2.5">
+                            {group.items.map((point) => (
+                              <li
+                                key={point}
+                                className="flex gap-2.5 text-sm leading-relaxed text-mist"
+                              >
+                                <span
+                                  aria-hidden
+                                  className="mt-[0.5em] h-1 w-1 shrink-0 rounded-full bg-mint"
+                                />
+                                <span>{point}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
                     </div>
                   )}
 
