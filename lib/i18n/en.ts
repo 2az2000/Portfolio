@@ -393,6 +393,22 @@ export const en: Dictionary = {
         context: "Open source",
       },
       {
+        title: "AURA",
+        description:
+          "A cinematic, scroll-driven 3D landing page for a fictional premium headphone. The headphone is built entirely in code with Three.js, with no model files, and moves with the scroll, a title sequence and a custom GLSL background.",
+        stack: ["React", "Three.js", "React Three Fiber", "GLSL"],
+        href: "https://aura-mu-amirali.vercel.app/",
+        context: "Open source",
+      },
+      {
+        title: "Aurelis Watch",
+        description:
+          "A product page for a fictional mechanical watch, laid out as a watchmaker's drawing sheets. The watch is drawn in CSS and SVG with hands that keep live time, and a configurator builds and prices it before a Server Action reserves it.",
+        stack: ["Next.js", "TypeScript", "Motion", "Zod"],
+        href: "https://watch-beta-amirali.vercel.app/",
+        context: "Open source",
+      },
+      {
         title: "Weather",
         description:
           "A React Native app in clean architecture. Each feature is split into data, domain and presentation layers behind a DI container, and forecasts, air quality and alerts stay readable offline through queries cached in MMKV and SQLite.",
@@ -563,6 +579,89 @@ export const en: Dictionary = {
         stack: ["Next.js 16", "React 19", "TypeScript", "Express 5", "Prisma 7", "PostgreSQL", "Socket.IO", "BullMQ", "Docker"],
         href: "https://github.com/2az2000/IntelligentProjectManager",
         hrefLabel: "View on GitHub",
+      },
+      {
+        title: "AURA",
+        tagline: "A product film that runs in the browser, on any device.",
+        role: "Solo · design engineering and 3D",
+        problem:
+          "A premium product page usually leans on a video or a heavy 3D model file, and both struggle on a phone: a video can't be explored, and a model costs megabytes and frames. The page also had to stay readable for anyone without WebGL or with motion turned off.",
+        approach:
+          "I modelled the headphone in code: lathe and torus geometry, brushed-metal and woven-fabric textures from a seeded canvas generator, and studio lighting from light cards instead of an HDRI. A storyboard maps every scroll position to a shot (position, rotation, exploded view, glow, background character), and the 3D rig and a WebGL1 background shader ease between shots. Per-frame state lives in plain module stores that the render loop reads directly, so React doesn't re-render every frame.",
+        result:
+          "About 7,400 lines of TypeScript across 2 routes: an eight-sheet overview and a five-scene product film, joined by a curtain transition that keeps the 3D canvas alive. Quality adapts to the device while it runs, and without WebGL the page falls back to a static SVG silhouette.",
+        features: [
+          {
+            label: "3D and rendering",
+            items: [
+              "Headphone geometry, materials and hotspot anchors built in code, with an exploded view that slides each cup part along its own axis",
+              "3 quality tiers (pixel ratio, environment map size, segment count) guessed from the device, then stepped down or up from measured frame times",
+              "A WebGL1 background shader with frequency lines, noise contours, dust parallax and sound ripples, rendered at half resolution",
+              "A static SVG silhouette when WebGL is missing or the GL context is lost",
+            ],
+          },
+          {
+            label: "Motion and story",
+            items: [
+              "A storyboard of shots per scroll position; the product and the background ease between them",
+              "A title sequence, then a five-scene product film: Arrival, Form, Craft, Inside and Close",
+              "Shared motion tokens for durations, easings, springs and stagger",
+              "prefers-reduced-motion respected throughout",
+            ],
+          },
+          {
+            label: "Interaction",
+            items: [
+              "Drag to turn the headphone, with keyboard nudges and a reset",
+              "8 hidden details to discover, from a light sweep to lining up two signals until they cancel out",
+              "3 lighting modes (Studio, Night, Signal) and 3 metal finishes",
+              "QA switches in the URL to lock the quality tier, freeze the intro or show every hotspot",
+            ],
+          },
+        ],
+        stack: ["React", "TypeScript", "Three.js", "React Three Fiber", "GLSL", "Motion", "Vite"],
+        href: "https://aura-mu-amirali.vercel.app/",
+      },
+      {
+        title: "Aurelis Watch",
+        tagline: "A watch drawn in code, then configured, priced and reserved on one page.",
+        role: "Solo · design engineering",
+        problem:
+          "The first version was a clean but plain product page: the watch was the only visual, every section used the same layout and the same fade-up, and nothing reacted to scrolling or the pointer. It read like a template, which is the opposite of what a luxury object needs.",
+        approach:
+          "I redesigned it as a watchmaker's drawing office at night. Each section is a drawing sheet (dial construction, exploded view, calibre, material studies) with its own diagrams, and a shared background field changes character as each sheet reaches the middle of the viewport. The watch stays one CSS and SVG object driven by material tokens, so the hero and the configurator preview are the same configuration seen twice.",
+        result:
+          "A server-first Next.js page of 9 sheets where the watch keeps real time, the configurator remembers the build across reloads and tabs, and the reservation form works even with JavaScript turned off.",
+        features: [
+          {
+            label: "The object",
+            items: [
+              "Case, dial, hands and crystal drawn in CSS and SVG, with no images or 3D files",
+              "Hands follow the live time, start from a rest pose to avoid a hydration mismatch, and hold still under reduced motion",
+              "A band of light sweeps the case on a loop in the hero and once per change in the configurator",
+              "A parametric gear train drawn from tooth counts, from the barrels to the escape wheel",
+            ],
+          },
+          {
+            label: "Configurator and reservation",
+            items: [
+              "3 cases, 3 dials and 3 straps: 27 builds, each priced from one material table",
+              "The build persists in localStorage through useSyncExternalStore, correct on the first render and synced across tabs",
+              "Falls back to in-memory state when storage is blocked, as in private browsing",
+              "Reservation through a Server Action with Zod validation, so it works without JavaScript and can't be bypassed client-side",
+            ],
+          },
+          {
+            label: "Motion and layout",
+            items: [
+              "Masked text, scroll-linked words, parallax, pointer parallax, magnetic links and count-ups as small reusable motion components",
+              "Each section sets the character of the shared background field",
+              "CSS Modules per component, with Tailwind and shadcn/ui primitives for the form controls",
+            ],
+          },
+        ],
+        stack: ["Next.js", "React", "TypeScript", "Motion", "Zod", "CSS Modules"],
+        href: "https://watch-beta-amirali.vercel.app/",
       },
       {
         title: "Weather",

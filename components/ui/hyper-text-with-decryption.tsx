@@ -99,7 +99,22 @@ const KeyWord = ({ children }: { children: string }) => {
         aria-hidden
         className="pointer-events-none absolute -bottom-1 -start-1 h-2 w-2 scale-0 rounded-full bg-mint transition-transform duration-200 ease-out group-hover:scale-100"
       />
-      <span className="relative px-1">{displayText}</span>
+      <span className="relative">{displayText}</span>
+    </span>
+  );
+};
+
+/**
+ * Sentence punctuation stays in the body face: a comma set in mono violet
+ * reads as part of the keyword ("React," instead of "React" + ",").
+ */
+const KeyWordWithPunctuation = ({ word }: { word: string }) => {
+  const [, lead, core, trail] = word.match(/^([("'«]*)(.*?)([)"'».,،؛;:!?]*)$/u) ?? [word, "", word, ""];
+  return (
+    <span className="inline-block whitespace-nowrap">
+      {lead && <span className="hyper-word transition-opacity duration-200 ease-out">{lead}</span>}
+      <KeyWord>{core}</KeyWord>
+      {trail && <span className="hyper-word transition-opacity duration-200 ease-out">{trail}</span>}
     </span>
   );
 };
@@ -113,16 +128,18 @@ export default function HyperTextParagraph({
   const keys = useMemo(() => new Set(highlightWords.map(clean)), [highlightWords]);
 
   return (
-    <div className={cn("hyper-para leading-relaxed tracking-wide", className)}>
+    <div className={cn("hyper-para font-body leading-relaxed", className)}>
       {words.map((word, i) => (
         <React.Fragment key={i}>
           {keys.has(clean(word)) ? (
-            <KeyWord>{word}</KeyWord>
+            <KeyWordWithPunctuation word={word} />
           ) : (
             // A word nobody can hover needs no state, no handlers and no
             // decorations — just text that dims when a neighbour is hovered.
-            // Most of the paragraph is this branch.
-            <span className="hyper-word inline-block whitespace-nowrap font-mono font-medium text-mist transition-opacity duration-200 ease-out">
+            // Most of the paragraph is this branch, so it is set in the body
+            // face and inherits the caller's colour: only the keywords are
+            // mono, because the scramble needs fixed-width glyphs.
+            <span className="hyper-word inline-block whitespace-nowrap transition-opacity duration-200 ease-out">
               {word}
             </span>
           )}
